@@ -64,8 +64,8 @@ Erwartete Beweise / Expected evidence: verlustfreier Roundtrip mit
 Container-Overhead); Messung der Geschwindigkeit auf dem eigenen Gerät.
 
 Alle Prüfschritte stehen ausführlich in [VERIFICATION.md](VERIFICATION.md).
-Ein Audit-Paket mit Quelltexten, Hashes und Selbsttest-Protokoll liegt der
-Repository-Veröffentlichung bei (siehe Issue #1).
+Ein Audit-Paket mit Quelltexten, Hashes und Selbsttest-Protokoll stellen wir
+Prüfer:innen auf Anfrage bereit — Kontakt über den Account in der App.
 
 ## Architektur in einem Satz / Architecture in one sentence
 
