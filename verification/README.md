@@ -1,16 +1,21 @@
 # OpenOS Momo AI — Verifikations-Bundle
 
-Eigenständig ausführbarer Nachweis für Momo AI (Saiten-148M) und die
-öffentliche Verify-Schicht. Ein Ordner, ein Befehl — kein Vertrauen nötig.
+Eigenständig ausführbarer Nachweis für Momo AI (Saiten-148M), die Bitseed-
+Kompressions-Engine und die öffentliche Verify-Schicht. Ein Ordner, ein
+Befehl — kein Vertrauen nötig.
 
 ## Was ist hier drin
 
 | Datei | Zweck |
 |---|---|
-| `modell-selftest.mjs` | Lädt die Gewichte live von `app.openos.space`, prüft SHA-256, rechnet die Parameterzahl aus den Tensorformen nach, validiert die Binärdeckung hart und generiert deterministisch Text (Golden-Test). |
+| `modell-selftest.mjs` | Lädt die Gewichte live von `app.openos.space`, prüft SHA-256, rechnet die Parameterzahl aus den Tensorformen nach, validiert die Binärdeckung hart und generiert deterministisch Text (Golden-Test mit VIER Referenzen, DE+EN). |
 | `openos-verify.source.mjs` | Byte-identische Kopie des öffentlichen Verify-Endpunkts (`.netlify/functions/openos-verify`) — vergleiche den Hash mit der Live-Datei. |
+| `bitseed-engine.js` | Die komplette Kompressions-Engine, exakt die Datei, die in der App auf dem Gerät des Nutzers läuft (und im Verify-Endpunkt). |
+| `enwik8-benchmark.mjs` | Reproduzierbares Referenzbenchmark: enwik8 ziehen, encodieren, decodieren, SHA-256 vorher/nachher, Bitseed vs. gzip-9. |
 | `saiten-engine/saiten-llm.js` | Inferenz-Engine des Saiten-Modells (Byte-Kopie von `/momo/saiten-engine/`). |
-| `saiten-engine/tokenizer.js` | Wort-Vokabular-Tokenizer (DE/EN). |
+| `saiten-engine/tokenizer.js` | Wort-Vokabular-Tokenizer (DE/EN), streaming-fähig. |
+| `saiten_trainer.py` | Der echte Trainings-Code, mit dem die Gewichte erzeugt wurden. |
+| `bericht.json` | Trainingsergebnis des letzten Trainingslaufs (Stufe, Heldout-NLL, Perplexität). |
 | `CHECKSUMS.txt` | SHA-256 aller Bundle-Dateien — `sha256sum -c CHECKSUMS.txt` prüft alles. |
 | `CHECKSUMS.sig` | Ed25519-Detachtsignatur über `CHECKSUMS.txt`, Base64-codiert (Schlüssel: `RELEASE.pub`). |
 | `RELEASE.pub` | Öffentlicher Ed25519-Release-Schlüssel. |
@@ -29,6 +34,9 @@ node -e 'const c=require("crypto"),f=require("fs");const sig=Buffer.from(f.readF
 # 3) Modellnachweis (laedt ~142 MB Gewichte von app.openos.space, Node 18+)
 node modell-selftest.mjs
 
+# 4) Kompressions-Benchmark selbst nachmessen (enwik8, ~100 MB Download)
+node enwik8-benchmark.mjs ./enwik8
+
 # Alles in einem:
 ./pruefe.sh
 ```
@@ -36,7 +44,11 @@ node modell-selftest.mjs
 Schritt 3 beweist: Die Gewichte auf dem Server sind bit-exakt die
 referenzierten (SHA-256), das Manifest beschreibt 187 Tensoren ohne Lücken
 oder Überlappungen, das Modell erzeugt lokal deterministisch Text und
-liefert für den Standard-Prompt exakt die publizierten Golden-Token-Ids.
+liefert für alle vier Referenz-Prompts exakt die publizierten Golden-Token-Ids.
+
+Schritt 4 misst die Kompressions-Rate auf dem Standard-Korpus der
+Kompressionsforschung — inklusive ehrlichem Vergleich zu gzip-9 und dem
+SHA-256-Roundtrip-Beweis.
 
 ## Unabhängiger Anker
 
@@ -46,8 +58,9 @@ Prüfsummen noch die Signatur ändern. Vergleiche die Bundle-Dateien
 jederzeit mit den Live-Dateien auf `app.openos.space/verifikation/`:
 Die Hashes in `CHECKSUMS.txt` müssen übereinstimmen.
 
-Engine-Fingerprint (unverändert, öffentlich referenziert):
-`57b79b24aa291b935a5b5c470456ec40d4f3d5d5e22b66fd393c35f80766a4da`
+Engine-Fingerprint (öffentlich referenziert):
+`6752bf3679a75b95273c6a05d8bffcc1e29feddd5e5b1a3570747739db8f415b`
 (`/kompression/assets/bitseed-engine.js`)
 
-Release: 2026-11-03 · Bundle-Version: v1
+Release: 2026-11-04 · Bundle-Version: v2 (gehärtet nach unabhängigem
+Audit: Engine-v2, vier Golden-Referenzen, enwik8-Benchmark, Trainer + Trainingsbericht).

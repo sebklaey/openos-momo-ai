@@ -38,7 +38,7 @@
 
 import { createHash } from "node:crypto";
 import { SaitenLLM, gewichteEntpacken } from "./saiten-engine/saiten-llm.js";
-import { vokabularLaden, encodiere, decodiere } from "./saiten-engine/tokenizer.js";
+import { vokabularLaden, encodiere, decodiere, flusheDecodiere } from "./saiten-engine/tokenizer.js";
 
 const args = process.argv.slice(2);
 const argWert = (name, fallback) => {
@@ -54,24 +54,49 @@ const MAX_TOKENS = Number.isInteger(tokensRoh) && tokensRoh >= 1 && tokensRoh <=
   ? tokensRoh
   : (() => { console.error("Ungültiger --tokens Wert (Ganzzahl 1..64 erwartet)."); process.exit(1); })();
 const ERWARTETE_GEWICHTE_SHA256 =
-  argWert("erwartet", "1fc3116779243dc4d056c750500772457b25e9c3374e6b87e31140f0eae7e45c");
+  argWert("erwartet", "1c244444fd7bae7a78152f73d7d90def3665fcb46abb0f655beff18a1f65891c");
 
-// Golden-Referenzen für den Standard-Prompt. Diese Werte wurden einmalig
-// aus einem lokalen Referenzlauf mit den referenzierten Gewichten erzeugt.
-// Sie sind die Verbindung zwischen "Code läuft" und "Modell ist das Modell".
+// Golden-Referenzen. Diese Werte wurden einmalig aus lokalen Referenzläufen
+// mit den referenzierten Gewichten (sha256 oben) erzeugt. Sie sind die
+// Verbindung zwischen "Code läuft" und "Modell ist das Modell".
 //   node modell-selftest.mjs   ->  muss exakt diese token_ids liefern,
 //                                  sonst ist das Modell nicht das referenzierte.
-const GOLDEN_PROMPT = "DU: Was bist du?\nMOMO:";
-const ERWARTETE_TOKEN_IDS = [887, 786, 6714, 7952, 427, 282, 3088, 293, 7983, 7974, 7980, 7934, 232, 134, 154, 280];
-const ERWARTETE_TEXT_PREFIX = "Ich bin Momo, eine Saiten-KI";
+// Vier Referenzen: Deutsch + Englisch, Chat-Identität, Fähigkeiten, Kompression.
+const GOLDEN = [
+  {
+    name: "identitaet-de",
+    prompt: "DU: Was bist du?\nMOMO:",
+    tokenIds: [887, 786, 6714, 7934, 232, 134, 154, 313, 282, 3088, 293, 7983, 7974, 7980, 440, 668],
+    textPrefix: "Ich bin Momo — die Saiten-KI von O",
+  },
+  {
+    name: "faehigkeiten-de",
+    prompt: "DU: Was kannst du?\nMOMO:",
+    tokenIds: [2211, 319, 7952, 2392, 7988, 1013, 269, 7952, 4395, 7952, 5900, 7961, 7668, 1262, 7952, 973],
+    textPrefix: "Chat, Projekte, Bibliothek, Kompression, Ge",
+  },
+  {
+    name: "kompression-de",
+    prompt: "DU: Wie komprimiert man Daten?\nMOMO:",
+    tokenIds: [348, 5353, 7984, 7934, 57, 58, 841, 264, 4583, 2567, 522, 7952, 7934, 59, 60, 7952],
+    textPrefix: "Kurz: 34 Archive liegen vor, 56,",
+  },
+  {
+    name: "identitaet-en",
+    prompt: "USER: What are you?\nMOMO:",
+    tokenIds: [317, 2899, 382, 7983, 1519, 1110, 287, 7935, 383, 328, 287, 371, 7951, 349, 7955, 7984],
+    textPrefix: "A string-phase neural network:",
+  },
+];
+const GOLDEN_PROMPT = GOLDEN[0].prompt;
 // Parameterzahl aus den Manifest-Tensorformen (Stand: Gewichte sha256 oben).
 // Wird zur Laufzeit nachgerechnet — dieser Wert ist die harte Erwartung.
 const ERWARTETE_PARAMETER_N = 148355569;
 
 const URLS = {
-  manifest: BASIS + "models/saiten-148m/momo-llm.json?v=saiten148m-s4",
-  vocab: BASIS + "models/saiten-148m/momo-vocab.json?v=saiten148m-s4",
-  bin: BASIS + "models/saiten-148m/momo-llm.bin?v=saiten148m-s4",
+  manifest: BASIS + "models/saiten-148m/momo-llm.json?v=saiten148m-s5",
+  vocab: BASIS + "models/saiten-148m/momo-vocab.json?v=saiten148m-s5",
+  bin: BASIS + "models/saiten-148m/momo-llm.bin?v=saiten148m-s5",
 };
 
 async function lade(url) {
@@ -106,6 +131,7 @@ function generiere() {
   if (promptIds.length > ctx) promptIds = promptIds.slice(-ctx);
   llm.reset();
   const tokenIds = [];
+  const dekodZustand = { dec: new TextDecoder("utf-8", { fatal: false }) };
   let text = "";
   let naechste = -1;
   for (let n = 0; n < promptIds.length + MAX_TOKENS; n++) {
@@ -114,7 +140,7 @@ function generiere() {
     if (n < promptIds.length - 1) continue;
     let best = 0;
     for (let i = 1; i < p.length; i++) if (p[i] > p[best]) best = i; // Greedy
-    const stueck = decodiere(vok, [best], false);
+    const stueck = decodiere(vok, [best], false, dekodZustand);
     if (best === vok.ende) break;
     if (stueck.includes("\n")) break;
     if (/^\s*DU\s*:/.test(stueck)) break;
@@ -123,6 +149,7 @@ function generiere() {
     text += stueck;
     naechste = best;
   }
+  text += flusheDecodiere(dekodZustand);
   return { tokenIds, text };
 }
 
@@ -159,12 +186,57 @@ if (parametern !== ERWARTETE_PARAMETER_N) fehler.push("parameterzahl");
 // c) Determinismus: zwei unabhängige Läufe müssen identisch sein.
 if (JSON.stringify(lauf1.tokenIds) !== JSON.stringify(lauf2.tokenIds)) fehler.push("determinismus");
 
-// d) Golden-Test (nur beim Standard-Prompt): VOLLSTÄNDIGER Array-Vergleich —
-//    weder weniger noch mehr Token dürfen akzeptiert werden. Nur sinnvoll,
-//    wenn die Laufweite mindestens die Referenzlänge erreicht.
-if (standardPrompt && MAX_TOKENS >= ERWARTETE_TOKEN_IDS.length) {
-  if (JSON.stringify(tokenIds) !== JSON.stringify(ERWARTETE_TOKEN_IDS)) fehler.push("golden_token_ids");
-  if (!text.trimStart().startsWith(ERWARTETE_TEXT_PREFIX)) fehler.push("golden_text");
+// d) Golden-Test: Zu jedem Prompt mit hinterlegter Referenz wird, wenn die
+//    Laufweite reicht, ein VOLLSTÄNDIGER Array-Vergleich gefahren — weder
+//    weniger noch mehr Token dürfen akzeptiert werden. Ohne --prompt werden
+//    ALLE Referenzen durchlaufen (vier harte Prüfungen in einem Lauf).
+const goldenTabelle = standardPrompt ? GOLDEN : GOLDEN.filter((g) => g.prompt === PROMPT);
+const goldenErgebnisse = [];
+for (const ref of goldenTabelle) {
+  if (standardPrompt && ref.prompt !== PROMPT) {
+    // Zusatzreferenzen im Komplettlauf: eigene Generierung nötig.
+    let pIds = encodiere(vok, ref.prompt);
+    if (pIds.length > ctx) pIds = pIds.slice(-ctx);
+    llm.reset();
+    const z = { dec: new TextDecoder("utf-8", { fatal: false }) };
+    const tIds = [];
+    let t = "", naechste = -1;
+    for (let n = 0; n < pIds.length + MAX_TOKENS; n++) {
+      const pid = n < pIds.length ? pIds[n] : naechste;
+      const pr = llm.schritt(pid);
+      if (n < pIds.length - 1) continue;
+      let best = 0;
+      for (let i = 1; i < pr.length; i++) if (pr[i] > pr[best]) best = i;
+      const stueck = decodiere(vok, [best], false, z);
+      if (best === vok.ende) break;
+      if (stueck.includes("\n")) break;
+      if (/^\s*DU\s*:/.test(stueck)) break;
+      if (tIds.length >= MAX_TOKENS) break;
+      tIds.push(best);
+      t += stueck;
+      naechste = best;
+    }
+    t += flusheDecodiere(z);
+    if (MAX_TOKENS >= ref.tokenIds.length) {
+      const idsOk = JSON.stringify(tIds) === JSON.stringify(ref.tokenIds);
+      const textOk = t.trimStart().startsWith(ref.textPrefix);
+      goldenErgebnisse.push({ name: ref.name, idsOk, textOk });
+      if (!idsOk) fehler.push("golden_token_ids:" + ref.name);
+      if (!textOk) fehler.push("golden_text:" + ref.name);
+    } else {
+      goldenErgebnisse.push({ name: ref.name, idsOk: null, textOk: null, grund: "tokens<" + ref.tokenIds.length });
+    }
+    continue;
+  }
+  if (MAX_TOKENS >= ref.tokenIds.length) {
+    const idsOk = JSON.stringify(tokenIds) === JSON.stringify(ref.tokenIds);
+    const textOk = text.trimStart().startsWith(ref.textPrefix);
+    goldenErgebnisse.push({ name: ref.name, idsOk, textOk });
+    if (!idsOk) fehler.push("golden_token_ids:" + ref.name);
+    if (!textOk) fehler.push("golden_text:" + ref.name);
+  } else {
+    goldenErgebnisse.push({ name: ref.name, idsOk: null, textOk: null, grund: "tokens<" + ref.tokenIds.length });
+  }
 }
 
 const bericht = {
@@ -176,8 +248,7 @@ const bericht = {
     parameterzahl_nachgerechnet: parametern,
     parameterzahl_erwartet: ERWARTETE_PARAMETER_N,
     determinismus_zwei_laeufe: fehler.indexOf("determinismus") < 0,
-    golden_token_ids: (standardPrompt && MAX_TOKENS >= ERWARTETE_TOKEN_IDS.length) ? fehler.indexOf("golden_token_ids") < 0 : "uebersprungen (eigener Prompt oder tokens < 16)",
-    golden_text: (standardPrompt && MAX_TOKENS >= ERWARTETE_TOKEN_IDS.length) ? fehler.indexOf("golden_text") < 0 : "uebersprungen (eigener Prompt oder tokens < 16)",
+    golden: goldenErgebnisse,
   },
   gewichte: {
     url: URLS.bin,

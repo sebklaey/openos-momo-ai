@@ -129,13 +129,20 @@ export function encodiere(vok, text) {
     }
     return ids;
 }
-export function decodiere(vok, ids, trimmen = true) {
+/* Streaming-faehig decodieren:  zustand = { dec: new TextDecoder(...) }.
+   Ein gemeinsamer Decoder haelt unvollstaendige UTF-8-Sequenzen ueber
+   Aufrufe hinweg zurueck — so zerfallen Byte-Fallback-Token (z. B. die
+   drei Bytes von „—") nicht mehr zu je einem ���.  Abschluss mit
+   flusheDecodiere(zustand). */
+export function decodiere(vok, ids, trimmen = true, zustand = null) {
     const v = vok;
     let out = '';
     const bytes = [];
+    const streaming = !!(zustand && zustand.dec);
+    const dec = streaming ? zustand.dec : new TextDecoder('utf-8', { fatal: false });
     const spuelen = () => {
         if (bytes.length) {
-            out += new TextDecoder('utf-8', { fatal: false }).decode(new Uint8Array(bytes));
+            out += dec.decode(new Uint8Array(bytes), { stream: streaming });
             bytes.length = 0;
         }
     };
@@ -151,5 +158,10 @@ export function decodiere(vok, ids, trimmen = true) {
     }
     spuelen();
     const text = out.replace(/▁/g, ' ');
+    if (streaming) return text; // beim Streamen nicht trimmen
     return trimmen ? text.trim() : text;
+}
+export function flusheDecodiere(zustand) {
+    if (!zustand || !zustand.dec) return '';
+    return zustand.dec.decode(new Uint8Array(0), { stream: false }).replace(/▁/g, ' ');
 }

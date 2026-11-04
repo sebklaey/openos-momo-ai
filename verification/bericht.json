@@ -1,0 +1,17 @@
+{
+  "stufe": 3251,
+  "heldout_nll": 2.2751443536884812,
+  "heldout_nll_momo": 0.25257735081432187,
+  "perplexitaet": 9.729323374910598,
+  "vocab": 8000,
+  "korpus_ids": 434186,
+  "architektur": {
+    "d": 768,
+    "schichten": 20,
+    "koepfe": 12,
+    "ctx": 512
+  },
+  "export": "/Users/sebklaey/Library/Application Support/kimi-desktop/daimon-share/daimon/agents/main/blueprint/automations/automation_81433dd7-aaa8-45b6-9875-7be3a7a45efd/assets/export/momo-llm.bin",
+  "fertig_um": "07:53",
+  "datum": "2026-11-04"
+}

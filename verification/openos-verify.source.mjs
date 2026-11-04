@@ -207,10 +207,10 @@ export default async (req) => {
       },
       artefakte: {
         engine_code: "https://app.openos.space/kompression/assets/bitseed-engine.js",
-        engine_sha256: "57b79b24aa291b935a5b5c470456ec40d4f3d5d5e22b66fd393c35f80766a4da",
+        engine_sha256: "6752bf3679a75b95273c6a05d8bffcc1e29feddd5e5b1a3570747739db8f415b",
         quelltext_dieser_funktion: "https://app.openos.space/verifikation/openos-verify.source.mjs",
         modell_gewichte: "https://app.openos.space/models/saiten-148m/momo-llm.bin",
-        modell_gewichte_sha256: "1fc3116779243dc4d056c750500772457b25e9c3374e6b87e31140f0eae7e45c",
+        modell_gewichte_sha256: "1c244444fd7bae7a78152f73d7d90def3665fcb46abb0f655beff18a1f65891c",
         modell_manifest: "https://app.openos.space/models/saiten-148m/momo-llm.json",
         modell_selbsttest: "https://app.openos.space/verifikation/modell-selftest.mjs",
         verifikations_bundle: "https://github.com/sebklaey/openos-momo-ai/tree/main/verification",
