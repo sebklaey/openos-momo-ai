@@ -176,10 +176,10 @@ function measure(name, data) {
     name,
     bytes_in: data.length,
     bytes_out: hyb.length,
-    overhead_bytes: 12 + 512, // Container: Magic+Größe+Konfigblock — offengelegt, nicht versteckt
+    overhead_bytes: 12, // BTS3-Container: Magic + 64-Bit-Länge — offengelegt, nicht versteckt
     kompressionsgrad_prozent: Number((100 * hyb.length / data.length).toFixed(2)),
     reduktion_prozent: Number((100 - 100 * hyb.length / data.length).toFixed(2)),
-    bits_pro_byte: Number(((hyb.length - 12 - 512) * 8 / data.length).toFixed(4)),
+    bits_pro_byte: Number(((hyb.length - 12) * 8 / data.length).toFixed(4)),
     encode_sekunden: Number(encS.toFixed(3)),
     decode_sekunden: Number(decS.toFixed(3)),
     encode_mb_pro_sekunde: Number((data.length / 1e6 / encS).toFixed(3)),
@@ -194,7 +194,7 @@ export default async (req) => {
   if (req.method === "GET") {
     return json({
       dienst: "OpenOS Momo AI — KI-Verifikation",
-      baujahr_engine: "Bitseed Engine v1 · kontext-mischende Ordnungs-Modelle 0/1/2/3/4/6 + LZP-Match + Perzeptron-Mischer + binärer Arithmetik-Kodierer",
+      baujahr_engine: "Bitseed Engine v2 · kontext-mischende Ordnungs-Modelle 0/1/2/3/4/6 + verifizierter LZP-Match (positionsunabhängiger 4-Byte-Fensterhash) + logistischer Perzeptron-Mischer + APM-Nachkorrektur + binärer Arithmetik-Kodierer (BTS3)",
       verlustfrei: true,
       beweise: ["kompressionsgrad", "geschwindigkeit", "sha256-bit-exaktheit", "eigene-daten-roundtrip", "modell-greedy-determinismus"],
       grenzen: {
@@ -262,7 +262,7 @@ export default async (req) => {
       const ergebnisse = testCorpora().map((k) => measure(k.name, k.data));
       return json({
         aktion: "selftest",
-        engine: "Bitseed Engine v1",
+        engine: "Bitseed Engine v2",
         verlustfrei: ergebnisse.every((e) => e.bit_exakt),
         gesamt: {
           bytes_in: ergebnisse.reduce((a, e) => a + e.bytes_in, 0),
@@ -284,7 +284,7 @@ export default async (req) => {
     const r = measure("eigene-daten", pruef.data);
     return json({
       aktion: "roundtrip",
-      engine: "Bitseed Engine v1",
+      engine: "Bitseed Engine v2",
       verlustfrei: r.bit_exakt,
       pruefe_selbst: "SHA-256 deiner Eingabe muss mit sha256_eingabe übereinstimmen; sha256_ausgabe muss gleich sein (bit-exakt).",
       ergebnis: r,
