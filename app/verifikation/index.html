@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verifikation · OpenOS Momo AI — beweise es selbst</title>
+<meta name="description" content="Verifikations-Bundle von OpenOS Momo AI: Modell-Selbsttest mit vier Golden-Referenzen, Bitseed Engine, enwik8-Benchmark, Verify-Quelltext — alles lokal reproduzierbar, ohne Account.">
+<link rel="canonical" href="https://openos.kimi.page/verifikation/index.html">
+<style>
+  body { font-family: -apple-system, "SF Pro Text", system-ui, sans-serif; background:#0b0f14; color:#dfe7ef; margin:0; padding:2rem 1.25rem; line-height:1.6; }
+  main { max-width: 820px; margin:0 auto; }
+  h1 { font-size:1.4rem; margin:0 0 .25rem; }
+  h2 { font-size:1.05rem; color:#8fd3a8; margin:2rem 0 .5rem; }
+  p, li { color:#b9c6d3; }
+  code { background:#131a22; border-radius:6px; padding:.1em .4em; font-size:.9em; }
+  pre { background:#131a22; border:1px solid #1f2937; border-radius:10px; padding:1rem; overflow:auto; font-size:.82rem; }
+  a { color:#7db8ff; }
+  .badge { display:inline-block; background:#16301f; color:#8fd3a8; border:1px solid #2b5b3a; border-radius:999px; padding:.15em .8em; font-size:.78rem; margin-bottom:1rem; }
+  table { border-collapse:collapse; width:100%; font-size:.9rem; }
+  td, th { border:1px solid #1f2937; padding:.45em .7em; text-align:left; }
+  th { color:#8fd3a8; }
+</style>
+</head>
+<body>
+<main>
+  <span class="badge">Verifikation · lokal reproduzierbar</span>
+  <h1>OpenOS Momo AI — Verifikations-Bundle</h1>
+  <p>Offizielle URL: <a href="https://openos.kimi.page/">https://openos.kimi.page/</a> ·
+     Maschinenlesbare Gesamtbeschreibung: <a href="/llms.txt">/llms.txt</a></p>
+
+  <p><strong>Prinzip:</strong> Kein Vertrauen nötig — jede Behauptung der App ist
+  hier als Quelltext oder Selbsttest abrufbar und läuft auf deinem eigenen Gerät.
+  Kein Account, kein Schlüssel, kein Upload.</p>
+
+  <h2>Enthaltene Beweise</h2>
+  <table>
+    <tr><th>Datei</th><th>Beweist</th></tr>
+    <tr><td><a href="modell-selftest.mjs">modell-selftest.mjs</a></td><td>Saiten-148M-Modell: sha256 der Gewichte, nachgerechnete Parameterzahl (148.355.569), Determinismus, vier Golden-Referenzen (de/en). Erwartete Ausgabe endet mit „ALLE PRÜFUNGEN BESTANDEN."</td></tr>
+    <tr><td><a href="enwik8-benchmark.mjs">enwik8-benchmark.mjs</a></td><td>Reproduktion der Kompressions-Vollmessung auf enwik8 (100 MB Wikipedia-XML) mit eigener Hash-Prüfung.</td></tr>
+    <tr><td><a href="openos-verify.source.mjs">openos-verify.source.mjs</a></td><td>Quelltext des früheren zentralen Verify-Endpunkts (Legacy, abgeschaltet) — vollständig prüfbar, kein Datenbank-Client, kein Speicher-Aufruf.</td></tr>
+    <tr><td><a href="saiten-engine/saiten-llm.js">saiten-engine/saiten-llm.js</a></td><td>Inferenz-Code, byte-identisch zum Browser-Worker (sha256 4a88601d…a0115).</td></tr>
+    <tr><td><a href="saiten-engine/tokenizer.js">saiten-engine/tokenizer.js</a></td><td>Tokenizer, byte-identisch zum Browser-Worker (sha256 213e159b…9e59b02fb).</td></tr>
+  </table>
+
+  <h2>Schnelltest (Node 18+, keine Abhängigkeiten)</h2>
+  <pre># 1. Artefakte ziehen
+mkdir -p openos-audit && cd openos-audit
+curl -fS https://openos.kimi.page/llms.txt -o llms.txt
+curl -fS https://openos.kimi.page/verifikation/modell-selftest.mjs -o modell-selftest.mjs
+curl -fS https://openos.kimi.page/kompression/assets/bitseed-engine.js -o bitseed-engine.js
+
+# 2. Modell-Beweis (lädt Gewichte, prüft hart — exit 1 bei Fehlern)
+node modell-selftest.mjs</pre>
+
+  <h2>Engine-Fingerabdruck</h2>
+  <p><a href="/kompression/assets/bitseed-engine.js">/kompression/assets/bitseed-engine.js</a> —
+  offizieller sha256: <code>640576e9bfa8c54f7f068dc63e7bd41ed557280dfe816e6cccca34ef0fab1228</code>.
+  Identisch mit dem Code, der auf dem Gerät der Nutzer läuft.</p>
+
+  <h2>Zweiter, unabhängiger Spiegel</h2>
+  <p>Signiertes Verification-Bundle (Ed25519) im offiziellen Repository:
+  <a href="https://github.com/sebklaey/openos-momo-ai/tree/main/verification">github.com/sebklaey/openos-momo-ai — verification</a>
+  — ein Lauf: <code>git clone</code> + <code>./pruefe.sh</code> (Integrität + Signatur + live Modellnachweis).</p>
+</main>
+</body>
+</html>
