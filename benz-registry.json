@@ -1,6 +1,6 @@
 {
-  "payload": "{\"version\":1,\"updated\":\"2026-11-06T17:15:11.465Z\",\"names\":{\"openos.benz\":{\"cid\":\"QmXvKh14KVssmSjNmJzoSZqrbjrDqzMT6NDkEfVJPRec4z\",\"updated\":\"2026-11-06T17:15:11.464Z\"},\"www.openos.benz\":{\"cid\":\"QmVazDTWftPn5VieGaCythZ5ehw1YYekVuo1SyNCFFeW7a\",\"updated\":\"2026-11-06T11:05:39.990Z\"}}}",
-  "signature": "D5pmtwOh0h9LPWvVC2he_bhcvwCEV855m_rVJgciBrUlgbk8I1dGfn3nOxvGB9BykZb1olWPznSBc-Q1rGPVDw",
+  "payload": "{\"version\":1,\"updated\":\"2026-11-06T17:26:48.425Z\",\"names\":{\"openos.benz\":{\"cid\":\"Qmd2CxpGAhn9pGTwENdy2AyRYJM5L7M2H9NEkYcw39QJYp\",\"updated\":\"2026-11-06T17:26:48.425Z\"},\"www.openos.benz\":{\"cid\":\"QmVazDTWftPn5VieGaCythZ5ehw1YYekVuo1SyNCFFeW7a\",\"updated\":\"2026-11-06T11:05:39.990Z\"}}}",
+  "signature": "mSn4Xvb44--8nvIIyxXbvdrQxuWyueljWI0uBXysKxeEYMIPahKHP4e1zGQJIKpyroox1il95VYgwhWEnjWIBw",
   "signer": "benz-registry-v1",
   "publicKey": "ZPS4pqVS2dan2AvuJICqhN4iESGpFKBraEoHou01Wd8"
 }

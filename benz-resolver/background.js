@@ -25,6 +25,48 @@ const GATEWAYS = {
 };
 const DEFAULT_GATEWAY_KEY = "dweb";
 
+/* Legacy-Domains der Vorsysteme (app.openos.space, openos.space,
+ * sebklaey.com/app/space): ungültig, veraltet, nicht mehr betrieben.
+ * Die Extension leitet sie fest auf die einzige offizielle Adresse
+ * um — unabhängig vom Registry-Stand, statisch, ohne Netz.
+ * IDs ab 9000, damit die Registry-Regeln (1..999) sie nie löschen. */
+const LEGACY_DOMAENEN = [
+  "app\\.openos\\.space",
+  "openos\\.space",
+  "sebklaey\\.com",
+  "sebklaey\\.app",
+  "sebklaey\\.space"
+];
+const LEGACY_ID_BASIS = 9000;
+
+async function installiereLegacyRegeln() {
+  const bestehend = await chrome.declarativeNetRequest.getDynamicRules();
+  const vorhanden = new Set(bestehend.filter(r => r.id >= LEGACY_ID_BASIS).map(r => r.id));
+  const regeln = [];
+  let id = LEGACY_ID_BASIS + 1;
+  for (const dom of LEGACY_DOMAENEN) {
+    // Zwei Regeln pro Domain: Apex und www — sauberste RE2-kompatible Form.
+    for (const voll of [dom, `www\\.${dom}`]) {
+      if (vorhanden.has(id)) { id++; continue; }
+      regeln.push({
+        id: id++,
+        priority: 2,
+        condition: {
+          regexFilter: `^https?://${voll}(?::\\d+)?(/.*)?$`,
+          resourceTypes: ["main_frame", "sub_frame"]
+        },
+        action: {
+          type: "redirect",
+          redirect: { regexSubstitution: "https://openos.benz\\1" }
+        }
+      });
+    }
+  }
+  if (regeln.length) {
+    await chrome.declarativeNetRequest.updateDynamicRules({ removeRuleIds: [], addRules: regeln });
+  }
+}
+
 let verifyKey = null;
 async function ladeVerifyKey() {
   if (verifyKey) return verifyKey;
@@ -76,7 +118,7 @@ async function gatewayUrl() {
 async function wendeRegelnAn(names, gateway) {
   const bestehend = await chrome.declarativeNetRequest.getDynamicRules();
   await chrome.declarativeNetRequest.updateDynamicRules({
-    removeRuleIds: bestehend.map(r => r.id), addRules: []
+    removeRuleIds: bestehend.filter(r => r.id < LEGACY_ID_BASIS).map(r => r.id), addRules: []
   });
   if (!names) return;
   const regeln = [];
@@ -125,10 +167,12 @@ async function refresh() {
 }
 
 chrome.runtime.onInstalled.addListener(() => {
-  refresh();
-  chrome.alarms.create("benz-refresh", { periodInMinutes: REFRESH_MINUTES });
+  installiereLegacyRegeln().finally(() => {
+    refresh();
+    chrome.alarms.create("benz-refresh", { periodInMinutes: REFRESH_MINUTES });
+  });
 });
-chrome.runtime.onStartup.addListener(refresh);
+chrome.runtime.onStartup.addListener(() => { installiereLegacyRegeln().finally(refresh); });
 chrome.alarms.onAlarm.addListener(a => { if (a.name === "benz-refresh") refresh(); });
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area === "local" && (changes.gateway || changes.customGateway)) refresh();
