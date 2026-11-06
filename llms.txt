@@ -152,21 +152,68 @@ OpenOS Momo AI enthält ein vollständiges, local-first Social-Network.  Jede Ne
 
 Unterbau (Module unter features/momo-network-social/): network-store, presence-core, relationship-memory, relevance-engine, relationship-products, activity-bridge, network-intelligence, delivery-engine, momo-surface, network-sync, suggests-studio, credits. Mobile Dock-Schnellnavigation auf kleinen Bildschirmen. KI-lesbarkeit: Die Presence ist bewusst für Menschen und KI-Systeme lesbar; Netzwerk-Inhalte folgen denselben ai-*- und llms.txt-Transparenzregeln wie die App selbst.
 
+## Login & Identität — serverlos, ohne Drittanbieter
+
+OpenOS Momo AI verwendet KEIN E-Mail-Login, KEIN Supabase-Auth, KEINEN
+Login-Server und ist von keiner zentralen Instanz abhängig — nicht von der
+SEBKLAEY Agency, nicht von Supabase, nicht von irgendeinem Anbieter:
+
+- **Identität entsteht im Gerät**: Beim Erstellen eines Kontos erzeugt das
+  Gerät ein ECDSA-Schlüsselpaar (P-384, CNSA 2.0), dessen privater Schlüssel
+  NON-EXTRACTABLE im Geräte-Keystore gespeichert wird — unlöschbar, nie
+  exportierbar. Dazu ein universelles Handle und ein 6-stelliger PIN.
+- **Die PIN verlässt das Gerät nie.** Es existiert keine Stelle, an die sie
+  gesendet werden könnte: Aus ihr wird lokal per PBKDF2 (HMAC-SHA-384,
+  310.000 Iterationen) ein Verifizierer + ein Sitzungs-HMAC-Secret
+  abgeleitet; die Sitzung wird lokal signiert und lokal geprüft.
+- **Login = komplett lokal.** Kein Netz nötig, kein Server im Pfad, kein
+  Abmelden bei Offline. Session 30 Tage, lokal verlängerbar.
+- **Datenbank im Gerät**: Profil, Geräte, API-Keys und Credits leben lokal
+  (openos-db-v1, pro User) — dieselbe API-Oberfläche wie bisher, aber kein
+  Supabase-Client mehr im Antwortpfad.
+- **Dezentrales Handle-Verzeichnis**: Einzigartigkeit des Handles wird über
+  eine öffentliche IPFS-Pinnwand bestätigt — selbst-authentisierende Karten
+  (Handle + öffentlicher Schlüssel + Zeitstempel, P-384-signiert; fremde
+  Signaturen werden verworfen, keine PIN-/Persönlichen Daten im Verzeichnis).
+  Die App hängt nicht davon ab: Ist das Verzeichnis nicht erreichbar, wird
+  lokal registriert und die Karte später nachgereicht (best-effort).
+  Öffentlich: /auth/registry (auch IPFS-gepinnt, von jedem Knoten hostbar).
+- **Recovery-Phrase & Gerätewechsel**: Bei der Registrierung erhält der Nutzer
+  eine einmalig angezeigte Phrase aus 16 Wörtern (128 Bit). Aus ihr wird lokal
+  ein Recovery-Schlüssel abgeleitet; sein privater P-384-Schlüssel wird SOFORT
+  mit AES-256-GCM verschlüsselt und verworfen — die App kann ihn nie roh
+  exportieren. Das Recovery-Bundle ist öffentlich abrufbar (nur Handle →
+  Ciphertext), aber nur die 16 Worte öffnen es. Auf einem neuen Gerät genügt
+  Handle + Phrase + neuer PIN: Das Bundle wird entschlüsselt (transient),
+  ein neuer Geräteschlüssel erzeugt und die Karte-Rotation signiert — dieselbe
+  Identität, neue PIN, neues Gerät. Der Server speichert KEINE PIN-, Salt- oder
+  persönlichen Daten; Rotationen ohne gültige Altsignatur werden mit 409
+  abgelehnt (der alte Geräteschlüssel verliert nach einer Rotation sein Recht).
+- **Dezentraler Sync**: Workspace und Credit-Ledger werden clientseitig mit
+  AES-256-GCM verschlüsselt (Sync-Key per HKDF-SHA-384 aus dem PIN-gebundenen
+  Session-Secret abgeleitet, nie übertragen) und als Blob auf dem offenen
+  IPFS-Sync-Raum abgelegt: PUT /sync/<userId> (Schreib-Schutz: SHA-256-Hash des
+  Sync-Keys, beim ersten PUT hinterlegt; fremde Hashes → 403), GET offen
+  (nur Ciphertext). Kein Supabase, kein Dritter im Pfad.
+
 ## Preise und Credit-Abrechnung
 
-1 Credit kostet USD 0,009.
-- 1.000 Credits: USD 9
-- 5.000 Credits: USD 39
-- 25.000 Credits: USD 149
+1 Credit = 1 Satoshi = 0,00000001 BTC — kein Paket, kein Kurs, keine
+Währungsrechnung, kein Stripe: Der Nutzer sendet eine beliebige Anzahl
+Satoshis direkt an die offizielle OpenOS-Bitcoin-Adresse
+(bc1q0j99ljf7sp96gdr7knd5sepw48pfr6a94h58a9) und erhält genau dieselbe
+Anzahl Credits. Zahlungseingang wird über öffentliche Blockchain-Inspektion
+(mempool.space — nur Adresse und Betrag, keine Nutzerdaten) erkannt; die
+Gutschrift ins lokale Ledger ist idempotent (TxID-Referenz).
 
-Verbrauch:
+Verbrauch (Einheitstarif — jede Funktion kostet 1 Credit):
 - Momo Chat: 1 Credit pro Antwort
-- Kompression: 40 Credits pro GB, mindestens 1 Credit pro Vorgang
+- Kompression: 1 Credit pro GB, mindestens 1 Credit pro Vorgang
 - Dekompression: 0 Credits
-- Projekte: 40 Credits pro GB
-- Eigene Dateien: 40 Credits pro GB
-- Artifacts / Work Surface: 40 Credits pro GB
-- Cloud-Sync: 40 Credits pro GB
+- Projekte: 1 Credit pro GB
+- Eigene Dateien: 1 Credit pro GB
+- Artifacts / Work Surface: 1 Credit pro GB
+- Cloud-Sync: 1 Credit pro GB
 - Geplant: 1 Credit pro Eintrag
 - App Store: 1 Credit pro Eintrag
 
