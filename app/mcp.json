@@ -1,0 +1,101 @@
+{
+  "mcp": {
+    "name": "openos-momo-ai",
+    "title": "OpenOS Momo AI — Kompression, Chat und Datenanalyse (lokal-first)",
+    "version": "2.0.0",
+    "protocol": "Model Context Protocol (Werkzeug-Semantik; Ausführung lokal-first)",
+    "officialUrl": "https://openos.kimi.page/",
+    "manifestUrl": "https://openos.kimi.page/mcp.json",
+    "documentationUrl": "https://openos.kimi.page/mcp/index.html",
+    "machineReadableSiteDescription": "https://openos.kimi.page/llms.txt",
+    "provider": {
+      "name": "SEBKLAEY© Agency (Sebastian Kläy)",
+      "country": "CH",
+      "principle": "Privacy by Architecture — not a promise."
+    },
+    "transport": {
+      "type": "local-first",
+      "summary": "Es gibt bewusst keinen zentralen POST-/mcp-Server. Die drei Werkzeuge werden auf dem Gerät des Aufrufers ausgeführt — entweder über das JavaScript-SDK (Browser oder Node 18+) oder innerhalb der installierten PWA. Dieses Manifest spezifiziert die Werkzeugliste und Schemata nach MCP-Konventionen, damit KI-Clients die Semantik maschinell lesen können.",
+      "sdk": "https://openos.kimi.page/momo-sdk.js",
+      "sdkUsage": "const momo = await MomoAI.create(); await momo.compress(bytes); await momo.decompress(archive); await momo.chat(text);",
+      "pwa": "https://openos.kimi.page/"
+    },
+    "tools": [
+      {
+        "name": "bitseed_compress",
+        "description": "Verlustfreie Kompression mit der Bitseed Engine v4 (adaptive Kontextmodelle 0/1/2/3/4/6, LZP-Match, Perzeptron-Mischer, APM, binäre arithmetische Residual-Kodierung). Rechnet vollständig auf dem Gerät; jede Ausgabe trägt einen SHA-256-Fingerabdruck der Eingabe.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "data_base64": { "type": "string", "contentEncoding": "base64", "description": "Eingabedaten (verlustfrei komprimierbar; Zufallsdaten werden bestenfalls marginal kleiner)." },
+            "name": { "type": "string", "description": "Optionaler Dateiname für Metadaten." }
+          },
+          "required": ["data_base64"]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "archive_base64": { "type": "string", "contentEncoding": "base64" },
+            "archiveBytes": { "type": "integer" },
+            "ratio": { "type": "number", "description": "Archivgrösse / Eingabegrösse" },
+            "sha256": { "type": "string", "description": "SHA-256 der Eingabedaten — zur bit-exakten Verifikation nach Dekompression." },
+            "engine": { "type": "string", "enum": ["wasm", "js"] }
+          }
+        },
+        "sdkMapping": "momo.compress(data)"
+      },
+      {
+        "name": "bitseed_decompress",
+        "description": "Dekompression eines Bitseed-Archivs, bit-exakt. Der zurückgelieferte SHA-256 muss mit dem Wert aus bitseed_compress übereinstimmen.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "archive_base64": { "type": "string", "contentEncoding": "base64" }
+          },
+          "required": ["archive_base64"]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "data_base64": { "type": "string", "contentEncoding": "base64" },
+            "bytes": { "type": "integer" },
+            "sha256": { "type": "string" },
+            "engine": { "type": "string", "enum": ["wasm", "js"] }
+          }
+        },
+        "sdkMapping": "momo.decompress(archive)"
+      },
+      {
+        "name": "momo_chat",
+        "description": "Chat mit Momo AI (Saiten-148M: 148M Parameter, Wort-Ebene, Deutsch + Englisch, on-device im WebWorker/Node). Lädt die Gewichte (142 MB) einmalig und hält sie im Speicher. Sessions pro key, Kontextfenster 512.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "message": { "type": "string", "description": "Nachricht des Nutzers (deutsch oder englisch)." },
+            "key": { "type": "string", "description": "Session-Schlüssel (Standard 'main')." },
+            "temperature": { "type": "number", "minimum": 0.05, "maximum": 1.0 },
+            "maxBytes": { "type": "integer", "description": "Ziel-Länge der Antwort in Bytes (ca. 40–160 Tokens)." }
+          },
+          "required": ["message"]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "text": { "type": "string" },
+            "stats": { "type": "object", "properties": { "tokens": { "type": "integer" }, "modell": { "type": "string" } } }
+          }
+        },
+        "sdkMapping": "momo.chat(message, opts)"
+      }
+    ],
+    "verification": {
+      "summary": "Jede Behauptung ist lokal reproduzierbar — ohne Account, ohne Schlüssel.",
+      "llms": "https://openos.kimi.page/llms.txt",
+      "engineFingerprint": "https://openos.kimi.page/kompression/assets/bitseed-engine.js (sha256 640576e9bfa8c54f7f068dc63e7bd41ed557280dfe816e6cccca34ef0fab1228)",
+      "verificationBundle": "https://github.com/sebklaey/openos-momo-ai/tree/main/verification (signiert, Ed25519)"
+    },
+    "legacy": {
+      "note": "Der frühere zentrale MCP-Endpunkt (POST /mcp, OAuth 2.0, API-Keys osk_live_…) der Instanz app.openos.space ist abgeschaltet. Quelltexte öffentlich: /verifikation/openos-verify.source.mjs."
+    }
+  }
+}

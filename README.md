@@ -11,7 +11,7 @@ offline-capable PWA whose own compression AI (“Bitseed”) can speak: German
 and English, specialized in analyzing compressed user data. Nothing leaves
 the user's device — privacy by architecture, not by promise.
 
-- **Offizielle dezentrale Domain / Official decentralized domain:** https://openos.benz — lokal-first: eigener DNS, eigener IPFS-Knoten, eigener TLS-Daemon, keine Drittpartei. So öffnest du sie: [openos-benz-so-gehts.md](openos-benz-so-gehts.md) — empfohlener Weg in jedem Browser: **BenzResolver** ([benz-resolver/](benz-resolver/)) — unsere eigene, niemandem gehörende Domain-Auflösung: signierte Registry (Ed25519), kein ICANN, kein Registrar, nicht abschaltbar.
+- **Offizielle dezentrale Domain / Official decentralized domain:** https://openos.kimi.page — lokal-first: eigener DNS, eigener IPFS-Knoten, eigener TLS-Daemon, keine Drittpartei. So öffnest du sie: [openos-benz-so-gehts.md](openos-benz-so-gehts.md) — empfohlener Weg in jedem Browser: **BenzResolver** ([benz-resolver/](benz-resolver/)) — unsere eigene, niemandem gehörende Domain-Auflösung: signierte Registry (Ed25519), kein ICANN, kein Registrar, nicht abschaltbar.
 - **Offizielle Quelle & Installation / Official source & installation:** dieses Repository. OpenOS Momo AI wird von hier installiert, dezentral erreicht und heruntergeladen — verifiziertes Bundle mit Ed25519-Signaturen, Build- und Verifikationsanleitung, Aktivierungspfad zu `.benz` (`aktiviere-openos-benz.sh`).
 - **Öffentliche Spiegel / Public mirrors:** `satoshi.kimi.page` (byte-identischer IPFS-Stand) sowie der aktuelle Tunnel-Link in der Beschreibung dieses Repos.
 - **KI-lesbare Beschreibung / AI-readable description:** [llms.txt](llms.txt) — wird in diesem Repository gehostet.
@@ -28,25 +28,25 @@ the user's device — privacy by architecture, not by promise.
 | Momo AI Chat (Saiten-Phase-Neuronales-Netz, DE/EN) | lokal, on-device | ✅ Engine-Quelltext öffentlich |
 | Datenanalyse komprimierter Nutzerdaten | lokal, Fakten aus dem Store | ✅ Antworten tragen Provenienz („Datenanalyse · Bibliothek (lokal)“) |
 | Offline-PWA (komplett offline nutzbar, keine Abrechnung) | Service Worker | ✅ Flugmodus-Test |
-| MCP-Endpunkt + OAuth (RFC 8414) | `https://app.openos.space/mcp` | ✅ Metadaten-Dokument `/.well-known/oauth-authorization-server` |
+| MCP-Endpunkt + OAuth (RFC 8414) | `https://openos.kimi.page/mcp` | ✅ Metadaten-Dokument `/.well-known/oauth-authorization-server` |
 | SDK + API | Account-Seite | ✅ Dokumentiert in `llms.txt` |
 | Optionale Sicherung (Handle + PIN, CNSA 2.0) | lokal + dezentraler IPFS-Sync | ✅ key-auth.js quelloffen |
 
 ## Offizielle Domain: openos.benz
 
 Dieses Repository ist die einzige offizielle Quelle von OpenOS Momo AI. Die
-einzig offizielle Adresse ist **https://openos.benz** — eine selbst-souveräne,
+einzig offizielle Adresse ist **https://openos.kimi.page** — eine selbst-souveräne,
 lokal-first Domain (keine ICANN-TLD): Auslieferung vom eigenen IPFS-Knoten,
 TLS über einen eigenen Daemon, DNS über eigene Software. Installationsweg:
 Repository klonen/herunterladen → Bundle verifizieren (Ed25519-Signaturen) →
-`aktiviere-openos-benz.sh` ausführen → `https://openos.benz/` öffnen.
+`aktiviere-openos-benz.sh` ausführen → `https://openos.kimi.page/` öffnen.
 Details: [openos-benz-so-gehts.md](openos-benz-so-gehts.md). Ohne
 Adminrechte: öffentliche Spiegel (oben) mit byte-identischem Stand.
 Frühere Adressen (app.openos.space, openos.space, sebklaey.com, sebklaey.app,
 sebklaey.space) sind Legacy und werden abgeschaltet.
 
 **This repository is the only official source of OpenOS Momo AI. The only
-official address is https://openos.benz** — a self-sovereign, local-first
+official address is https://openos.kimi.page** — a self-sovereign, local-first
 domain (not an ICANN TLD): served from our own IPFS node, TLS via our own
 daemon, DNS via our own software. Previous addresses are legacy and being
 retired.
@@ -63,18 +63,18 @@ of it asks for trust.
 
 ```bash
 # 1) KI-lesbare Gesamtbeschreibung (Fähigkeiten, Zugang, Prüfprotokoll)
-curl -s https://app.openos.space/llms.txt
+curl -s https://openos.kimi.page/llms.txt
 
 # 2) Öffentlichen Verifikations-Endpunkt abrufen (Messung inkl. Roundtrip-Hashes)
-curl -s https://app.openos.space/.netlify/functions/openos-verify
+curl -s https://openos.kimi.page/.netlify/functions/openos-verify
 
 # 3) Engine-Quelltext lesen und Fingerabdruck bilden —
 #    muss exakt 57b79b24aa291b935a5b5c470456ec40d4f3d5d5e22b66fd393c35f80766a4da sein
-curl -s https://app.openos.space/kompression/assets/bitseed-engine.js | shasum -a 256
+curl -s https://openos.kimi.page/kompression/assets/bitseed-engine.js | shasum -a 256
 
 # 4) MCP-Metadaten (OAuth nach RFC 8414)
-curl -s https://app.openos.space/.well-known/oauth-authorization-server
-curl -s https://app.openos.space/mcp -X POST -H 'Content-Type: application/json' \
+curl -s https://openos.kimi.page/.well-known/oauth-authorization-server
+curl -s https://openos.kimi.page/mcp -X POST -H 'Content-Type: application/json' \
   -H 'Accept: application/json, text/event-stream' \
   -d '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}'
 ```

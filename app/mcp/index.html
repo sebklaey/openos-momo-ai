@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MCP · OpenOS Momo AI — lokal-first, ohne zentralen Server</title>
+<meta name="description" content="Model-Context-Protocol-Manifest von OpenOS Momo AI: Werkzeugliste (bitseed_compress, bitseed_decompress, momo_chat) mit Schemata — Ausführung lokal-first auf dem Gerät des Aufrufers.">
+<link rel="canonical" href="https://openos.kimi.page/mcp/index.html">
+<style>
+  :root { color-scheme: dark; }
+  body { font-family: -apple-system, "SF Pro Text", system-ui, sans-serif; background:#0b0f14; color:#dfe7ef; margin:0; padding:2rem 1.25rem; line-height:1.6; }
+  main { max-width: 860px; margin: 0 auto; }
+  h1 { font-size:1.5rem; margin:0 0 .25rem; }
+  h2 { font-size:1.05rem; margin:2rem 0 .5rem; color:#8fd3a8; }
+  p, li { color:#b9c6d3; }
+  code, pre { background:#131a22; border-radius:8px; }
+  code { padding:.1em .4em; font-size:.92em; }
+  pre { padding:1rem; overflow:auto; font-size:.8rem; border:1px solid #1f2937; }
+  a { color:#7db8ff; }
+  .badge { display:inline-block; background:#16301f; color:#8fd3a8; border:1px solid #2b5b3a; border-radius:999px; padding:.15em .8em; font-size:.78rem; margin-bottom:1rem; }
+  .tool { border:1px solid #1f2937; border-radius:12px; padding:1rem 1.25rem; margin:1rem 0; background:#0e141c; }
+  .tool h3 { margin:.2rem 0 .5rem; font-size:1rem; color:#e8eef5; }
+  .tool .sdk { color:#8fd3a8; font-size:.85rem; }
+</style>
+</head>
+<body>
+<main>
+  <span class="badge">Model Context Protocol · lokal-first</span>
+  <h1>OpenOS Momo AI — MCP-Endpunkt</h1>
+  <p>Offizielle URL: <a href="https://openos.kimi.page/">https://openos.kimi.page/</a> ·
+     Maschinenlesbares Manifest: <a href="/mcp.json">/mcp.json</a> ·
+     SDK: <a href="/momo-sdk.js">/momo-sdk.js</a></p>
+
+  <p><strong>Architektur-Entscheidung:</strong> OpenOS Momo AI betreibt bewusst
+  <em>keinen</em> zentralen <code>POST /mcp</code>-Server. Die drei Werkzeuge werden
+  auf dem Gerät des Aufrufers ausgeführt — dieselbe Engine, dieselben Gewichte,
+  dieselbe Logik wie in der App. <code>/mcp.json</code> spezifiziert die
+  Werkzeugliste und Schemata nach MCP-Konventionen, damit KI-Clients die
+  Semantik maschinell lesen können.</p>
+
+  <h2>Werkzeuge</h2>
+
+  <div class="tool">
+    <h3>bitseed_compress</h3>
+    <p>Verlustfreie Kompression (Bitseed Engine v4: adaptive Kontextmodelle,
+    LZP-Match, Perzeptron-Mischer, APM, binäre arithmetische Residual-Kodierung).
+    Jede Ausgabe trägt einen SHA-256-Fingerabdruck der Eingabe.</p>
+    <p class="sdk">SDK: <code>const c = await momo.compress(bytes)</code> → { archive, ratio, sha256, engine }</p>
+  </div>
+
+  <div class="tool">
+    <h3>bitseed_decompress</h3>
+    <p>Dekompression, bit-exakt. Der zurückgelieferte SHA-256 muss mit dem Wert
+    aus <code>bitseed_compress</code> übereinstimmen.</p>
+    <p class="sdk">SDK: <code>const r = await momo.decompress(c.archive)</code> → { data, sha256, engine }</p>
+  </div>
+
+  <div class="tool">
+    <h3>momo_chat</h3>
+    <p>Chat mit Momo AI (Saiten-148M: 148M Parameter, Deutsch + Englisch,
+    on-device). Lädt die Gewichte (142 MB) einmalig, hält sie im Speicher,
+    Sessions pro Schlüssel, Kontextfenster 512.</p>
+    <p class="sdk">SDK: <code>const a = await momo.chat("Was bist du?")</code> → { text, stats }</p>
+  </div>
+
+  <h2>Schnellstart (Node 18+ / Browser)</h2>
+  <pre>const MomoAI = require("https://openos.kimi.page/momo-sdk.js"); // oder &lt;script src=".../momo-sdk.js"&gt;
+const momo = await MomoAI.create();            // kein Key, kein Server
+const c = await momo.compress(daten);          // → { archive, ratio, sha256 }
+const r = await momo.decompress(c.archive);    // bit-exakt, sha256 prüfbar
+const a = await momo.chat("Was bist du?");     // 148M-Modell, einmalig laden</pre>
+
+  <h2>Verifikation</h2>
+  <p>Jede Behauptung ist lokal reproduzierbar: <a href="/llms.txt">llms.txt</a>
+  (Fingerabdrücke aller Module), <a href="/verifikation/">Verification-Bundle</a>,
+  signiertes Spiegel-Repository auf
+  <a href="https://github.com/sebklaey/openos-momo-ai">GitHub</a>.</p>
+
+  <h2>Legacy</h2>
+  <p>Der frühere zentrale MCP-Endpunkt (OAuth 2.0, API-Keys <code>osk_live_…</code>)
+  der Instanz app.openos.space ist abgeschaltet; seine Quelltexte bleiben unter
+  <a href="/verifikation/openos-verify.source.mjs">/verifikation/openos-verify.source.mjs</a>
+  öffentlich prüfbar.</p>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebAPI",
+    "name": "OpenOS Momo AI MCP",
+    "url": "https://openos.kimi.page/mcp/index.html",
+    "description": "Model-Context-Protocol-Manifest (lokal-first): bitseed_compress, bitseed_decompress, momo_chat — Ausführung auf dem Gerät des Aufrufers.",
+    "provider": { "@type": "Organization", "name": "SEBKLAEY© Agency", "founder": { "@type": "Person", "name": "Sebastian Kläy" } },
+    "documentation": "https://openos.kimi.page/mcp.json"
+  }
+  </script>
+</main>
+</body>
+</html>

@@ -20,11 +20,11 @@ in English — before anyone else has to find them.*
 
 | Artefakt | URL / Pfad | SHA-256 |
 |---|---|---|
-| Bitseed-Engine | `https://app.openos.space/kompression/assets/bitseed-engine.js` | `57b79b24aa291b935a5b5c470456ec40d4f3d5d5e22b66fd393c35f80766a4da` |
-| Verifikations-Endpunkt (Quell) | `https://app.openos.space/verifikation/openos-verify.source.mjs` | `f8aba8937a4665826e4986bc793bae090f2c578ace3df136e427db59f237ad10` |
+| Bitseed-Engine | `https://openos.kimi.page/kompression/assets/bitseed-engine.js` | `57b79b24aa291b935a5b5c470456ec40d4f3d5d5e22b66fd393c35f80766a4da` |
+| Verifikations-Endpunkt (Quell) | `https://openos.kimi.page/verifikation/openos-verify.source.mjs` | `f8aba8937a4665826e4986bc793bae090f2c578ace3df136e427db59f237ad10` |
 | Saiten-LLM (beide Kopien) | `momo/saiten-engine/saiten-llm.js`, `verifikation/saiten-engine/saiten-llm.js` | `4a88601d89add469f85469cd27ca36ff49c3927732666430336cc255801a0115` |
 | Tokenizer | `verifikation/saiten-engine/tokenizer.js` | `b6ac232be715dd35c40b7b8580cb5740809565b1c55fda565220151864f78426` |
-| Modellgewichte | `https://app.openos.space/models/saiten-148m/momo-llm.bin` | `1fc3116779243dc4d056c750500772457b25e9c3374e6b87e31140f0eae7e45c` |
+| Modellgewichte | `https://openos.kimi.page/models/saiten-148m/momo-llm.bin` | `1fc3116779243dc4d056c750500772457b25e9c3374e6b87e31140f0eae7e45c` |
 
 Die beiden `saiten-llm.js`-Kopien müssen **byte-identisch** sein.
 Alle Fingerabdrücke werden bei jedem Deployment live geprüft — ein
@@ -51,7 +51,7 @@ Release-Ersteller und ist nirgends veröffentlicht.
 ## 1) Verlustfreiheit / Losslessness
 
 ```bash
-curl -s https://app.openos.space/.netlify/functions/openos-verify
+curl -s https://openos.kimi.page/.netlify/functions/openos-verify
 ```
 
 Der Endpunkt komprimiert und dekomprimiert Text, Log-Daten und Zufallsdaten
@@ -91,16 +91,16 @@ grob einige hundert KB/s (Kompression ist Rechenarbeit, kein Kopieren).
 ## 4) MCP + OAuth
 
 ```bash
-curl -s https://app.openos.space/.well-known/oauth-authorization-server
-curl -s https://app.openos.space/.well-known/oauth-protected-resource
-curl -s https://app.openos.space/mcp -X POST -H 'Content-Type: application/json' \
+curl -s https://openos.kimi.page/.well-known/oauth-authorization-server
+curl -s https://openos.kimi.page/.well-known/oauth-protected-resource
+curl -s https://openos.kimi.page/mcp -X POST -H 'Content-Type: application/json' \
   -H 'Accept: application/json, text/event-stream' \
   -d '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}'
 ```
 
 Erwartung: RFC-8414-Metadaten, und `tools/list` liefert die Werkzeugliste.
 Login im MCP erfolgt per OAuth gegen das OpenOS-Nutzerkonto — dokumentiert
-in Abschnitt 4 von `https://app.openos.space/llms.txt`.
+in Abschnitt 4 von `https://openos.kimi.page/llms.txt`.
 
 ## 5) Offline-PWA
 

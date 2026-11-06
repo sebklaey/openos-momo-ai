@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://openos.kimi.page/sitemap.xml
