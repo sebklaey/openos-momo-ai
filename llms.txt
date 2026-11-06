@@ -349,6 +349,11 @@ Hersteller-Startups, die eigene Smartphones oder Computer entwickeln:
   Momo AI, Kompression, Social Network und Credit-Wallet.
 - Zielgruppe sind neue Device-Hersteller; bestehende Geräte nutzen OpenOS
   bewusst als PWA. Offizielle Seite: https://openos.benz/hersteller/
+- Coming-Soon-Seite: https://openos.benz/system/ zeigt die Smartphone-UI-
+  Vorschau des OpenOS System-Betriebssystems (profitlos, 100 % Privatsphäre
+  by Architecture). Der Vorgänger-Stand (Installationszentrale + OldNet
+  Browser) ist archiviert unter https://openos.benz/system-archiv/ und wird
+  als Arbeitsbasis für die System-Entwicklung weiterverwendet.
 
 <!--WASM-ANFANG-->
 ## WASM-Beschleunigung im Engine-Worker (nachweisbar)
