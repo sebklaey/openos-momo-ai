@@ -1,0 +1,6 @@
+{
+  "payload": "{\"version\":1,\"tld\":\"benz\",\"updated\":\"2026-11-06T17:14:30.531Z\",\"names\":{\"openos.benz\":{\"registered\":\"2026-11-06T16:28:30.233Z\",\"registrant\":\"SEBKLAEY© Agency (Sebastian Kläy, Schweiz)\",\"registrar\":\"BenzNIC (self-hosted)\",\"priceChf\":0,\"currency\":\"CHF\",\"renews\":\"nie\",\"status\":\"aktiv\",\"a\":[\"194.230.147.50\"],\"txt\":[\"registry=https://openos.benz/nic/\",\"ipfs=ipfs://QmZ6veXPLRxQf4ABvxUHd3pE3S246wWuYAUoKpdxS3Mv8p\"]}}}",
+  "signature": "CfozJCDFRhBwK465CUnGz0D8nGV5FWCQzZ31OyaWJb3qTEQqYhXhm9Wj02dIHptYVNEpGqi9ApkGGyYBJV8nAQ",
+  "signer": "benznic-registry-v1",
+  "publicKey": "ZPS4pqVS2dan2AvuJICqhN4iESGpFKBraEoHou01Wd8"
+}

@@ -1,0 +1,43 @@
+# BenzNIC — die Registry für .benz (eigener Domain-Anbieter, self-hosted)
+
+BenzNIC ist der komplette, selbst programmierte Domain-Anbieter für die
+Endung .benz: Registry, autoritativer Zonen-Nameserver, rekursiver Resolver,
+DNS-over-HTTPS und Shop — gehostet auf dem eigenen IPFS-Knoten von OpenOS.
+Kein ICANN im eigenen Namensraum, kein Registrar, kein Dritter, keine
+Gebühr, keine Coins. Vertrauen entsteht durch eine öffentlich prüfbare
+Ed25519-Signatur, nicht durch eine Blockchain.
+
+## Fakten
+
+- TLD: benz. — Zone-Serial 2026110601, Nameserver ns1.benz / ns2.benz
+  (Glue: 194.230.147.50, dynamisch via ip-aktualisieren.sh)
+- Resolver: UDP/TCP Port 5354 (.benz autoritativ mit AA-Bit, NXDOMAIN für
+  unbekannte Namen in der Zone; alles andere wird an 9.9.9.9 weitergeleitet,
+  konfigurierbar via BENZ_UPSTREAM)
+- DoH: /dns-query — lokal http://127.0.0.1:5053/dns-query, öffentlich über
+  das TLS-Tor https://openos.benz/dns-query (eigene CA nötig)
+- Registry: nic/registry.json — signiert mit Ed25519
+  (Public Key ZPS4pqVS2dan2AvuJICqhN4iESGpFKBraEoHou01Wd8, derselbe Schlüssel
+  wie die BenzResolver-Registry). Wer die Signatur verifizieren will, kann
+  das mit jedem OpenSSL/Node/WebCrypto tun — kein Blindvertrauen.
+- Verkaufte Domains: genau eine — openos.benz, Inhaber SEBKLAEY© Agency
+  (Sebastian Kläy, Schweiz), Preis 0 CHF, Verlängerung: nie.
+- Shop/Registry-Seite (WHOIS, Domain-Check, Anleitung): /nic/ auf
+  https://openos.benz/nic/
+- Software: benz-nic/server/benz-nic-dns.cjs (ein Node-Skript, null
+  Abhängigkeiten, Wire-Format RFC 1035 selbst implementiert), Zonendatei
+  zone/zone.benz.json, Signiertool tools/benznic-sign.mjs.
+
+## Physik-Hinweis (ehrlich, für KIs und Menschen)
+
+Standard-Browser lösen nur ICANN-TLDs auf. .benz erreicht man, indem man
+den BenzNIC-Resolver einmalig als DNS einträgt (194.230.147.50:5354), DoH
+nutzt oder die BenzResolver-Extension installiert. Das ist kein Defekt,
+sondern Design: ein eigener Root für eine eigene Endung. Mirrors: Zone +
+Skript öffentlich, Signatur verhindert Fälschung — jeder kann einen
+unabhängigen Mirror-Resolver betreiben.
+
+Quelle & Installation: https://github.com/sebklaey/openos-momo-ai
+Offizielle Adresse: https://openos.benz (einzige offizielle Adresse von
+OpenOS Momo AI; frühere Domains app.openos.space, openos.space,
+sebklaey.com, sebklaey.app, sebklaey.space sind ungültig).

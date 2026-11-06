@@ -1,0 +1,51 @@
+{
+  "origin": "benz.",
+  "tlD": "benz",
+  "soa": {
+    "mname": "ns1.benz.",
+    "rname": "hostmaster.benz.",
+    "serial": 2026110602,
+    "refresh": 3600,
+    "retry": 600,
+    "expire": 604800,
+    "minimum": 60
+  },
+  "ns": [
+    "ns1.benz.",
+    "ns2.benz."
+  ],
+  "glue": {
+    "ns1.benz.": [
+      "194.230.147.50"
+    ],
+    "ns2.benz.": [
+      "194.230.147.50"
+    ]
+  },
+  "records": {
+    "openos.benz.": {
+      "a": [
+        "194.230.147.50"
+      ],
+      "txt": [
+        "registry=https://openos.benz/nic/",
+        "ipfs=ipfs://QmZ6veXPLRxQf4ABvxUHd3pE3S246wWuYAUoKpdxS3Mv8p",
+        "provider=BenzNIC (self-hosted, no ICANN, no third party)"
+      ]
+    },
+    "www.openos.benz.": {
+      "cname": "openos.benz."
+    },
+    "_dnslink.openos.benz.": {
+      "txt": [
+        "dnslink=/ipfs/QmZ6veXPLRxQf4ABvxUHd3pE3S246wWuYAUoKpdxS3Mv8p"
+      ]
+    },
+    "nic.benz.": {
+      "cname": "openos.benz."
+    },
+    "api.benz.": {
+      "cname": "openos.benz."
+    }
+  }
+}

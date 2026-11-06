@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BenzNIC — die Registry für .benz</title>
+<meta name="description" content="BenzNIC: der eigene Domain-Anbieter für .benz — Registry, Nameserver, Resolver und Shop, selbst gehostet auf IPFS. Kein ICANN, kein Dritter, keine Gebühr.">
+<link rel="canonical" href="https://openos.benz/nic/">
+<style>
+  :root { --bg:#0a0c10; --karte:#12151c; --rand:#232833; --txt:#e8eaf0; --dim:#8b93a3; --akzent:#7ee0a3; --warn:#e0b17e; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--txt); font-family:-apple-system,"SF Pro Text",Helvetica,Arial,sans-serif; line-height:1.6; padding:2rem 1rem; }
+  main { max-width:860px; margin:0 auto; }
+  h1 { font-size:1.6rem; letter-spacing:.02em; }
+  h1 .tld { color:var(--akzent); font-family:"SF Mono",Menlo,monospace; }
+  h2 { font-size:1.05rem; margin:2.2rem 0 .7rem; color:var(--akzent); font-family:"SF Mono",Menlo,monospace; letter-spacing:.04em; }
+  p, li { color:var(--dim); font-size:.94rem; }
+  strong { color:var(--txt); }
+  .karte { background:var(--karte); border:1px solid var(--rand); border-radius:12px; padding:1.2rem 1.4rem; margin:.9rem 0; }
+  .mono { font-family:"SF Mono",Menlo,monospace; font-size:.85rem; }
+  .ok { color:var(--akzent); }
+  .warn { color:var(--warn); }
+  table { width:100%; border-collapse:collapse; font-size:.88rem; }
+  td { padding:.42rem .2rem; border-bottom:1px solid var(--rand); vertical-align:top; }
+  td:first-child { color:var(--dim); width:38%; }
+  td:last-child { font-family:"SF Mono",Menlo,monospace; font-size:.82rem; word-break:break-all; }
+  input { background:#0d1016; border:1px solid var(--rand); color:var(--txt); border-radius:8px; padding:.6rem .8rem; font-family:"SF Mono",Menlo,monospace; width:100%; max-width:420px; }
+  button { background:var(--akzent); color:#06210f; border:0; border-radius:8px; padding:.6rem 1.1rem; font-weight:600; cursor:pointer; margin-top:.6rem; }
+  .statuszeile { display:flex; gap:1.4rem; flex-wrap:wrap; margin-top:.8rem; }
+  .statuszeile div { font-size:.8rem; color:var(--dim); }
+  .statuszeile b { display:block; color:var(--txt); font-family:"SF Mono",Menlo,monospace; }
+  a { color:var(--akzent); }
+  .witz { border-left:3px solid var(--akzent); padding:.6rem 1rem; background:#0e1a12; border-radius:0 8px 8px 0; margin:1rem 0; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Benz<span class="tld">.benz</span> — Dein eigener Domain-Anbieter, komplett selbst programmiert.</h1>
+  <p style="margin-top:.5rem">Alles, was ein Domain-Provider tut: <strong>Registry, Zonen-Nameserver, rekursiver Resolver, DNS-over-HTTPS und Shop</strong> — gehostet auf dem eigenen IPFS-Knoten. Kein ICANN im eigenen Namensraum, kein Registrar, kein Unternehmen dazwischen, keine Gebühr, keine Coins. Die Registry ist eine JSON-Datei, signiert mit Ed25519; jeder kann die Signatur prüfen und einen Mirror-Resolver betreiben.</p>
+
+  <div class="statuszeile karte">
+    <div><b id="st-serial">…</b>Zone-Serial</div>
+    <div><b>ns1.benz · ns2.benz</b>Nameserver</div>
+    <div><b id="st-ip">…</b>Glue (A)</div>
+    <div><b id="st-cid">…</b>IPFS Root-CID</div>
+    <div><b id="st-sig" class="warn">prüfe…</b>Registry-Signatur</div>
+  </div>
+
+  <h2>// WHOIS — die einzige verkaufte Domain</h2>
+  <div class="karte">
+    <div class="witz"><p>🏪 <strong>Der Shop hat genau einen Kunden — und der bin ich selbst.</strong> openos.benz wurde am 06.11.2026 von BenzNIC an die SEBKLAEY© Agency verkauft. Preis: 0 CHF. Verlängerung: nie. Widerruf: unmöglich (nur der Schlüsselinhaber kann die Registry neu signieren, und das ist der Inhaber).</p></div>
+    <table id="whois"><tbody><tr><td>Lade Registry…</td><td></td></tr></tbody></table>
+  </div>
+
+  <h2>// Domain-Check</h2>
+  <div class="karte">
+    <input id="check" type="text" placeholder="name.benz" autocomplete="off">
+    <button onclick="pruefen()">Verfügbarkeit prüfen</button>
+    <p id="check-ergebnis" class="mono" style="margin-top:.8rem"></p>
+  </div>
+
+  <h2>// .benz auf deinem Gerät auflösen (einmalig, ~30 Sekunden)</h2>
+  <div class="karte">
+    <p><strong>Variante A — DNS eintragen (empfohlen):</strong> Trage als DNS-Server <span class="mono ok">194.230.147.50</span> ein — UDP/TCP Port <strong>5354</strong>. Der BenzNIC-Resolver beantwortet alles unter <span class="mono">.benz</span> aus der eigenen Zone und leitet den Rest des Internets 1:1 weiter (Upstream: 9.9.9.9, konfigurierbar). Danach öffnet <span class="mono ok">https://openos.benz</span> wie jede andere Adresse.</p>
+    <p style="margin-top:.5rem"><strong>Variante B — DoH:</strong> <span class="mono">http://194.230.147.50:5053/dns-query</span> (auf Geräten mit BenzNIC-Aktivierung verschlüsselt über <span class="mono">https://openos.benz/dns-query</span>).</p>
+    <p style="margin-top:.5rem"><strong>Variante C — Extension:</strong> BenzResolver (Chrome/Edge/Firefox) aus dem offiziellen Repository — löst <span class="mono">.benz</span> über die signierte Registry auf, kein DNS-Eingriff nötig.</p>
+    <p class="warn" style="margin-top:.8rem">⚠️ HTTPS-Hinweis: Öffentliche Zertifizierer stellen keine Zertifikate für Nicht-ICANN-TLDs aus. Auf eigenen Geräten einmalig das OpenOS-Wurzelzertifikat vertrauen (Skript <span class="mono">aktiviere-openos-benz.sh</span> im Repository) — dann grünes Schloss, Dauerhaft.</p>
+  </div>
+
+  <h2>// Mirror-Resolver betreiben (mach es unkillbar)</h2>
+  <div class="karte">
+    <p>Die gesamte Registry ist <strong>ein signiertes JSON</strong> (<a href="./registry.json">registry.json</a>) plus ein einziges Node-Skript ohne Abhängigkeiten (<span class="mono">benz-nic/server/benz-nic-dns.cjs</span> im Repository). Wer Zone + Skript hostet, betreibt einen vollwertigen Mirror — die Signatur garantiert, dass kein Mirror die Zone fälschen kann. Je mehr Mirrors, desto unabhängiger vom einzelnen Betreiber. Das ist Dezentralität ohne Blockchain, ohne Coins, ohne Hype.</p>
+  </div>
+
+  <h2>// Ehrliche Physik</h2>
+  <div class="karte">
+    <p>Standard-Browser fragen die ICANN-Root-Server — und die kennen <span class="mono">.benz</span> nicht. Diese Registry ist der bewusste Gegenentwurf: ein eigener Root für eine eigene Endung, mit eigener Auflösungs-Software. Ohne Blockchain, weil keine nötig ist: Vertrauen entsteht hier nicht durch teure Konsens-Maschinen, sondern durch <strong>eine Signatur, die jeder prüfen kann</strong>. Wer in diesem Namensraum Adressen nutzen will, wählt ihn einmalig — wie man ein Telefonbuch wählt, das man vertraut. „May the Force be Dezentralised." 🐇</p>
+  </div>
+
+  <p class="mono" style="margin-top:2rem;font-size:.75rem">BenzNIC · SEBKLAEY© Agency · Schweiz · <a href="https://github.com/sebklaey/openos-momo-ai">github.com/sebklaey/openos-momo-ai</a></p>
+</main>
+<script>
+const PUBKEY = "ZPS4pqVS2dan2AvuJICqhN4iESGpFKBraEoHou01Wd8";
+let registry = null;
+
+async function b64uZuBytes(b64) {
+  b64 = b64.replace(/-/g, "+").replace(/_/g, "/");
+  while (b64.length % 4) b64 += "=";
+  return Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+}
+
+(async () => {
+  try {
+    const res = await fetch("./registry.json");
+    registry = await res.json();
+    const payload = JSON.parse(registry.payload);
+    // Ed25519-Signatur live in der Seite verifizieren (WebCrypto)
+    const pub = await crypto.subtle.importKey("raw", await b64uZuBytes(PUBKEY), { name: "Ed25519" }, false, ["verify"]);
+    const ok = await crypto.subtle.verify({ name: "Ed25519" }, pub, await b64uZuBytes(registry.signature), new TextEncoder().encode(registry.payload));
+    document.getElementById("st-sig").textContent = ok ? "gültig ✓" : "UNGÜLTIG ✗";
+    document.getElementById("st-sig").className = ok ? "ok" : "warn";
+    const eintrag = payload.names["openos.benz"];
+    const zoneSerial = "2026110601";
+    document.getElementById("st-serial").textContent = zoneSerial;
+    document.getElementById("st-ip").textContent = (eintrag.a || []).join(" · ") || "—";
+    const ipfs = (eintrag.txt || []).find(t => t.startsWith("ipfs="));
+    document.getElementById("st-cid").textContent = ipfs ? ipfs.slice(5, 20) + "…" : "—";
+    document.title = "BenzNIC — .benz (Signatur " + (ok ? "gültig" : "UNGÜLTIG") + ")";
+    document.getElementById("whois").innerHTML = "<tbody>" + [
+      ["Domain", "openos.benz"],
+      ["Inhaber", eintrag.registrant],
+      ["Registrar", eintrag.registrar],
+      ["Registriert", (eintrag.registered || "").slice(0, 10)],
+      ["Preis", eintrag.priceChf + " " + eintrag.currency],
+      ["Verlängerung", eintrag.renews],
+      ["Status", eintrag.status],
+      ["A-Records", (eintrag.a || []).join(", ")],
+      ["TXT", (eintrag.txt || []).join(" · ")],
+      ["Signatur (Ed25519)", registry.signature.slice(0, 32) + "…"],
+    ].map(r => "<tr><td>" + r[0] + "</td><td>" + r[1] + "</td></tr>").join("") + "</tbody>";
+  } catch (e) {
+    document.getElementById("st-sig").textContent = "Fehler";
+    document.getElementById("whois").innerHTML = "<tbody><tr><td>Registry nicht ladbar</td><td>" + String(e).replace(/[<>]/g, "") + "</td></tr></tbody>";
+  }
+})();
+
+function pruefen() {
+  const el = document.getElementById("check");
+  const aus = document.getElementById("check-ergebnis");
+  let name = el.value.trim().toLowerCase();
+  if (!name) return;
+  if (!name.endsWith(".benz")) name += ".benz";
+  if (!registry) { aus.textContent = "Registry noch nicht geladen."; return; }
+  const payload = JSON.parse(registry.payload);
+  const e = payload.names[name];
+  if (e) {
+    aus.innerHTML = '<span class="warn">✗ ' + name + ' ist vergeben</span> — Inhaber: ' + String(e.registrant).replace(/[<>]/g, "") + " (" + e.priceChf + " " + e.currency + ")";
+  } else {
+    aus.innerHTML = '<span class="ok">✓ ' + name + ' ist in dieser Registry FREI.</span><br>Registrierung: Registry-Operator kontaktieren oder selbst einen BenzNIC-Mirror betreiben — die Software ist öffentlich (github.com/sebklaey/openos-momo-ai, Ordner benz-nic/). Wer die Zone signieren kann, darf Namen vergeben: Hier ist das die SEBKLAEY© Agency. Andere Mirrors = andere Registries = eigene Namensräume. Dezentral heißt: jeder darf einer werden.';
+  }
+}
+</script>
+</body>
+</html>
