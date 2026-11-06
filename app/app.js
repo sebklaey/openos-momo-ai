@@ -4,8 +4,8 @@
  * Das Boot folgt einem einfachen Prinzip: erst das, was der Nutzer sofort
  * sieht, dann der Rest.  Kern-Module schlagen fehl-abgeschlossen (fail
  * closed) — ein kaputter Kern darf nie als fertig durchgehen. Optionale
- * Module (Auth, Push, Cloud) duerfen spaeter nachziehen; sie entscheiden nicht
- * ueber die Bereitschaft des Chat.  So bleibt Momo auch ohne
+ * Module (Auth, Push, Cloud) duerfen spaeter nachziehen; sie entscheiden
+ * nicht ueber die Bereitschaft des Chat.  So bleibt Momo auch ohne
  * Netz, ohne Account und ohne Glueck eine lokal laufende App. */
 (function(ns){
   const viewMeta={
