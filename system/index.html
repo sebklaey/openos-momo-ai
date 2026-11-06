@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OpenOS System — Installationszentrale · openos.benz</title>
+<meta name="description" content="OpenOS Momo AI als Betriebssystem auf jedem Gerät installieren: iPhone (PWA), Android (App + Telefonie), Computer (Desktop-App + Live-System). Inklusive OldNet Browser. Offizielle Domain: openos.benz">
+<meta name="robots" content="index, follow">
+<style>
+:root{
+  --bg:#070a12; --bg2:#0a0e18; --karte:#0d1322; --linie:#1a2338;
+  --text:#e8ecf6; --mute:#8a93ad; --accent:#7ee0c3; --accent2:#9db4ff;
+  --warn:#ffd479;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:radial-gradient(1200px 600px at 70% -10%, #101a30 0%, var(--bg) 55%);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+.wrap{max-width:1060px;margin:0 auto;padding:28px 20px 90px}
+.kopf{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+.kopf h1{font-size:clamp(26px,4vw,40px);letter-spacing:.02em}
+.kopf .marke{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:var(--accent);border:1px solid var(--linie);border-radius:99px;padding:4px 12px;background:#0b1220}
+.unter{color:var(--mute);font-size:15px;margin-bottom:28px;max-width:640px;line-height:1.55}
+.sektion{margin:34px 0 12px}
+.sektion h2{font-size:19px;letter-spacing:.04em;text-transform:uppercase;color:var(--accent2);display:flex;align-items:center;gap:10px}
+.sektion h2::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--linie),transparent)}
+.raster{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:16px}
+.karte{background:linear-gradient(180deg,var(--karte),#0a101d);border:1px solid var(--linie);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:10px;transition:border-color .2s, transform .2s}
+.karte.aktiv{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset,0 8px 30px -18px var(--accent)}
+.karte:hover{transform:translateY(-2px)}
+.karte h3{font-size:16px;display:flex;align-items:center;gap:9px}
+.karte .badge{font-size:11px;color:#04110c;background:var(--accent);border-radius:99px;padding:2px 9px;font-weight:700}
+.karte p{color:var(--mute);font-size:13.5px;line-height:1.55}
+.karte .schritte{list-style:none;display:flex;flex-direction:column;gap:6px;font-size:13.5px;color:#c6cde0}
+.karte .schritte li{display:flex;gap:8px}
+.karte .schritte li::before{content:"→";color:var(--accent);flex:none}
+.knopf{display:inline-flex;align-items:center;justify-content:center;gap:8px;margin-top:auto;padding:11px 16px;border-radius:11px;border:1px solid var(--linie);background:#111a2e;color:var(--text);font-size:14px;font-weight:600;text-decoration:none;cursor:pointer;font-family:inherit;transition:background .15s,border-color .15s}
+.knopf:hover{background:#16223c;border-color:#2a3a5f}
+.knopf.haupt{background:linear-gradient(135deg,#123c31,#0f5c46);border-color:#1d6b52}
+.knopf.haupt:hover{background:linear-gradient(135deg,#16493a,#127058)}
+.knopf[disabled]{opacity:.45;cursor:default}
+.hinweis{font-size:12.5px;color:var(--warn);background:#221a08;border:1px solid #4a3810;border-radius:10px;padding:9px 12px;line-height:1.5}
+/* OldNet Browser */
+.oldnet{margin-top:18px;border:1px solid var(--linie);border-radius:16px;overflow:hidden;background:var(--bg2)}
+.oldnet-leiste{display:flex;align-items:center;gap:8px;padding:10px 12px;background:#0b1120;border-bottom:1px solid var(--linie);flex-wrap:wrap}
+.tab{padding:6px 12px;border-radius:9px;font-size:13px;background:#111a2e;border:1px solid var(--linie);color:var(--mute);cursor:pointer;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:inherit}
+.tab.aktiv{color:var(--text);border-color:#2c3f6b;background:#152039}
+.tab-x{margin-left:6px;color:var(--mute)}
+.tab-plus{padding:6px 11px;border-radius:9px;background:#111a2e;border:1px dashed #2a3a5f;color:var(--accent);cursor:pointer;font-family:inherit;font-size:15px}
+.oldnet-url{flex:1;min-width:200px;display:flex;gap:8px;align-items:center;background:#0a0f1c;border:1px solid var(--linie);border-radius:10px;padding:7px 12px}
+.oldnet-url input{flex:1;background:none;border:0;outline:0;color:var(--text);font-size:14px;font-family:ui-monospace,Menlo,monospace}
+.oldnet-go{background:var(--accent);color:#04110c;border:0;border-radius:8px;padding:8px 14px;font-weight:700;cursor:pointer;font-size:13px;font-family:inherit}
+.oldnet-rumpf{position:relative;height:min(62vh,560px)}
+.oldnet-rumpf iframe{width:100%;height:100%;border:0;background:#fff}
+.oldnet-fehler{position:absolute;inset:0;display:grid;place-items:center;background:#0a0f1c;color:var(--mute);text-align:center;padding:24px;font-size:14px;line-height:1.7}
+.oldnet-fehler a{color:var(--accent)}
+.fuss{margin-top:44px;padding-top:18px;border-top:1px solid var(--linie);color:var(--mute);font-size:12.5px;line-height:1.7;display:flex;flex-direction:column;gap:6px}
+.fuss a{color:var(--accent2);text-decoration:none}
+code{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;background:#0a0f1c;border:1px solid var(--linie);border-radius:6px;padding:2px 6px;color:#c9f5e6}
+@media (max-width:640px){.oldnet-rumpf{height:58vh}.kopf h1{font-size:26px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="kopf">
+    <h1>OpenOS System</h1>
+    <span class="marke">openos.benz/system</span>
+  </div>
+  <p class="unter">
+    Das Installationszentrale von OpenOS Momo AI — ein System für jedes Gerät.
+    Erkannt: <strong id="geraet">…</strong>. Installiere OpenOS als App mit
+    eigenem Icon, als Vollbild-PWA auf dem Telefon — oder als zukünftiges
+    Betriebssystem-Image für deinen Rechner. Alles von
+    <code>openos.benz</code>, alles aus unserem eigenen IPFS-Stand.
+  </p>
+
+  <div class="sektion"><h2>1 · Installieren</h2></div>
+  <div class="raster" id="installRaster">
+
+    <div class="karte" id="karte-ios">
+      <h3> iPhone / iPad <span class="badge">empfohlen</span></h3>
+      <p>Apple sperrt fremde Betriebssysteme — die stärkste Form auf iOS ist
+         die installierte Web-App: Vollbild, eigenes Icon, offline fähig.</p>
+      <ol class="schritte">
+        <li>Diese Seite in <strong>Safari</strong> öffnen</li>
+        <li>Teilen-Knopf antippen (Vierkasten mit Pfeil)</li>
+        <li>„Zum Home-Bildschirm" wählen → „Hinzufügen"</li>
+        <li>Fertig: OpenOS startet wie eine eigene App</li>
+      </ol>
+      <button class="knopf haupt" id="iosInstall" type="button">Installations-Hinweis anzeigen</button>
+    </div>
+
+    <div class="karte" id="karte-android">
+      <h3> Android <span class="badge">empfohlen</span></h3>
+      <p>OpenOS als App (APK) mit Telefonie-Integration und OldNet Browser —
+         plus der langfristige Weg: OpenOS als eigene System-ROM.</p>
+      <ol class="schritte">
+        <li>APK von <code>openos.benz/system/openos.apk</code> laden <em>(erscheint mit Stufe 2)</em></li>
+        <li>Installation erlauben („Unbekannte Quellen")</li>
+        <li>OpenOS starten — Telefon &amp; Browser integriert</li>
+      </ol>
+      <button class="knopf haupt" type="button" disabled>APK folgt (Stufe 2)</button>
+      <div class="hinweis">Bis dahin: „Zum Startbildschirm hinzufügen" im
+      Browser-Menü installiert OpenOS als Vollbild-App — und das
+      <strong>Telefon-Modul</strong> ist bereits fertig: Wählblock, Kontakte
+      und Anrufprotokoll in der App (Account-Menü → Telefon). OpenOS kann sich
+      auf Android sogar als Standard-Wähler für <code>tel:</code>-Links registrieren.</div>
+    </div>
+
+    <div class="karte" id="karte-desktop">
+      <h3> Computer <span class="badge">Windows · macOS · Linux</span></h3>
+      <p>Stufe 1: OpenOS als Desktop-App (Vollbild-Fenster, eigener Start).
+         Fernziel: bootbares OpenOS-Live-System — dein Rechner wird das Gerät.</p>
+      <ol class="schritte">
+        <li>Desktop-App (Tauri) von dieser Seite laden <em>(erscheint mit Stufe 1b)</em></li>
+        <li>Öffnen — OpenOS läuft als eigenes Programm</li>
+        <li>Fernziel: OpenOS-System-Image brennen &amp; booten</li>
+      </ol>
+      <button class="knopf" type="button" disabled>Desktop-App folgt</button>
+      <a class="knopf" href="/openos-benz-so-gehts.md" download>OpenOS-Wurzelzertifikat laden</a>
+    </div>
+
+    <div class="karte" id="karte-hersteller">
+      <h3> Für Gerätehersteller <span class="badge">gratis · lizenzfrei</span></h3>
+      <p>Du baust ein neues Gerät? OpenOS ist als Betriebssystem kostenlos
+         vorinstallierbar — dein Hardware-Team baut um OpenOS herum.
+         Monetarisierung läuft über das Credit-System im System.</p>
+      <ol class="schritte">
+        <li>Device-Programm lesen: Voraussetzungen &amp; Freigabe</li>
+        <li>OpenOS-System-Image auf dein Gerät flashen</li>
+        <li>Fertig: Telefonie, SMS, OldNet &amp; Momo AI ab Werk an Bord</li>
+      </ol>
+      <a class="knopf haupt" href="/hersteller/">OpenOS Device-Programm öffnen</a>
+    </div>
+
+  </div>
+
+  <div class="sektion"><h2>2 · OldNet Browser</h2></div>
+  <p class="unter">Das Internet, direkt aus OpenOS: Tabs, Adresszeile, kein Tracking.
+  Manche Seiten verweigern die Einbettung technisch (X-Frame-Options) — dann
+  öffnet der „Im Tab"-Knopf sie im Browser.</p>
+  <div class="oldnet">
+    <div class="oldnet-leiste" id="tabLeiste">
+      <button class="tab-plus" id="tabPlus" type="button" title="Neuer Tab">+</button>
+      <div class="oldnet-url">
+        <input id="urlInput" type="text" inputmode="url" autocomplete="off"
+               spellcheck="false" placeholder="Adresse eingeben, z. B. example.com">
+        <button class="oldnet-go" id="goBtn" type="button">Los</button>
+      </div>
+      <a class="knopf" id="openTab" href="#" target="_blank" rel="noopener" style="margin:0;padding:8px 13px">Im Tab öffnen</a>
+    </div>
+    <div class="oldnet-rumpf">
+      <iframe id="netFrame" title="OldNet Browser" sandbox="allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox" referrerpolicy="no-referrer"></iframe>
+      <div class="oldnet-fehler" id="netFehler" hidden>
+        <div>Diese Seite erlaubt keine Einbettung — ein Klick genügt:<br><br>
+        <a id="netFehlerLink" href="#" target="_blank" rel="noopener">Seite im eigenen Tab öffnen ↗</a></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fuss">
+    <span>OpenOS System · Stufe 1 — installierbar von <code>openos.benz/system</code> · Inhalt: IPFS Root-CID, siehe <a href="/llms.txt">llms.txt</a></span>
+    <span>Offizielle Quelle: <a href="https://github.com/sebklaey/openos-momo-ai">github.com/sebklaey/openos-momo-ai</a> · SEBKLAEY© Agency, Schweiz</span>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  /* ── Geräte-Erkennung ─────────────────────────────── */
+  var ua = navigator.userAgent;
+  var os = /iPad|iPhone|iPod/.test(ua) || (navigator.platform==="MacIntel" && navigator.maxTouchPoints>1) ? "iOS"
+         : /Android/.test(ua) ? "Android"
+         : /Windows/.test(ua) ? "Windows"
+         : /Mac OS X|Macintosh/.test(ua) ? "macOS" : "Linux";
+  document.getElementById("geraet").textContent = os + (navigator.onLine===false ? " · offline" : "");
+  var aktiv = {"iOS":"karte-ios","Android":"karte-android"}[os] || "karte-desktop";
+  document.getElementById(aktiv).classList.add("aktiv");
+
+  var iosBtn = document.getElementById("iosInstall");
+  iosBtn.addEventListener("click", function(){
+    alert("So installierst du OpenOS auf dem iPhone:\n\n1. Diese Seite in SAFARI öffnen (nicht Chrome)\n2. Teilen-Knopf antippen □↑\n3. „Zum Home-Bildschirm“ wählen\n4. „Hinzufügen“\n\nOpenOS erscheint mit eigenem Icon und startet im Vollbild — auch offline.");
+  });
+
+  /* ── OldNet Browser ───────────────────────────────── */
+  var tabs = [];            /* {titel, url} */
+  var aktiver = -1;
+  var leiste = document.getElementById("tabLeiste");
+  var plus = document.getElementById("tabPlus");
+  var input = document.getElementById("urlInput");
+  var go = document.getElementById("goBtn");
+  var frame = document.getElementById("netFrame");
+  var fehler = document.getElementById("netFehler");
+  var fehlerLink = document.getElementById("netFehlerLink");
+  var openTab = document.getElementById("openTab");
+
+  function norm(u){
+    u = (u||"").trim();
+    if(!u) return "";
+    if(!/^[a-z][a-z0-9+.-]*:\/\//i.test(u) && !/^about:/i.test(u)) u = "https://" + u;
+    return u;
+  }
+  function zeichneTabs(){
+    leiste.querySelectorAll(".tab").forEach(function(t){t.remove()});
+    tabs.forEach(function(tb, i){
+      var d = document.createElement("button");
+      d.className = "tab" + (i===aktiver ? " aktiv" : "");
+      d.type = "button";
+      d.textContent = tb.titel;
+      var x = document.createElement("span");
+      x.className = "tab-x"; x.textContent = "✕";
+      d.appendChild(x);
+      d.addEventListener("click", function(e){
+        if(e.target === x){ schliesseTab(i); return; }
+        waehleTab(i);
+      });
+      leiste.insertBefore(d, plus);
+    });
+  }
+  function lade(i){
+    if(i<0 || i>=tabs.length){ frame.removeAttribute("src"); fehler.hidden = true; input.value=""; openTab.href="#"; return; }
+    aktiver = i;
+    var u = tabs[i].url;
+    input.value = u;
+    openTab.href = u;
+    fehlerLink.href = u;
+    zeichneTabs();
+    if(!u){ frame.removeAttribute("src"); fehler.hidden = true; return; }
+    fehler.hidden = true;
+    frame.src = u;
+  }
+  function neuerTab(url){
+    tabs.push({titel: url ? url.replace(/^https?:\/\//,"").slice(0,22) : "Neuer Tab", url: norm(url)});
+    lade(tabs.length-1);
+  }
+  function schliesseTab(i){
+    tabs.splice(i,1);
+    if(aktiver>=tabs.length) aktiver = tabs.length-1;
+    lade(aktiver);
+  }
+  function waehleTab(i){ lade(i); }
+
+  go.addEventListener("click", function(){
+    var u = norm(input.value);
+    if(!u) return;
+    if(aktiver<0) neuerTab(u);
+    else { tabs[aktiver].url = u; tabs[aktiver].titel = u.replace(/^https?:\/\//,"").slice(0,22); lade(aktiver); }
+  });
+  input.addEventListener("keydown", function(e){ if(e.key==="Enter") go.click(); });
+  plus.addEventListener("click", function(){ neuerTab(""); input.focus(); });
+
+  /* Einbettungs-Blockade erkennen: bleibt das Frame leer, Hinweis zeigen */
+  frame.addEventListener("load", function(){
+    if(aktiver<0) return;
+    fehler.hidden = true;
+    /* Wenn die Seite X-Frame-Options sendet, feuert load teils trotzdem nicht —
+       der Im-Tab-Knopf oben ist immer da als Ausweichweg. */
+  });
+  frame.addEventListener("error", function(){ fehler.hidden = false; });
+
+  /* Starttab: eine kleine Startseite im OldNet */
+  neuerTab("");
+  input.placeholder = "Adresse eingeben …";
+  input.focus();
+})();
+</script>
+</body>
+</html>
