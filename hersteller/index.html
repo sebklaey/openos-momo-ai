@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OpenOS Device-Programm — Gratis-Betriebssystem für Gerätehersteller · openos.benz</title>
+<meta name="description" content="OpenOS: kostenloses, lizenzfreies Betriebssystem für Device-Startups und Smartphone-Hersteller. Vorinstallierbar auf neuer Hardware, GMS-frei, privacy by architecture. Von SEBKLAEY© Agency.">
+<meta name="robots" content="index, follow">
+<style>
+:root{
+  --bg:#070a12; --karte:#0d1322; --linie:#1a2338; --text:#e8ecf6;
+  --mute:#8a93ad; --accent:#7ee0c3; --accent2:#9db4ff; --warn:#ffd479;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:radial-gradient(1100px 560px at 65% -10%, #101a30 0%, var(--bg) 55%);
+  color:var(--text); min-height:100vh;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1020px;margin:0 auto;padding:30px 20px 90px}
+.kopf h1{font-size:clamp(26px,4vw,42px);letter-spacing:.02em}
+.marke{font-family:ui-monospace,Menlo,monospace;font-size:13px;color:var(--accent);border:1px solid var(--linie);border-radius:99px;padding:4px 12px;background:#0b1220;display:inline-block;margin-top:10px}
+.unter{color:var(--mute);font-size:15.5px;margin:16px 0 30px;max-width:680px;line-height:1.6}
+.unter strong{color:var(--text)}
+.sektion{margin:36px 0 12px}
+.sektion h2{font-size:19px;letter-spacing:.04em;text-transform:uppercase;color:var(--accent2);display:flex;align-items:center;gap:10px}
+.sektion h2::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--linie),transparent)}
+.raster{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px;margin-top:16px}
+.karte{background:linear-gradient(180deg,var(--karte),#0a101d);border:1px solid var(--linie);border-radius:16px;padding:20px}
+.karte h3{font-size:15.5px;margin-bottom:9px;display:flex;gap:8px;align-items:center}
+.karte p, .karte li{color:var(--mute);font-size:13.5px;line-height:1.6}
+.karte ul{list-style:none;display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.karte li::before{content:"→";color:var(--accent);margin-right:8px}
+.gratis{font-size:11px;font-weight:700;color:#04110c;background:var(--accent);border-radius:99px;padding:2px 9px}
+.preis{border:1px solid #1d6b52;background:#0f231c;border-radius:16px;padding:22px;margin-top:18px}
+.preis h3{font-size:17px;color:var(--accent);margin-bottom:10px}
+.preis p{color:var(--mute);font-size:14px;line-height:1.65;max-width:700px}
+.preis strong{color:var(--text)}
+code{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;background:#0a0f1c;border:1px solid var(--linie);border-radius:6px;padding:2px 6px;color:#c9f5e6}
+.tabelle{width:100%;border-collapse:collapse;margin-top:14px;font-size:13.5px}
+.tabelle th,.tabelle td{border:1px solid var(--linie);padding:10px 12px;text-align:left;vertical-align:top}
+.tabelle th{background:#0b1120;color:var(--accent2);font-size:12.5px;letter-spacing:.05em;text-transform:uppercase}
+.tabelle td{color:#c6cde0;line-height:1.5}
+.tabelle td:first-child{color:var(--text);font-weight:600;white-space:nowrap}
+.knopf{display:inline-flex;align-items:center;gap:8px;margin-top:16px;padding:12px 20px;border-radius:11px;border:1px solid #1d6b52;background:linear-gradient(135deg,#123c31,#0f5c46);color:#c9f5e6;font-size:14.5px;font-weight:700;text-decoration:none;cursor:pointer}
+.knopf:hover{background:linear-gradient(135deg,#16493a,#127058)}
+.hinweis{font-size:12.5px;color:var(--warn);background:#221a08;border:1px solid #4a3810;border-radius:10px;padding:10px 13px;line-height:1.55;margin-top:14px}
+.fuss{margin-top:44px;padding-top:18px;border-top:1px solid var(--linie);color:var(--mute);font-size:12.5px;line-height:1.7;display:flex;flex-direction:column;gap:6px}
+.fuss a{color:var(--accent2);text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="kopf">
+    <h1>OpenOS Device-Programm</h1>
+    <span class="marke">openos.benz/hersteller</span>
+  </div>
+  <p class="unter">
+    Ein Betriebssystem für die Geräte, die es noch nicht gibt. OpenOS ist
+    <strong>gratis und lizenzfrei</strong> für Device-Startups und
+    Smartphone-Hersteller: baue deine Hardware — wir liefern das komplette
+    System darum herum. Keine Royalties, keine Lizenzverhandlungen, keine
+    Google-Abhängigkeit. Herkömmliche Geräte nutzen OpenOS als PWA;
+    <strong>neue Geräte bekommen es als Betriebssystem.</strong>
+  </p>
+
+  <div class="sektion"><h2>Was Hersteller bekommen</h2></div>
+  <div class="raster">
+    <div class="karte"><h3><span class="gratis">GRATIS</span> Vollständiges System</h3>
+      <p>OpenOS als AOSP-Basis-ROM: System-UI, Telefon (Telefonie + SMS), OldNet Browser,
+      Kamera &amp; Galerie, Bitseed-Kompression, Momo AI (DE/EN) — vorinstalliert,
+      GMS-frei, ohne Google-Dienste.</p></div>
+    <div class="karte"><h3><span class="gratis">GRATIS</span> Device-Tree-Vorlagen</h3>
+      <p>Board-Support-Pakete für gängige SoCs (MediaTek, Qualcomm, Unisoc),
+      Treiber-Integration nach Treble/VNDK-Standard, Build-Pipelines,
+      Signier-Werkzeuge.</p></div>
+    <div class="karte"><h3><span class="gratis">GRATIS</span> Marke &amp; Story</h3>
+      <p>„Powered by OpenOS"-Kennzeichnung, Presse-Paket, Eintrag im
+      OpenOS-Geräte-Index. Die SEBKLAEY-Story (Privacy by Architecture,
+      Schweiz, Cypherpunk) trägt dein Marketing mit.</p></div>
+    <div class="karte"><h3><span class="gratis">GRATIS</span> Updates &amp; Sicherheit</h3>
+      <p>Monatliche Sicherheitsstände aus dem OpenOS-Zweig, Over-the-Air-Update-
+      Infrastruktur als Referenzimplementierung, langer Support-Zweig.</p></div>
+  </div>
+
+  <div class="sektion"><h2>Fair-Deal — so verdient das Ökosystem</h2></div>
+  <div class="preis">
+    <h3>Das OS ist gratis. Das Ökosystem finanziert sich über Credits.</h3>
+    <p>Hersteller zahlen <strong>nichts</strong> — für das System, für Updates,
+    für die Marke. Nutzer:innen kaufen <strong>Credits im System</strong>
+    (Kompression, Speicher, Analysen — 1 Credit = USD 0,009, Abrechnung nach
+    Verbrauch, Kauf über Stripe). Das ist derselbe Deal, mit dem Android
+    gewonnen hat — nur ohne Werbe-Überwachung und ohne Konzern in der Mitte.
+    <strong>Dein Margen bleiben deine.</strong></p>
+  </div>
+
+  <div class="sektion"><h2>Technische Basis</h2></div>
+  <table class="tabelle">
+    <tr><th>Element</th><th>Stand / Anforderung</th></tr>
+    <tr><td>System-Basis</td><td>AOSP / LineageOS-Zweig, GMS-frei, MikroG optional (Herstellerentscheid)</td></tr>
+    <tr><td>Kernel</td><td>SoC-Hersteller-Kernel; <strong>Pflicht: Quellcode-Veröffentlichung (GPL)</strong> — wir zeigen wie</td></tr>
+    <tr><td>System-Apps</td><td>OpenOS-Suite: Telefon, SMS, OldNet, Kamera, Galerie, Kompression, Momo AI, Settings</td></tr>
+    <tr><td>Privatsphäre</td><td>Privacy by Architecture: keine Telemetrie, kein zentraler Account-Zwang, lokale Datenhaltung</td></tr>
+    <tr><td>App-Handel</td><td>OpenOS App Store inklusive; Hersteller können vorinstallierte Apps gegen Credits anbieten</td></tr>
+    <tr><td>Mindestanforderung</td><td>2 GB RAM, 16 GB Speicher, entsperrbarer Bootloader, Treble-fähig empfohlen</td></tr>
+  </table>
+
+  <div class="hinweis">Ehrlichkeit gehört zur Architektur: Die OpenOS-ROM (Stufe 3)
+  befindet sich in aktiver Entwicklung. Startups können sich ab sofort
+  registrieren und erhalten Zugang zum Quellzweig, sobald das erste
+  Referenz-Gerät (OpenOS One) läuft. Herkömmliche Geräte sind davon nicht
+  betroffen — die PWA ist und bleibt gratis für alle.</div>
+
+  <a class="knopf" href="https://github.com/sebklaey/openos-momo-ai/issues/new?title=OpenOS%20Device-Programm%3A%20Interesse%20als%20Hersteller&body=Ger%C3%A4teklasse%3A%0ASoC%3A%0AGeplantes%20Volumen%3A%0AKontakt%3A">Als Hersteller registrieren (GitHub)</a>
+
+  <div class="fuss">
+    <span>OpenOS Device-Programm · offizielle Domain: <code>https://openos.benz</code> · Quelle: <a href="https://github.com/sebklaey/openos-momo-ai">github.com/sebklaey/openos-momo-ai</a></span>
+    <span>SEBKLAEY© Agency, Sebastian Kläy, Schweiz · „May the Force be Dezentralised."</span>
+  </div>
+</div>
+</body>
+</html>
