@@ -195,6 +195,15 @@ SEBKLAEY Agency, nicht von Supabase, nicht von irgendeinem Anbieter:
   IPFS-Sync-Raum abgelegt: PUT /sync/<userId> (Schreib-Schutz: SHA-256-Hash des
   Sync-Keys, beim ersten PUT hinterlegt; fremde Hashes → 403), GET offen
   (nur Ciphertext). Kein Supabase, kein Dritter im Pfad.
+- **Dezentraler Cloud-Speicher (Bibliothek)**: Originaldateien beliebiger
+  Grösse auf dem eigenen IPFS-Speicher ablegen — Upload: 1 Credit pro 1 GB
+  Originalgrösse pro Upload, Download gratis. Ablauf vollständig clientseitig:
+  Bitseed-Kompression (.hyb) → AES-256-GCM-Verschlüsselung (Key per HKDF-SHA-384
+  aus dem P-384-gebundenen Session-Secret, CNSA-2.0-Kette; IV vorangestellt)
+  → PUT /cloud/<userId>/<fileId> (Rate-Limit, 2 GB pro Datei, 100 GB Quota).
+  Der Server sieht nur Ciphertext, speichert keine Namen/Metadaten; Auslieferung
+  über das offene Gateway GET /ipfs/<cid>. Metadaten (CID, Grössen) liegen nur
+  im Gerät (openos-cloud-v1).
 
 ## Preise und Credit-Abrechnung
 
@@ -334,7 +343,7 @@ Prüfbefund ohne Login: Schritte 1, 2 und 5 (401 inkl. www-authenticate-Header) 
 
 - Privacy first: Kompression, Dekompression, Modell-Inferenz und Hash-Kette laufen auf dem Gerät (WebWorker/WebCrypto). Der Netzwerkpfad ist niemals Teil des Antwort- oder Kompressionspfads.
 - Offline-PWA: App-Shell, Kompression, Bibliothek, Projekte und lokale Daten nach Installation ohne Netz nutzbar.
-- Kauf, Cloud-Sync und externe API-Aufrufe benötigen bewusst eine Online-Verbindung.
+- Kauf, Cloud-Sync und externe API Aufrufe benötigen bewusst eine Online-Verbindung.
 - Serverseitige Verifikation (openos-verify) speichert keine Eingaben; der Quelltext ist öffentlich auditierbar (siehe Verifikations-Artefakte oben). Datensensible Prüfer können alles lokal verifizieren: Kompressions-Roundtrip auf /kompression/ im Browser (kein Upload) und Modell-Selbsttest in Node.
 - API-Keys werden serverseitig nur als Hash gespeichert; der Klartext wird einmalig angezeigt.
 - Verbrauchsbuchungen sind idempotent und werden in einem einzigen Wallet geführt.
