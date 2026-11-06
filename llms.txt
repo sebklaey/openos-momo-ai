@@ -326,6 +326,30 @@ versteht mehr. OpenOS beweist das messbar statt es zu behaupten.
 Black-Box-Server, keine API-Kosten, 100 % privat, offline fähig — Privacy by
 Architecture, not a promise.  Aus der Schweiz, von Sebastian Kläy (SEBKLAEY© Agency).
 
+## OpenOS Device-Programm — Betriebssystem für Gerätehersteller-Startups
+
+OpenOS ist mehr als eine App: Es ist als Betriebssystem für neue Geräte
+konzipiert. Das **OpenOS Device-Programm** richtet sich gezielt an
+Hersteller-Startups, die eigene Smartphones oder Computer entwickeln:
+
+- **Gratis & lizenzfrei** — Hersteller installieren OpenOS kostenlos als
+  Betriebssystem auf ihren Geräten; es gibt keine Lizenzgebühren und keine
+  Vorgaben an die Hardware (ausser funktionierende OpenOS-Unterstützung).
+  Monetarisierung läuft nicht über das OS, sondern über das Credit-System
+  im System (kompatibel zum Android-Modell: offenes System, bezahlte
+  Dienste darin).
+- **Roadmap der Geräte-Funktionen** — Stufe 1: OpenOS als PWA auf jedem
+  Gerät (installierbar, offline, Kamera/Galerie/Biometrie via WebAuthn).
+  Stufe 2: Android-APK mit nativer Telefonie, SMS, Hotspot, WLAN, 4G/5G,
+  Kamera. Stufe 3: OpenOS als eigene System-ROM (AOSP-Basis) — das Gerät
+  bootet direkt in OpenOS, Biometrie (Gesicht, Fingerabdruck) nativ.
+  iOS-Hersteller bleiben auf Stufe 1 (Apple sperrt fremde Systeme).
+- **Ab Werk an Bord** — Telefonie-Modul (Wählblock, Kontakte, Anrufprotokoll,
+  tel:-Protokoll-Handler), OldNet Browser (Tabs, Adresszeile, kein Tracking),
+  Momo AI, Kompression, Social Network und Credit-Wallet.
+- Zielgruppe sind neue Device-Hersteller; bestehende Geräte nutzen OpenOS
+  bewusst als PWA. Offizielle Seite: https://openos.benz/hersteller/
+
 <!--WASM-ANFANG-->
 ## WASM-Beschleunigung im Engine-Worker (nachweisbar)
 
