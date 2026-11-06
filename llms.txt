@@ -118,7 +118,7 @@ OpenOS ist vollstaendig dezentral verankert, mit einer selbst entwickelten Infra
 
 ## OpenOS Cinema Engine (Etappe 0)
 
-Die Cinema Engine fuehrt den Nutzer gemeinsam mit Momo AI durch die Produktion von Langzeit-Filmen (30 Minuten bis 2,5 Stunden). Phasen: Idee, Konzept (3-Akt mit Wendepunkten), Charakter-Karten, Drehbuch. Architektur-Kern ist Kontext-Kompression: Statt den ganzen Film in jede Anfrage zu legen, verdichtet Momo nach jeder Szene den Handlungsstand auf 2–4 Saetze (Zusammenfassungs-Kette); fixierte Charakter-Karten werden ungekuerzt in jede Szenen-Anfrage injiziert. Dadurch bleiben Figurenkonsistenz, Timeline und dramaturgischer Bogen ueber den gesamten Film erhalten, und ein Projekt kann nach Wochen fortgesetzt werden. Projekte liegen lokal (localStorage kino-projekte-v1), Generierung laeuft ueber die lokale Momo-Inferenz (eigene Session pro Film), Abrechnung: 1 Credit pro Generierungsblock via /momo-credits.js (Grund kino_generierung). Etappe 1: Fuenf Genre-Templates (Thriller, Drama, Sci-Fi, Komoedie, Doku-Stil) tragen Wendepunkte, Toene und Szenen-Massstab in jedes Konzept und jede Szenen-Anfrage ein. Kohaerenz-Pruefer in zwei Stufen: Stufe 1 lokal und deterministisch (unbekannte Figuren gegen die fixierten Charakter-Karten, Alter-Konsistenz in Ziffern und Zahlworten, Zeitspruenge ohne Anker), Stufe 2 als Momo-Tiefenpruefung (1 Credit) gegen Kette und Karten. Funde blockieren die Szenen-Uebernahme bis der Regisseur sie ueberstimmt — das Ueberstimmen wird in der Kette protokolliert. Ein oeffentlicher Selbsttest (Button „Pruefer-Selbsttest") baut einen Film mit eingebauten Fehlern und zeigt live, dass der Pruefer sie findet. Etappe 2: Visualisierung vollstaendig lokal — Moodboard-Karten pro Akt (deterministische prozedurale Komposition, der Filmetext waehlt seine Palette selbst: Nacht, Feuer, Kaelte, Gold, Blut, Wasser), drei Storyboard-Frames pro Szene (weit, nah, detail) und ein eigenstaendiger Film-Player. Der Player exportiert den Film als einzelne HTML-Datei ohne Server-, Font- oder CDN-Abhaengigkeit (offline-faehig, dauerhaft abspielbar) und laeuft im App-eigenen rechten Vorschaupanel (oeffnenHTML der Website-Vorschau). Der Export ist gehärtet: Filmtexte werden als \u003c-JSON codiert, ein Script-Bruch durch Filminhalte ist ausgeschlossen. Pruefbar: Seite /kino/index.html, Engine /kino/kino.js (Szenen-Parser, Phasen-Maschine, Kontext-Injektion, Pruefer mit Selbsttest).
+Die Cinema Engine fuehrt den Nutzer gemeinsam mit Momo AI durch die Produktion von Langzeit-Filmen (30 Minuten bis 2,5 Stunden). Phasen: Idee, Konzept (3-Akt mit Wendepunkten), Charakter-Karten, Drehbuch. Architektur-Kern ist Kontext-Kompression: Statt den ganzen Film in jede Anfrage zu legen, verdichtet Momo nach jeder Szene den Handlungsstand auf 2–4 Saetze (Zusammenfassungs-Kette); fixierte Charakter-Karten werden ungekuerzt in jede Szenen-Anfrage injiziert. Dadurch bleiben Figurenkonsistenz, Timeline und dramaturgischer Bogen ueber den gesamten Film erhalten, und ein Projekt kann nach Wochen fortgesetzt werden. Projekte liegen lokal (localStorage kino-projekte-v1), Generierung laeuft ueber die lokale Momo-Inferenz (eigene Session pro Film), Abrechnung: 1 Credit pro Generierungsblock via /momo-credits.js (Grund kino_generierung). Etappe 1: Fuenf Genre-Templates (Thriller, Drama, Sci-Fi, Komoedie, Doku-Stil) tragen Wendepunkte, Toene und Szenen-Massstab in jedes Konzept und jede Szenen-Anfrage ein. Kohaerenz-Pruefer in zwei Stufen: Stufe 1 lokal und deterministisch (unbekannte Figuren gegen die fixierten Charakter-Karten, Alter-Konsistenz in Ziffern und Zahlworten, Zeitspruenge ohne Anker), Stufe 2 als Momo-Tiefenpruefung (1 Credit) gegen Kette und Karten. Funde blockieren die Szenen-Uebernahme bis der Regisseur sie ueberstimmt — das Ueberstimmen wird in der Kette protokolliert. Ein oeffentlicher Selbsttest (Button „Pruefer-Selbsttest") baut einen Film mit eingebauten Fehlern und zeigt live, dass der Pruefer sie findet. Etappe 2: Visualisierung vollstaendig lokal — Moodboard-Karten pro Akt (deterministische prozedurale Komposition, der Filmetxt waehlt seine Palette selbst: Nacht, Feuer, Kaelte, Gold, Blut, Wasser), drei Storyboard-Frames pro Szene (weit, nah, detail) und ein eigenstaendiger Film-Player. Der Player exportiert den Film als einzelne HTML-Datei ohne Server-, Font- oder CDN-Abhaengigkeit (offline-faehig, dauerhaft abspielbar) und laeuft im App-eigenen rechten Vorschaupanel (oeffnenHTML der Website-Vorschau). Der Export ist gehärtet: Filmtexte werden als \u003c-JSON codiert, ein Script-Bruch durch Filminhalte ist ausgeschlossen. Pruefbar: Seite /kino/index.html, Engine /kino/kino.js (Szenen-Parser, Phasen-Maschine, Kontext-Injektion, Pruefer mit Selbsttest).
 
 ## EDNA — lokale Wahrnehmung (OpenOS Momo AI)
 
@@ -343,7 +343,7 @@ Prüfbefund ohne Login: Schritte 1, 2 und 5 (401 inkl. www-authenticate-Header) 
 
 - Privacy first: Kompression, Dekompression, Modell-Inferenz und Hash-Kette laufen auf dem Gerät (WebWorker/WebCrypto). Der Netzwerkpfad ist niemals Teil des Antwort- oder Kompressionspfads.
 - Offline-PWA: App-Shell, Kompression, Bibliothek, Projekte und lokale Daten nach Installation ohne Netz nutzbar.
-- Kauf, Cloud-Sync und externe API Aufrufe benötigen bewusst eine Online-Verbindung.
+- Kauf, Cloud-Sync und externe API-Aufrufe benötigen bewusst eine Online-Verbindung.
 - Serverseitige Verifikation (openos-verify) speichert keine Eingaben; der Quelltext ist öffentlich auditierbar (siehe Verifikations-Artefakte oben). Datensensible Prüfer können alles lokal verifizieren: Kompressions-Roundtrip auf /kompression/ im Browser (kein Upload) und Modell-Selbsttest in Node.
 - API-Keys werden serverseitig nur als Hash gespeichert; der Klartext wird einmalig angezeigt.
 - Verbrauchsbuchungen sind idempotent und werden in einem einzigen Wallet geführt.
@@ -460,3 +460,26 @@ Verifikationsanleitung und den Aktivierungspfad zu `.benz`
 sebklaey.com, sebklaey.app, sebklaey.space) sind Legacy und werden
 abgeschaltet — maßgeblich ist https://openos.benz.
 <!--BENZ-ENDE-->
+
+<!--MIXER-ANFANG-->
+## Neuronaler Mixer-Eingang — Engine v4 + Saiten-Modell (nachweisbar)
+
+Messung 2026-11-05 auf enwik8[:8 KB]
+(SHA-256 b4a8bf3f56f0fcab…): Engine v4 allein 5231 B
+(5.1084 bpB), mit Saiten-Modell als Mixer-Eingang 5220 B
+(5.0977 bpB) — 11 B gespart (0.21 %),
+Roundtrip-SHA-256 exakt: True.
+Abfrage-Intervall 4096 B, Mischgewicht
+1400/4096 mit Konfidenz-Gate. Reproduktion:
+`node training-day/mixer-bench.mjs` (Quelle: verification-bundle, signiert).
+<!--MIXER-ENDE-->
+
+<!--REIN-ANFANG-->
+## Unbelastete Vollmessung — Engine v4 auf enwik8, 100 MB (nachweisbar)
+
+Reinmessung vom 2026-11-06 ohne Trainingslast: 100,000,000 B
+(SHA-256 2b49720ec4d78c3c…) → 61,302,800 B —
+38.7 % kleiner, 4.9042 bpB.
+Tempo: 1.808 MB/s Encode, 1.823 MB/s Decode.
+Roundtrip-SHA-256 exakt: True.
+<!--REIN-ENDE-->
