@@ -18,7 +18,7 @@
     apps:["Apps","Eigene Momo-Apps"],
     archived:["Archiviert","Chats auf diesem Gerät"],
     account:["Account","Momo Identity"],
-    pricing:["Pricing","1 Credit = USD 0,009 · alles nach Verbrauch"],
+    account:["Account","Optional: Sicherung & Wiederherstellung"],
     "network-start":["Start","Alles, was im Netzwerk öffentlich ist"],
     "network-room":["Rooms","Themen-Räume mit Momo als Moderator"],
     settings:["Einstellungen","Momo · Chain · Wallet · Push"],
@@ -135,23 +135,13 @@
 
     if(name==="account"){
       const host=document.getElementById("accountContent");
-      try{ns.billing?.renderAccount?.()}
+      try{ns.account?.render?.()}
       catch(error){
         ns.core?.reportError?.(error,{scope:"view:account",silent:true});
         if(host&&!host.innerHTML.trim())host.innerHTML='<div class="account-shell"><section class="account-card"><div class="eyebrow">MOMO ACCOUNT</div><h2>Account</h2><p>Account wird initialisiert.</p><button class="action-btn" id="viewAccountRetry">Erneut laden</button></section></div>';
         document.getElementById("viewAccountRetry")?.addEventListener("click",()=>ensureViewContent("account"));
       }
       return;
-    }
-
-    if(name==="pricing"){
-      const host=document.getElementById("pricingContent");
-      try{ns.billing?.renderPricing?.()}
-      catch(error){
-        ns.core?.reportError?.(error,{scope:"view:pricing",silent:true});
-        if(host&&!host.innerHTML.trim())host.innerHTML='<div class="account-shell"><section class="account-card"><div class="eyebrow">MOMO PRICING</div><h2>Pricing wird geladen</h2><p>Plan- und Produktinformationen werden erneut geladen.</p><button class="action-btn" id="viewPricingRetry">Erneut laden</button></section></div>';
-        document.getElementById("viewPricingRetry")?.addEventListener("click",()=>ensureViewContent("pricing"));
-      }
     }
   }
 
@@ -200,7 +190,7 @@
       if(name==="library")ns.library?.render?.();
       if(name==="planned")ns.planned?.render?.();
       if(name==="archived")ns.chats?.renderArchived?.();
-      if(name==="account"||name==="pricing"||name==="settings")ensureViewContent(name);
+      if(name==="account"||name==="settings")ensureViewContent(name);
     }catch(error){ns.core?.reportError?.(error,{scope:`view:${name}:render`,silent:true})}
     try{if(window.matchMedia("(max-width:720px)").matches)ns.sidebar?.setOpen?.(false)}catch{}
     try{ns.polish?.updateView?.(name,meta)}catch(error){ns.core?.reportError?.(error,{scope:`view:${name}:polish`,silent:true})}
@@ -258,17 +248,13 @@
       const authReady=Boolean(ns.auth?.currentSession?.());
       ns.core.setCapability("authModuleReady",Boolean(authReady));
       ns.core.setCapability("signedIn",Boolean(ns.auth?.currentSession?.()));
-      const [accountReady,billingReady]=await Promise.all([
-        ns.core.initModule("account",()=>withTimeout(ns.account?.init?.(),3500,"Account"),{required:false}),
-        ns.core.initModule("billing",()=>withTimeout(ns.billing?.init?.(),3500,"Billing"),{required:false})
-      ]);
+      const accountReady=await ns.core.initModule("account",()=>withTimeout(ns.account?.init?.(),3500,"Account"),{required:false});
       const pushReady=await ns.core.initModule("push-notifications",()=>withTimeout(ns.pushNotifications?.init?.(),4500,"Push"),{required:false});
       ns.core.setCapability("accountModuleReady",Boolean(accountReady));
-      ns.core.setCapability("billingUIReady",Boolean(billingReady));
+      ns.core.setCapability("billingUIReady",false);
       ns.core.setCapability("pushModuleReady",Boolean(pushReady));
       if(activeView()==="account")ensureViewContent("account");
-      if(activeView()==="pricing")ensureViewContent("pricing");
-      return {authReady,accountReady,billingReady,pushReady};
+      return {authReady,accountReady,billingReady:false,pushReady};
     }catch(err){
       ns.core.reportError(err,{scope:"optional-cloud",silent:true});
       return {authReady:false,accountReady:false,billingReady:false};
@@ -368,8 +354,8 @@
       await bootModule("security",()=>{if(!ns.security)throw new Error("Sicherheitsmodul fehlt")});
       await bootModule("sidebar",()=>ns.sidebar.init());
       await bootModule("settings",()=>ns.settings.init());
-      // Guthaben VOR den Berechtigungen laden: ohne Credits darf nichts freigeschaltet
-      // werden, und die Berechtigungen fragen das Guthaben ab.
+      // Credits gibt es nicht mehr — der Stummel initialisiert sich in
+      // Nullzeit, die Berechtigungen erlauben alles.
       await bootModule("credits",()=>ns.momoCredits.init(),{timeout:6000});
       await bootModule("entitlements",()=>ns.entitlements.init());
       await bootModule("file-knowledge",()=>{if(!ns.fileKnowledge)throw new Error("Dateiwissen fehlt")});
@@ -379,7 +365,6 @@
       await bootModule("project-context",()=>{if(!ns.projectContext)throw new Error("Projektkontext fehlt")});
       document.addEventListener("momo:authchange",()=>{
         if(activeView()==="account")ensureViewContent("account");
-        if(activeView()==="pricing")ensureViewContent("pricing");
       }); // view-resilience-authchange
       await bootModule("projects",()=>ns.projects.init());
       await bootModule("renderer",()=>{if(!ns.renderer)throw new Error("Renderer fehlt")});

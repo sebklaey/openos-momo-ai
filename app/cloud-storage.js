@@ -49,14 +49,14 @@
   }
   /* ── Upload: lesen → buchen → komprimieren → verschlüsseln → pinnen ── */
   async function hochladen(file){
-    if(!ns.auth?.currentUser?.()){ns.ui?.toast?.("Bitte melde dich an, um Cloud-Speicher zu nutzen.");return}
+    if(!ns.auth?.currentUser?.()){ns.ui?.toast?.("Cloud-Speicher nutzt dein optionales Handle + PIN — unter Account in einem Schritt erstellt.");return}
     if(!ns.compression?.encode){ns.ui?.toast?.("Bitseed-Engine nicht verfügbar.");return}
     const original=await file.arrayBuffer();
     const noetig=Math.max(1,Math.ceil(original.byteLength/GB));
     let guthaben=0;
     try{await ns.momoCredits?.laden?.(true)}catch{}
     try{guthaben=ns.momoCredits?.guthaben?.()||0}catch{}
-    if(guthaben<noetig){ns.ui?.toast?.("Nicht genügend Credits ("+noetig+" nötig, 1 Credit pro GB).");try{ns.app?.openView?.("pricing")}catch{};return}
+    if(guthaben<noetig){ns.ui?.toast?.("Speicherplatz für diesen Upload ist gerade nicht verfügbar — bitte später erneut versuchen.");return}
     const id=uid("cloud");
     try{
       status(true,"Komprimiere „"+file.name+"“ …",0.05);
@@ -81,7 +81,7 @@
       speichern(liste);
       status(false);
       const delta=original.byteLength?(100-blob.length/original.byteLength*100):0;
-      ns.ui?.toast?.("„"+file.name+"“ in der dezentralen Cloud — "+fmt(original.byteLength)+" → "+fmt(blob.length)+" ("+delta.toFixed(1)+" % kleiner) · "+noetig+" Credits · CID "+j.cid.slice(0,12)+"…");
+      ns.ui?.toast?.("„"+file.name+"“ in der dezentralen Cloud — "+fmt(original.byteLength)+" → "+fmt(blob.length)+" ("+delta.toFixed(1)+" % kleiner) · CID "+j.cid.slice(0,12)+"…");
       einfuegen();
     }catch(err){
       status(false);
@@ -126,10 +126,10 @@
     const liste=eintraege();
     const angemeldet=Boolean(ns.auth?.currentUser?.());
     sec.innerHTML=`<strong>☁ Dezentraler Cloud-Speicher (IPFS)</strong>
-      <p>Originaldaten auf unserem eigenen, dezentralen IPFS-Speicher ablegen — so viel du willst. Jeder Upload: automatisch Bitseed-komprimiert, AES-256-GCM-verschlüsselt (CNSA-2.0-Kette) und gepinnt. Abrechnung: <b>1 Credit pro 1 GB Originalgrösse pro Upload</b> — Download ist gratis. Der Server sieht nur Ciphertext; der Key existiert nur in deinem Gerät.</p>
+      <p>Originaldaten auf unserem eigenen, dezentralen IPFS-Speicher ablegen — so viel du willst, Upload und Download sind gratis. Jeder Upload: automatisch Bitseed-komprimiert, AES-256-GCM-verschlüsselt (CNSA-2.0-Kette) und gepinnt. Der Server sieht nur Ciphertext; der Key existiert nur in deinem Gerät. Dein Handle + PIN (Account-Seite) bindet die Dateien an dich.</p>
       <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px">
         <label class="momo-library-add"><input id="cloudFileInput" type="file" multiple hidden ${angemeldet?"":"disabled"}><span>☁ In die dezentrale Cloud laden</span></label>
-        <span class="momo-library-private">${angemeldet?"Ciphertext · IPFS · nur du kannst öffnen":"Anmeldung nötig"}</span>
+        <span class="momo-library-private">${angemeldet?"Ciphertext · IPFS · nur du kannst öffnen":"Handle + PIN (Account) — ein Schritt, dann offen"}</span>
       </div>
       <div id="cloudStorageStatus" class="momo-compression-status" style="display:none"></div>
       <div style="margin-top:10px;display:grid;gap:8px">${liste.length?liste.map(e=>`<div class="momo-library-item"><div><strong>${esc(e.name)}</strong><span>Original ${fmt(e.size)} · Cloud ${fmt(e.hybSize)} · CID ${esc(e.cid.slice(0,16))}…</span><small>Upload ${new Date(e.uploadedAt).toLocaleString()} · Download gratis</small></div><div style="display:flex;gap:8px"><button type="button" data-cloud-download="${esc(e.id)}">Herunterladen</button><button type="button" data-cloud-remove="${esc(e.id)}" aria-label="Eintrag entfernen">Entfernen</button></div></div>`).join(""):'<small style="opacity:.6">Noch keine Cloud-Dateien — der erste Upload erklärt sich von selbst.</small>'}</div>`;

@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>BenzResolver — Einstellungen</title>
+<style>
+  body{font:14px/1.6 -apple-system,system-ui,sans-serif;max-width:520px;margin:32px auto;padding:0 16px;background:#0d0d12;color:#eee}
+  h1{font-size:18px} label{display:block;margin:18px 0 6px;font-weight:600}
+  select,input{width:100%;padding:9px;border-radius:8px;border:1px solid #ffffff2a;background:#17171f;color:#eee;box-sizing:border-box}
+  p.dim{color:#9aa;font-size:13px}
+</style>
+</head>
+<body>
+  <h1>BenzResolver — Einstellungen</h1>
+  <label for="gw">IPFS-Gateway (wo der Content herkommt)</label>
+  <select id="gw">
+    <option value="dweb">dweb.link (öffentlich)</option>
+    <option value="ipfsio">ipfs.io (öffentlich)</option>
+    <option value="local">Eigener Knoten — http://127.0.0.1:8080 (Kubo/Brave, null Dritte)</option>
+    <option value="custom">Eigene URL …</option>
+  </select>
+  <div id="customWrap" style="display:none">
+    <label for="customGw">Eigene Gateway-URL</label>
+    <input id="customGw" placeholder="https://mein-gateway.example">
+  </div>
+  <p class="dim">„Eigener Knoten" ist der stärkste Modus: Content kommt von deinem lokalen IPFS-Knoten —
+  keine Drittpartei sieht auch nur eine Anfrage. Ohne lokalen Knoten fällt die Wahl
+  auf ein öffentliches Gateway; der Inhalt ist durch den CID dennoch hash-verifiziert.</p>
+  <script src="options.js"></script>
+</body>
+</html>

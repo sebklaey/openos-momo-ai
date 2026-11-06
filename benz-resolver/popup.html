@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>BenzResolver</title>
+<style>
+  body{font:13px/1.5 -apple-system,system-ui,sans-serif;margin:0;padding:14px;width:280px;background:#0d0d12;color:#eee}
+  h1{font-size:14px;margin:0 0 8px;letter-spacing:.4px}
+  .ok{color:#7ee787}.bad{color:#ff7b72}.dim{color:#9aa}
+  .row{display:flex;justify-content:space-between;gap:8px;padding:3px 0;border-bottom:1px solid #ffffff14}
+  button{width:100%;margin-top:10px;padding:8px;border:0;border-radius:8px;background:#7c5cff;color:#fff;font-weight:600;cursor:pointer}
+  a{color:#9db4ff;display:block;margin-top:8px;text-align:center}
+</style>
+</head>
+<body>
+  <h1>BenzResolver</h1>
+  <div class="row"><span>Registry</span><strong id="stValid" class="dim">…</strong></div>
+  <div class="row"><span>Stände</span><span id="stUpdated" class="dim">—</span></div>
+  <div class="row"><span>Namen</span><span id="stNames" class="dim">—</span></div>
+  <div class="row"><span>Gateway</span><span id="stGateway" class="dim">—</span></div>
+  <div class="row"><span>Signatur</span><strong id="stSig" class="dim">…</strong></div>
+  <button id="btnRefresh">Jetzt prüfen</button>
+  <a href="#" id="lnkOptions">Einstellungen</a>
+  <script src="popup.js"></script>
+</body>
+</html>

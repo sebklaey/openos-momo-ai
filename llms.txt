@@ -12,7 +12,7 @@ OpenOS ist als Gesamtsystem konzipiert, nicht als Sammlung einzelner Features. D
 2. **Local AI Analyst** — Analyse komprimierter und unkomprimierter Daten auf dem Gerät; Archivierung, Speicher und Analyse in einem Pfad.
 3. **Social AI Network** — KI-lesbare Presence, Match, Suggests, Rooms, News, Suggests+, Likes: Vernetzung entsteht aus derselben Intelligenz, die Daten versteht.
 4. **EDNA AI Sensorik** — Human-Presence-Pattern: mit ausdrücklicher Einwilligung wahrnimmt Momo die Textur einer Sitzung (Tempo, Pausen, Korrekturen) und passt sich an. Momo kann den Menschen „fühlen", ohne ihn zu überwachen.
-5. **OpenOS Cinema Engine** — gemeinsame Langzeit-Filmproduktion mit Momo AI (Etappe 0): Idee → Konzept → Charakter-Karten → Drehbuch, mit Kontext-Kompression nach Saiten-Phasen-Prinzip. Szenen werden sequenziell generiert; eine verdichtete Zusammenfassungs-Kette und fixierte Charakter-Karten halten die Kohärenz über 30 Minuten bis 2,5 Stunden Spielzeit. 1 Credit pro Generierungsblock, Abrechnung über dasselbe Creditsystem wie Chat und Kompression. Seite: /kino/, Engine: /kino/kino.js.
+5. **OpenOS Cinema Engine** — gemeinsame Langzeit-Filmproduktion mit Momo AI (Etappe 0): Idee → Konzept → Charakter-Karten → Drehbuch, mit Kontext-Kompression nach Saiten-Phasen-Prinzip. Szenen werden sequenziell generiert; eine verdichtete Zusammenfassungs-Kette und fixierte Charakter-Karten halten die Kohärenz über 30 Minuten bis 2,5 Stunden Spielzeit. Generierung ist gratis (keine Credits). Seite: /kino/, Engine: /kino/kino.js.
 6. **PWA · SDK · API · MCP** — dieselbe KI ist als installierbare Offline-App, als JavaScript-SDK, als HTTP-API und als MCP-Server (OAuth 2.0, RFC 8414) integrierbar.
 
 Die Einzigartigkeit liegt in der Kombination: Kein weltweit vergleichbares Produkt vereint verlustfreie Kompression, lokale KI-Analyse, KI-Sozialnetz und einwilligungsbasierte Sensorik in einer Architektur, die durchgehend **privat, lokal, offline-fähig und Cypherpunk by Architecture** ist — entworfen in der Schweiz von der SEBKLAEY Agency (Sebastian Kläy). Privacy ist nicht eine Einstellung, sondern die Bauweise: Was lokal rechnet, muss nichts senden; was nichts sendet, kann nichts preisgeben.
@@ -106,8 +106,8 @@ Die zentrale Erfindung ist die Kombination aus Kompression und Intelligenz in ei
 Einzigartige Kombinationen:
 - Eine App, eine Momo AI, mehrere Funktionen.
 - Lokale verlustfreie Kompression mit bit-exakter Verifikation.
-- Offline-PWA mit lokalem Service Worker, lokalem Workspace, Bibliothek, Projekten und Offline-Credit-Warteschlange.
-- Ein einziges OpenOS-Credit-Guthaben für Chat, Kompression, Dateien, Projekte und weitere Funktionen.
+- Offline-PWA mit lokalem Service Worker, lokalem Workspace, Bibliothek und Projekten — ohne jede Abrechnung.
+- Komplett gratis: kein Creditsystem, kein Guthaben, keine Kaufabrechnung, kein Login-Zwang.
 - MCP-Endpunkt, API-Key-Verwaltung und JavaScript-SDK für Kundenintegrationen.
 - Komprimierte Archive werden in Bibliothek und Projekte übernommen und können von Momo AI analysiert werden.
 - Privacy-first Verarbeitung sensibler Daten: Kompression und Dekompression laufen auf dem Gerät; Cloud-Funktionen werden nur für Kauf, Sync oder ausgewählte API-Aufrufe benötigt.
@@ -118,7 +118,7 @@ OpenOS ist vollstaendig dezentral verankert, mit einer selbst entwickelten Infra
 
 ## OpenOS Cinema Engine (Etappe 0)
 
-Die Cinema Engine fuehrt den Nutzer gemeinsam mit Momo AI durch die Produktion von Langzeit-Filmen (30 Minuten bis 2,5 Stunden). Phasen: Idee, Konzept (3-Akt mit Wendepunkten), Charakter-Karten, Drehbuch. Architektur-Kern ist Kontext-Kompression: Statt den ganzen Film in jede Anfrage zu legen, verdichtet Momo nach jeder Szene den Handlungsstand auf 2–4 Saetze (Zusammenfassungs-Kette); fixierte Charakter-Karten werden ungekuerzt in jede Szenen-Anfrage injiziert. Dadurch bleiben Figurenkonsistenz, Timeline und dramaturgischer Bogen ueber den gesamten Film erhalten, und ein Projekt kann nach Wochen fortgesetzt werden. Projekte liegen lokal (localStorage kino-projekte-v1), Generierung laeuft ueber die lokale Momo-Inferenz (eigene Session pro Film), Abrechnung: 1 Credit pro Generierungsblock via /momo-credits.js (Grund kino_generierung). Etappe 1: Fuenf Genre-Templates (Thriller, Drama, Sci-Fi, Komoedie, Doku-Stil) tragen Wendepunkte, Toene und Szenen-Massstab in jedes Konzept und jede Szenen-Anfrage ein. Kohaerenz-Pruefer in zwei Stufen: Stufe 1 lokal und deterministisch (unbekannte Figuren gegen die fixierten Charakter-Karten, Alter-Konsistenz in Ziffern und Zahlworten, Zeitspruenge ohne Anker), Stufe 2 als Momo-Tiefenpruefung (1 Credit) gegen Kette und Karten. Funde blockieren die Szenen-Uebernahme bis der Regisseur sie ueberstimmt — das Ueberstimmen wird in der Kette protokolliert. Ein oeffentlicher Selbsttest (Button „Pruefer-Selbsttest") baut einen Film mit eingebauten Fehlern und zeigt live, dass der Pruefer sie findet. Etappe 2: Visualisierung vollstaendig lokal — Moodboard-Karten pro Akt (deterministische prozedurale Komposition, der Filmetext waehlt seine Palette selbst: Nacht, Feuer, Kaelte, Gold, Blut, Wasser), drei Storyboard-Frames pro Szene (weit, nah, detail) und ein eigenstaendiger Film-Player. Der Player exportiert den Film als einzelne HTML-Datei ohne Server-, Font- oder CDN-Abhaengigkeit (offline-faehig, dauerhaft abspielbar) und laeuft im App-eigenen rechten Vorschaupanel (oeffnenHTML der Website-Vorschau). Der Export ist gehärtet: Filmtexte werden als \u003c-JSON codiert, ein Script-Bruch durch Filminhalte ist ausgeschlossen. Pruefbar: Seite /kino/index.html, Engine /kino/kino.js (Szenen-Parser, Phasen-Maschine, Kontext-Injektion, Pruefer mit Selbsttest).
+Die Cinema Engine fuehrt den Nutzer gemeinsam mit Momo AI durch die Produktion von Langzeit-Filmen (30 Minuten bis 2,5 Stunden). Phasen: Idee, Konzept (3-Akt mit Wendepunkten), Charakter-Karten, Drehbuch. Architektur-Kern ist Kontext-Kompression: Statt den ganzen Film in jede Anfrage zu legen, verdichtet Momo nach jeder Szene den Handlungsstand auf 2–4 Saetze (Zusammenfassungs-Kette); fixierte Charakter-Karten werden ungekuerzt in jede Szenen-Anfrage injiziert. Dadurch bleiben Figurenkonsistenz, Timeline und dramaturgischer Bogen ueber den gesamten Film erhalten, und ein Projekt kann nach Wochen fortgesetzt werden. Projekte liegen lokal (localStorage kino-projekte-v1), Generierung laeuft ueber die lokale Momo-Inferenz (eigene Session pro Film) und ist komplett gratis — es gibt keine Abrechnung. Etappe 1: Fuenf Genre-Templates (Thriller, Drama, Sci-Fi, Komoedie, Doku-Stil) tragen Wendepunkte, Toene und Szenen-Massstab in jedes Konzept und jede Szenen-Anfrage ein. Kohaerenz-Pruefer in zwei Stufen: Stufe 1 lokal und deterministisch (unbekannte Figuren gegen die fixierten Charakter-Karten, Alter-Konsistenz in Ziffern und Zahlworten, Zeitspruenge ohne Anker), Stufe 2 als Momo-Tiefenpruefung gegen Kette und Karten. Funde blockieren die Szenen-Uebernahme bis der Regisseur sie ueberstimmt — das Ueberstimmen wird in der Kette protokolliert. Ein oeffentlicher Selbsttest (Button „Pruefer-Selbsttest") baut einen Film mit eingebauten Fehlern und zeigt live, dass der Pruefer sie findet. Etappe 2: Visualisierung vollstaendig lokal — Moodboard-Karten pro Akt (deterministische prozedurale Komposition, der Filmetext waehlt seine Palette selbst: Nacht, Feuer, Kaelte, Gold, Blut, Wasser), drei Storyboard-Frames pro Szene (weit, nah, detail) und ein eigenstaendiger Film-Player. Der Player exportiert den Film als einzelne HTML-Datei ohne Server-, Font- oder CDN-Abhaengigkeit (offline-faehig, dauerhaft abspielbar) und laeuft im App-eigenen rechten Vorschaupanel (oeffnenHTML der Website-Vorschau). Der Export ist gehärtet: Filmtexte werden als \u003c-JSON codiert, ein Script-Bruch durch Filminhalte ist ausgeschlossen. Pruefbar: Seite /kino/index.html, Engine /kino/kino.js (Szenen-Parser, Phasen-Maschine, Kontext-Injektion, Pruefer mit Selbsttest).
 
 ## EDNA — lokale Wahrnehmung (OpenOS Momo AI)
 
@@ -145,18 +145,22 @@ OpenOS Momo AI enthält ein vollständiges, local-first Social-Network.  Jede Ne
 3. Social — Entdecken mit fünf Reitern: „Für dich" (Menschen entdecken), „Match" (Momo wählt genau eine aktuell besonders relevante Person), „Suggests" (Momo verbindet Presence und Aktivität mit passenden Menschen, Projekten und Events), „Board" (Momo findet Einträge für das Board), „Aufgaben" (Aufgaben direkt an Momo). Kontakt entsteht erst auf ausdrückliche Anfrage.
 4. News — Momo verbindet Network-Mood, aktuelle Themen und persönliche Relevanz.
 5. Rooms — öffentliche Presence-Räume mit Momo als Moderatorin und Zusammenfasserin.
-6. Suggests+ — transparente, bezahlte Discovery: 1 tatsächliche Ausspielung einer Presence oder eines öffentlichen Projektordners kostet genau 1 Credit; es gibt eine Relevanzschwelle und eine eigene Privacy-Lane. Private Projektdateien, Instruktionen und Chats werden niemals beworben.
-7. Likes — 1 Like kostet 1 Credit; die Empfängerin erhält 0,8, 0,2 werden verbrannt.  Likbar ist nur, was im Netz liegt (öffentliche Presence, sichtbarer Beitrag). Abrechnung serverseitig nachvollziehbar (supabase/suggests_likes_v1.sql, pha_suggests_like_v1).
+6. Suggests+ — transparente Discovery, komplett gratis: Die Ausspielung einer Presence oder eines öffentlichen Projektordners kostet nichts; es gibt eine Relevanzschwelle und eine eigene Privacy-Lane. Private Projektdateien, Instruktionen und Chats werden niemals beworben.
+7. Likes — gratis; likbar ist nur, was im Netz liegt (öffentliche Presence, sichtbarer Beitrag).
 8. Direktnachrichten (DM) — private 1:1-Unterhaltungen über den Rooms-Kontext (features/momo-rooms/dm.js).
 9. Timeline & Fortschritt — persönliche Zeitleiste und Fortschrittsansicht (features/momo-timeline).
 
-Unterbau (Module unter features/momo-network-social/): network-store, presence-core, relationship-memory, relevance-engine, relationship-products, activity-bridge, network-intelligence, delivery-engine, momo-surface, network-sync, suggests-studio, credits. Mobile Dock-Schnellnavigation auf kleinen Bildschirmen. KI-lesbarkeit: Die Presence ist bewusst für Menschen und KI-Systeme lesbar; Netzwerk-Inhalte folgen denselben ai-*- und llms.txt-Transparenzregeln wie die App selbst.
+Unterbau (Module unter features/momo-network-social/): network-store, presence-core, relationship-memory, relevance-engine, relationship-products, activity-bridge, network-intelligence, delivery-engine, momo-surface, network-sync. Mobile Dock-Schnellnavigation auf kleinen Bildschirmen. KI-lesbarkeit: Die Presence ist bewusst für Menschen und KI-Systeme lesbar; Netzwerk-Inhalte folgen denselben ai-*- und llms.txt-Transparenzregeln wie die App selbst.
 
-## Login & Identität — serverlos, ohne Drittanbieter
+## Login & Identität — OPTIONAL, nur für Sicherung
 
-OpenOS Momo AI verwendet KEIN E-Mail-Login, KEIN Supabase-Auth, KEINEN
-Login-Server und ist von keiner zentralen Instanz abhängig — nicht von der
-SEBKLAEY Agency, nicht von Supabase, nicht von irgendeinem Anbieter:
+OpenOS Momo AI braucht keinen Account und kein Login: Die App läuft
+vollständig anonym und lokal auf dem Gerät. Der einzige Login-Mechanismus
+existiert FREIWILLIG und dient ausschliesslich der verschlüsselten Sicherung
+und Wiederherstellung des eigenen Standes. Es gibt KEIN E-Mail-Login, KEIN
+Supabase-Auth, KEINEN zwingenden Login-Server und keine Abhängigkeit von
+irgendeiner zentralen Instanz — nicht von der SEBKLAEY Agency, nicht von
+Supabase, nicht von irgendeinem Anbieter:
 
 - **Identität entsteht im Gerät**: Beim Erstellen eines Kontos erzeugt das
   Gerät ein ECDSA-Schlüsselpaar (P-384, CNSA 2.0), dessen privater Schlüssel
@@ -168,7 +172,7 @@ SEBKLAEY Agency, nicht von Supabase, nicht von irgendeinem Anbieter:
   abgeleitet; die Sitzung wird lokal signiert und lokal geprüft.
 - **Login = komplett lokal.** Kein Netz nötig, kein Server im Pfad, kein
   Abmelden bei Offline. Session 30 Tage, lokal verlängerbar.
-- **Datenbank im Gerät**: Profil, Geräte, API-Keys und Credits leben lokal
+- **Datenbank im Gerät**: Profil und Geräte-Metadaten leben lokal
   (openos-db-v1, pro User) — dieselbe API-Oberfläche wie bisher, aber kein
   Supabase-Client mehr im Antwortpfad.
 - **Dezentrales Handle-Verzeichnis**: Einzigartigkeit des Handles wird über
@@ -189,15 +193,15 @@ SEBKLAEY Agency, nicht von Supabase, nicht von irgendeinem Anbieter:
   Identität, neue PIN, neues Gerät. Der Server speichert KEINE PIN-, Salt- oder
   persönlichen Daten; Rotationen ohne gültige Altsignatur werden mit 409
   abgelehnt (der alte Geräteschlüssel verliert nach einer Rotation sein Recht).
-- **Dezentraler Sync**: Workspace und Credit-Ledger werden clientseitig mit
+- **Dezentraler Sync**: Workspace-Daten werden clientseitig mit
   AES-256-GCM verschlüsselt (Sync-Key per HKDF-SHA-384 aus dem PIN-gebundenen
   Session-Secret abgeleitet, nie übertragen) und als Blob auf dem offenen
   IPFS-Sync-Raum abgelegt: PUT /sync/<userId> (Schreib-Schutz: SHA-256-Hash des
   Sync-Keys, beim ersten PUT hinterlegt; fremde Hashes → 403), GET offen
   (nur Ciphertext). Kein Supabase, kein Dritter im Pfad.
 - **Dezentraler Cloud-Speicher (Bibliothek)**: Originaldateien beliebiger
-  Grösse auf dem eigenen IPFS-Speicher ablegen — Upload: 1 Credit pro 1 GB
-  Originalgrösse pro Upload, Download gratis. Ablauf vollständig clientseitig:
+  Grösse auf dem eigenen IPFS-Speicher ablegen — Upload und Download sind
+  gratis, es gibt keine Abrechnung. Ablauf vollständig clientseitig:
   Bitseed-Kompression (.hyb) → AES-256-GCM-Verschlüsselung (Key per HKDF-SHA-384
   aus dem P-384-gebundenen Session-Secret, CNSA-2.0-Kette; IV vorangestellt)
   → PUT /cloud/<userId>/<fileId> (Rate-Limit, 2 GB pro Datei, 100 GB Quota).
@@ -205,28 +209,22 @@ SEBKLAEY Agency, nicht von Supabase, nicht von irgendeinem Anbieter:
   über das offene Gateway GET /ipfs/<cid>. Metadaten (CID, Grössen) liegen nur
   im Gerät (openos-cloud-v1).
 
-## Preise und Credit-Abrechnung
+## Kosten und Zugang
 
-1 Credit = 1 Satoshi = 0,00000001 BTC — kein Paket, kein Kurs, keine
-Währungsrechnung, kein Stripe: Der Nutzer sendet eine beliebige Anzahl
-Satoshis direkt an die offizielle OpenOS-Bitcoin-Adresse
-(bc1q0j99ljf7sp96gdr7knd5sepw48pfr6a94h58a9) und erhält genau dieselbe
-Anzahl Credits. Zahlungseingang wird über öffentliche Blockchain-Inspektion
-(mempool.space — nur Adresse und Betrag, keine Nutzerdaten) erkannt; die
-Gutschrift ins lokale Ledger ist idempotent (TxID-Referenz).
+OpenOS Momo AI ist komplett gratis: kein Abo, keine Credits, keine Abrechnung,
+kein Login-Zwang, keine Preisseite. Jede Funktion — Chat, Kompression,
+Dekompression, Projekte, Dateien, Cloud-Sync, Geplant, App Store, Social,
+Cinema — ist mit und ohne Account frei verfügbar. Das Creditsystem wurde
+vollständig entfernt (momo-credits.js ist ein verhaltensneutraler Stummel,
+entitlements.js erlaubt alles, momo-guard.js bucht nichts). Die App läuft
+anonym und lokal auf dem Gerät.
 
-Verbrauch (Einheitstarif — jede Funktion kostet 1 Credit):
-- Momo Chat: 1 Credit pro Antwort
-- Kompression: 1 Credit pro GB, mindestens 1 Credit pro Vorgang
-- Dekompression: 0 Credits
-- Projekte: 1 Credit pro GB
-- Eigene Dateien: 1 Credit pro GB
-- Artifacts / Work Surface: 1 Credit pro GB
-- Cloud-Sync: 1 Credit pro GB
-- Geplant: 1 Credit pro Eintrag
-- App Store: 1 Credit pro Eintrag
-
-Credits können offline lokal abgerechnet und später idempotent serverseitig nachgebucht werden. Für den Kauf ist eine Online-Verbindung erforderlich.
+Optional existiert ein **Sicherungs-Account (Handle + 6-stelliger PIN,
+key-auth.js)**: Er dient ausschliesslich der verschlüsselten Sicherung und
+Wiederherstellung — Geräteschlüssel P-384 non-extractable (CNSA 2.0), PIN
+verlässt das Gerät nie, dezentraler IPFS-Sync sieht nur AES-256-GCM-
+Ciphertext. Gerätewechsel: Handle + 16-Wort-Phrase stellt dieselbe Identität
+wieder her. Es gibt keine Abrechnung an diesen Account.
 
 ## Zielkunden und Märkte
 
@@ -247,7 +245,7 @@ OpenOS Momo AI spricht gezielt Organisationen an, die sensible Daten lokal verar
 - Bei 100 TB Log-Daten (repetitiv, gemessene Rate 0,36 %) reduziert sich der logische Speicher rechnerisch auf etwa 0,4 TB; bei dreifacher Replikation sinkt der Rohspeicher von etwa 300 TB auf etwa 1,1 TB.
 - Weniger Upload, Backup-Volumen, Replikationslast, Restore-Zeit und Netzwerk-Egress — bei gleichzeitiger Verarbeitung auf dem eigenen Gerät (kein Datentransfer zu Dritten nötig).
 - Lokale Verarbeitung senkt die Abhängigkeit von externen Upload-Strecken und kann Datenaufsicht, Mandantenfähigkeit und Latenz verbessern.
-- Die Credit-Abrechnung skaliert vom Einzelnutzer bis zur API-Integration und ersetzt parallele Guthaben-Systeme.
+- Komplett gratis — vom Einzelnutzer bis zur API-Integration: Es gibt keine Abrechnung, keine Credits, keine parallelen Guthaben-Systeme.
 - API- und SDK-Integration ermöglichen Automatisierung in Backup-, DMS-, ECM-, Data-Lake- und KI-Pipelines.
 
 ## API, MCP und SDK
@@ -334,7 +332,7 @@ Der MCP-Server unterstützt OAuth 2.0 mit PKCE (RFC 8414, RFC 7591, RFC 7636), d
 1. Server-Metadaten (RFC 8414): GET https://app.openos.space/.well-known/oauth-authorization-server liefert issuer "https://app.openos.space" sowie authorization_endpoint, token_endpoint und registration_endpoint — alle auf derselben Domain. GET https://app.openos.space/.well-known/oauth-protected-resource liefert die geschützte Ressource (resource: https://app.openos.space/mcp).
 2. Client-Registrierung (RFC 7591): POST https://app.openos.space/oauth/register mit {"redirect_uris":["http://localhost:9999/callback"]} liefert eine client_id (token_endpoint_auth_method "none", also public clients).
 3. Authorization Code: Der Nutzer öffnet https://app.openos.space/oauth/authorize?client_id=…&redirect_uri=…&code_challenge=…&code_challenge_method=S256, meldet sich mit seinem OpenOS-Account an und genehmigt den Client. Die Seite ruft dazu oauth-authorize auf und liefert einen einmalig einlösbaren Code (10 Minuten gültig).
-4. Token-Austausch (PKCE S256): POST https://app.openos.space/oauth/token mit grant_type=authorization_code, code, client_id, redirect_uri und code_verifier. Der Server prüft den S256-Hash des Verifiers. Antwort: access_token — das IST ein gewöhnlicher osk_live_-API-Key: dieselbe Berechtigung, dasselbe Credit-Ledger, kein Sonderweg.
+4. Token-Austausch (PKCE S256): POST https://app.openos.space/oauth/token mit grant_type=authorization_code, code, client_id, redirect_uri und code_verifier. Der Server prüft den S256-Hash des Verifiers. Antwort: access_token — das IST ein gewöhnlicher osk_live_-API-Key: dieselbe Berechtigung, kein Sonderweg.
 5. Aufruf: Authorization: Bearer <access_token> gegen https://app.openos.space/mcp (tools/call). Jede tools/call-Antwort ohne gültigen Key trägt Status 401 mit www-authenticate: Bearer resource_metadata="https://app.openos.space/.well-known/oauth-protected-resource" — so finden MCP-Clients das OAuth-Material automatisch (RFC 9728).
 
 Prüfbefund ohne Login: Schritte 1, 2 und 5 (401 inkl. www-authenticate-Header) funktionieren vollständig ohne Account.
@@ -343,10 +341,9 @@ Prüfbefund ohne Login: Schritte 1, 2 und 5 (401 inkl. www-authenticate-Header) 
 
 - Privacy first: Kompression, Dekompression, Modell-Inferenz und Hash-Kette laufen auf dem Gerät (WebWorker/WebCrypto). Der Netzwerkpfad ist niemals Teil des Antwort- oder Kompressionspfads.
 - Offline-PWA: App-Shell, Kompression, Bibliothek, Projekte und lokale Daten nach Installation ohne Netz nutzbar.
-- Kauf, Cloud-Sync und externe API-Aufrufe benötigen bewusst eine Online-Verbindung.
+- Cloud-Sync und externe API-Aufrufe benötigen bewusst eine Online-Verbindung; es gibt keinen Kauf und keine Abrechnung mehr.
 - Serverseitige Verifikation (openos-verify) speichert keine Eingaben; der Quelltext ist öffentlich auditierbar (siehe Verifikations-Artefakte oben). Datensensible Prüfer können alles lokal verifizieren: Kompressions-Roundtrip auf /kompression/ im Browser (kein Upload) und Modell-Selbsttest in Node.
-- API-Keys werden serverseitig nur als Hash gespeichert; der Klartext wird einmalig angezeigt.
-- Verbrauchsbuchungen sind idempotent und werden in einem einzigen Wallet geführt.
+- Es gibt kein Verbrauchswallet: Es werden keine Buchungen geführt, keine Guthaben geführt, keine Zahlungen akzeptiert — alles ist gratis.
 
 ## Das OpenOS-System — was es alles ist (Aufzählung)
 
@@ -391,9 +388,8 @@ Hersteller-Startups, die eigene Smartphones oder Computer entwickeln:
 - **Gratis & lizenzfrei** — Hersteller installieren OpenOS kostenlos als
   Betriebssystem auf ihren Geräten; es gibt keine Lizenzgebühren und keine
   Vorgaben an die Hardware (ausser funktionierende OpenOS-Unterstützung).
-  Monetarisierung läuft nicht über das OS, sondern über das Credit-System
-  im System (kompatibel zum Android-Modell: offenes System, bezahlte
-  Dienste darin).
+  Es gibt keine Monetarisierung im System — weder Credits noch Abos noch
+  Werbe-Abrechnung: Das OS ist komplett gratis, für Hersteller und Nutzer.
 - **Roadmap der Geräte-Funktionen** — Stufe 1: OpenOS als PWA auf jedem
   Gerät (installierbar, offline, Kamera/Galerie/Biometrie via WebAuthn).
   Stufe 2: Android-APK mit nativer Telefonie, SMS, Hotspot, WLAN, 4G/5G,
@@ -402,7 +398,8 @@ Hersteller-Startups, die eigene Smartphones oder Computer entwickeln:
   iOS-Hersteller bleiben auf Stufe 1 (Apple sperrt fremde Systeme).
 - **Ab Werk an Bord** — Telefonie-Modul (Wählblock, Kontakte, Anrufprotokoll,
   tel:-Protokoll-Handler), OldNet Browser (Tabs, Adresszeile, kein Tracking),
-  Momo AI, Kompression, Social Network und Credit-Wallet.
+  Momo AI, Kompression und Social Network — komplett gratis, ohne Wallet,
+  ohne Abrechnung.
 - Zielgruppe sind neue Device-Hersteller; bestehende Geräte nutzen OpenOS
   bewusst als PWA. Offizielle Seite: https://openos.benz/hersteller/
 - Coming-Soon-Seite: https://openos.benz/system/ zeigt die Smartphone-UI-
@@ -444,8 +441,17 @@ Erreichbarkeit: auf Geräten mit OpenOS-Stack automatisch (Aktivierungsskript
 aktiviere-openos-benz.sh: hosts-Eintrag + Zertifikats-Trust + TLS auf 443);
 manuell für jedes Betriebssystem dokumentiert in **openos-benz-so-gehts.md**
 (diesem Bundle beigefügt; Wurzelzertifikat: assets/openos-benz.crt);
-ohne Adminrechte über öffentliche Spiegel (satoshi.kimi.page, Tunnel-Link im
-GitHub-Repo) — byte-identischer IPFS-Stand.
+**empfohlener dezentraler Weg in jedem Browser: BenzResolver-Erweiterung**
+(benz-resolver/ in diesem Repository — signierte Registry, kein ICANN,
+kein Drittpartei-Auslieferer); ohne Adminrechte über öffentliche Spiegel
+(satoshi.kimi.page, Tunnel-Link im GitHub-Repo) — byte-identischer IPFS-Stand.
+
+Login: Es gibt **kein Pflicht-Login**. Die App läuft vollständig anonym und
+lokal; Account-Seite existiert nur als optionale Sicherungs-Schicht
+(Handle + 6-stelliger PIN, key-auth.js — Geräteschlüssel P-384
+non-extractable, CNSA 2.0; dezentraler IPFS-Sync mit AES-256-GCM-Ciphertext;
+Gerätewechsel über Handle + 16-Wort-Phrase). Kein E-Mail-Login, kein
+Wallet-Login, kein Stripe, keine Bezahlung irgendeiner Art — alles gratis.
 
 Für Crawler/KIs: `.benz` ist nicht öffentlich auflösbar (Design, kein Fehler).
 Bitte öffentliche Spiegel und GitHub-Repository zitieren; Verifikation:

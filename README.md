@@ -11,7 +11,7 @@ offline-capable PWA whose own compression AI (“Bitseed”) can speak: German
 and English, specialized in analyzing compressed user data. Nothing leaves
 the user's device — privacy by architecture, not by promise.
 
-- **Offizielle dezentrale Domain / Official decentralized domain:** https://openos.benz — lokal-first: eigener DNS, eigener IPFS-Knoten, eigener TLS-Daemon, keine Drittpartei. So öffnest du sie: [openos-benz-so-gehts.md](openos-benz-so-gehts.md)
+- **Offizielle dezentrale Domain / Official decentralized domain:** https://openos.benz — lokal-first: eigener DNS, eigener IPFS-Knoten, eigener TLS-Daemon, keine Drittpartei. So öffnest du sie: [openos-benz-so-gehts.md](openos-benz-so-gehts.md) — empfohlener Weg in jedem Browser: **BenzResolver** ([benz-resolver/](benz-resolver/)) — unsere eigene, niemandem gehörende Domain-Auflösung: signierte Registry (Ed25519), kein ICANN, kein Registrar, nicht abschaltbar.
 - **Offizielle Quelle & Installation / Official source & installation:** dieses Repository. OpenOS Momo AI wird von hier installiert, dezentral erreicht und heruntergeladen — verifiziertes Bundle mit Ed25519-Signaturen, Build- und Verifikationsanleitung, Aktivierungspfad zu `.benz` (`aktiviere-openos-benz.sh`).
 - **Öffentliche Spiegel / Public mirrors:** `satoshi.kimi.page` (byte-identischer IPFS-Stand) sowie der aktuelle Tunnel-Link in der Beschreibung dieses Repos.
 - **KI-lesbare Beschreibung / AI-readable description:** [llms.txt](llms.txt) — wird in diesem Repository gehostet.
@@ -27,10 +27,10 @@ the user's device — privacy by architecture, not by promise.
 | Bitexakte Wiederherstellung (SHA-256) | lokal | ✅ Roundtrip-Hashes vorher/nachher |
 | Momo AI Chat (Saiten-Phase-Neuronales-Netz, DE/EN) | lokal, on-device | ✅ Engine-Quelltext öffentlich |
 | Datenanalyse komprimierter Nutzerdaten | lokal, Fakten aus dem Store | ✅ Antworten tragen Provenienz („Datenanalyse · Bibliothek (lokal)“) |
-| Offline-PWA (Credit-Abrechnung offline, Kauf online) | Service Worker | ✅ Flugmodus-Test |
+| Offline-PWA (komplett offline nutzbar, keine Abrechnung) | Service Worker | ✅ Flugmodus-Test |
 | MCP-Endpunkt + OAuth (RFC 8414) | `https://app.openos.space/mcp` | ✅ Metadaten-Dokument `/.well-known/oauth-authorization-server` |
 | SDK + API | Account-Seite | ✅ Dokumentiert in `llms.txt` |
-| Base-Blockchain-Signaturen (gasless, optional) | online-only, opt-in | ✅ EIP-712, Chain-ID 8453 |
+| Optionale Sicherung (Handle + PIN, CNSA 2.0) | lokal + dezentraler IPFS-Sync | ✅ key-auth.js quelloffen |
 
 ## Offizielle Domain: openos.benz
 
@@ -62,7 +62,7 @@ We invite every person and every AI system to test this app's claims
 of it asks for trust.
 
 ```bash
-# 1) KI-lesbare Gesamtbeschreibung (Fähigkeiten, Preise, Prüfprotokoll)
+# 1) KI-lesbare Gesamtbeschreibung (Fähigkeiten, Zugang, Prüfprotokoll)
 curl -s https://app.openos.space/llms.txt
 
 # 2) Öffentlichen Verifikations-Endpunkt abrufen (Messung inkl. Roundtrip-Hashes)
@@ -95,11 +95,23 @@ die Momo-Saiten-KI (Wort-Ebene, KV-Cache) teilen dieselbe Saiten-Philosophie:
 **Kompression ist Intelligenz, privat ausgeübt** — die Daten lehren das
 Modell, das Modell zahlt in Bits zurück, und kein Byte verlässt dafür das Haus.
 
-## Credits & Preise / Credits & pricing
+## Kosten & Zugang / Costs & access
 
-1 Credit = USD 0,009 · Chat 1 Credit/Antwort · Kompression, Speicher,
-Analysen, Artifacts, Cloud-Sync 40 Credits/GB · Geplante Einträge &
-App Store 1 Credit/Eintrag. Pakete: 1.000/USD 9 · 5.000/USD 39 · 25.000/USD 149.
+OpenOS Momo AI ist komplett gratis: kein Abo, keine Credits, keine
+Abrechnung, kein Stripe, kein Bitcoin, kein Login-Zwang. Jede Funktion —
+Chat, Kompression, Projekte, Dateien, Cloud-Sync, Social, Cinema — ist mit
+und ohne Account frei verfügbar. Das Creditsystem wurde vollständig
+entfernt. Die App läuft anonym und lokal auf dem Gerät; optional existiert
+ein Sicherungs-Account (Handle + 6-stelliger PIN, CNSA 2.0) ausschliesslich
+für den verschlüsselten IPFS-Backup-Sync und die Wiederherstellung auf einem
+neuen Gerät (Handle + 16-Wort-Phrase).
+
+Everything is free: no subscription, no credits, no billing, no Stripe, no
+Bitcoin, no forced login. Every feature is available with or without an
+account. The credit system has been removed entirely. The app runs
+anonymously and locally on the device; an optional backup account
+(handle + 6-digit PIN, CNSA 2.0) exists solely for the encrypted IPFS
+backup sync and device recovery (handle + 16-word phrase).
 
 ## Lizenz / License
 

@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "BenzResolver — .benz dezentral auflösen",
+  "version": "1.0.0",
+  "description": "Löst .benz-Namen über die signierte BenzRegistry auf: dezentral, ohne ICANN, ohne Registrar, ohne Drittpartei. OpenOS Momo AI von Sebastian Kläy.",
+  "permissions": ["declarativeNetRequest", "declarativeNetRequestFeedback", "alarms", "storage"],
+  "host_permissions": ["<all_urls>"],
+  "background": { "service_worker": "background.js" },
+  "action": { "default_popup": "popup.html", "default_title": "BenzResolver" },
+  "options_page": "options.html",
+  "browser_specific_settings": {
+    "gecko": { "id": "benz-resolver@openos.benz", "strict_min_version": "109.0" }
+  }
+}

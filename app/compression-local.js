@@ -271,13 +271,12 @@
       if (projektId) inProjektEintragen(projektId, archiv);
       status(false);
       const delta = original.byteLength ? (100 - hyb.byteLength / original.byteLength * 100) : 0;
-      ns.ui?.toast?.(`„${basis}.hyb“ fertig — ${fmtBytes(original.byteLength)} → ${fmtBytes(hyb.byteLength)} · ${delta.toFixed(1)} % kleiner · ${noetig} Credits${desktopArchiv ? ` · auch im Momo-Ordner (Original/ + Komprimiert/)` : ""}.`);
+      ns.ui?.toast?.(`„${basis}.hyb“ fertig — ${fmtBytes(original.byteLength)} → ${fmtBytes(hyb.byteLength)} · ${delta.toFixed(1)} % kleiner${desktopArchiv ? ` · auch im Momo-Ordner (Original/ + Komprimiert/)` : ""}.`);
       ns.library?.render?.();
       return true;
     } catch (err) {
       status(false);
       ns.ui?.toast?.(`Kompression fehlgeschlagen: ${(err && err.message) || err}`);
-      if (/Nicht genügend Credits/i.test(String(err?.message || err))) { try { ns.app?.openView?.("pricing"); } catch {} }
       return false;
     }
   }
