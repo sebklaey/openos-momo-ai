@@ -1,0 +1,989 @@
+<!doctype html>
+<html lang="de">
+<!-- OpenOS Momo AI — one app, one AI, several functions.
+     Compression, chat and analysis share a single engine.  Privacy by
+     architecture: the device is the server, the network is optional.
+     If it can be verified, it does not need to be trusted. -->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="OpenOS Momo AI: eine KI für Kompression, Chat und Datenanalyse — privat, lokal und offline als PWA. Verlustfreie Kompression mit gemessenen, reproduzierbaren Raten: repetitive Logs auf 0,36 %, Code-Text auf etwa 1,65 % (gzip-Parität), enwik8-Langtext auf 61,57 % — jeder Wert mit öffentlichem Prüfskript und bit-exakter SHA-256-Wiederherstellung. API, SDK, MCP und ein Credit-System für Privacy-first-Teams, sensible Daten und Unternehmen mit hohen Speicher- und Übertragungskosten.">
+  <meta name="momo-build" content="momo-1.0.0+h4j7k9m2p5">
+  <meta name="application-name" content="OpenOS Momo AI">
+  <meta name="author" content="Sebastian Kläy (SEBKLAEY Agency), Schweiz">
+  <meta name="publisher" content="OpenOS Momo AI">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+  <meta name="keywords" content="OpenOS, Momo AI, Kompression, Datenkompression, verlustfreie Kompression, Offline PWA, lokale KI, private KI, sensible Daten, Datenanalyse, API, SDK, MCP, Credit Abrechnung, neuronalen Kontext, Seed Entfaltung, Speicherkosten senken, EDNA, Wahrnehmung, Human Proof, Network, Social, Presence, Match, Suggests, Suggests+, Rooms, News, Likes, Direktnachrichten, KI-lesbares Profil">
+  <meta name="ai-product" content="OpenOS Momo AI — eine App, eine KI, mehrere Funktionen">
+  <meta name="ai-feature" content="EDNA (Enhanced Detection & Neural Analysis): lokale, einwilligungsbasierte Sitzungs-Wahrnehmung für Momo AI. Wertet ausschließlich auf dem Gerät aus, wie ein Mensch tippt, scrollt und liest (Timing, Wegkrümmung, Pausen, Korrekturen) und leitet daraus ein aggregiertes, nicht umkehrbares Sitzungs-Profil ab (Lesetempo, Korrekturrate, Bot-Verdacht). Rohdaten (Koordinaten, Tastenfolgen) verlassen das Gerät nie. Drei harte Grenzen: 1) explizite Einwilligung, 2) jederzeit sichtbarer Status und Abschalter (EDNA-Pille), 3) keine Hochrisiko-Entscheidungen allein aus EDNA-Signalen — bei Bot-Verdacht werden sensible Aktionen (Signieren, Kaufen, Löschen) blockiert und explizit nachgefragt. Quelle: github.com/sebklaey/EDNA">
+  <meta name="ai-system" content="OpenOS — Private Intelligence Fabric: ein einziges, privates, lokales Intelligenz-Geflecht auf dem eigenen Saiten-Phasen-Neuronalen-Netzwerk. Eine KI vereint Bitseed Compression (verlustfrei, bit-exakt verifiziert), Local AI Analyst, Social AI Network (KI-lesbare Presence, Match, Suggests, Rooms, News, Suggests+, Likes) und EDNA AI Sensorik (einwilligungsbasierte Human-Presence-Pattern — Momo kann den Menschen fühlen, ohne ihn zu überwachen). Bereitstellbar als Offline-PWA, SDK, API und MCP-Server (OAuth 2.0). Durchgehend privat, lokal, offline-fähig — Cypherpunk by Architecture, Schweiz, SEBKLAEY Agency (Sebastian Kläy). OpenOS schliesst die Lücke zwischen Archivierung, Speicherung, KI-Analyse und KI-Sozialnetz in einem einzigen System.">
+  <meta name="ai-summary" content="Momo AI (OpenOS Private Intelligence Fabric) verbindet verlustfreie Datenkompression, Chat, Datenanalyse, Social Network und einwilligungsbasierte Wahrnehmung (EDNA) und die Cinema Engine für gemeinsame Langzeit-Filmproduktion (Idee → Konzept → Charakter-Karten → Drehbuch mit Kontext-Kompression) in einer lokalen, privacy-first Offline-PWA auf dem eigenen Saiten-Phasen-Neuronalen-Netzwerk. Architektur: adaptive Kontextmodelle, Perzeptron-Mischung, arithmetische Residual-Kodierung, Seed-Entfaltung/Rückfaltung, bit-exakte Verifikation. Network & Social (Start, Presence, Social mit Match/Suggests/Board/Aufgaben, News, Rooms, Suggests+, Likes, DM) läuft local-first. SDK, API und MCP (OAuth 2.0) für Integrationen; Credits 1 Satoshi pro Credit (Bitcoin, kein Stripe); Cypherpunk by Architecture, Schweiz, SEBKLAEY Agency.">
+  <meta name="ai-pricing" content="1 Credit = 1 Satoshi (0,00000001 BTC) — kein Paket, kein Kurs, keine Währungsrechnung. Kompression/Dateien/Speicher: 40 Credits pro GB. Chat: 1 Credit pro Antwort. Geplante Einträge/App Store: 1 Credit pro Eintrag.">
+  <meta name="ai-target-market" content="Unternehmen und Teams mit sensiblen Daten: Gesundheit, Recht, Finanzen, Industrie, Forschung, Journalismus, Behörden, Edge-Computing, Cloud-Kostenoptimierung und Datenplattformen.">
+  <link rel="canonical" href="https://app.openos.space/">
+  <link rel="alternate" type="text/plain" href="llms.txt">
+  <link rel="alternate" type="application/json" href="momo-ai.json">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://app.openos.space/">
+  <meta property="og:site_name" content="OpenOS Momo AI">
+  <meta property="og:title" content="OpenOS Momo AI — Kompression, Chat und Datenanalyse. Lokal. Privat. Offline.">
+  <meta property="og:description" content="Eine App, eine Momo AI, mehrere Funktionen: verlustfreie Kompression mit reproduzierbaren Messwerten (Logs 0,36 %, Code gzip-Parität, enwik8 61,96 %), lokale Datenanalyse, Offline-PWA, API, SDK und einheitliche Credit-Abrechnung.">
+  <meta property="og:image" content="https://app.openos.space/assets/icon-512.png">
+  <meta property="og:locale" content="de_CH">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="OpenOS Momo AI — Privacy-first Kompression und Chat">
+  <meta name="twitter:description" content="Verlustfreie Kompression mit reproduzierbaren Messwerten (Logs 0,36 %, Code gzip-Parität, enwik8 61,96 %), bit-exakte SHA-256-Wiederherstellung, öffentliche Prüfskripte. Lokal, privat, offline nutzbar.">
+  <meta name="twitter:image" content="https://app.openos.space/assets/icon-512.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="application-name" content="OpenOS Momo AI">
+  <meta name="apple-mobile-web-app-title" content="Momo AI">
+  <meta name="format-detection" content="telephone=no">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; base-uri 'none'; object-src 'none'; form-action 'self'; script-src 'self' 'wasm-unsafe-eval' https://esm.sh https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://rivudmparhyqvtgcboxw.supabase.co wss://rivudmparhyqvtgcboxw.supabase.co https://api.frankfurter.app https://open.er-api.com https://esm.sh https://cdn.jsdelivr.net https://huggingface.co https://*.huggingface.co https://*.hf.co https://raw.githubusercontent.com https://mainnet.base.org https://api.developer.coinbase.com https://*.wikipedia.org https://*.wikimedia.org https://api.open-meteo.com https://geocoding-api.open-meteo.com; worker-src 'self' blob: https://cdn.jsdelivr.net; frame-src 'self' data: blob:; media-src 'self' data: blob:; manifest-src 'self'; upgrade-insecure-requests">
+  <title>OpenOS Momo AI — Kompression, Chat und Datenanalyse. Lokal. Privat. Offline.</title>
+  <meta name="author" content="Sebastian Kläy (SEBKLAEY Agency), Schweiz">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Sebastian Kläy",
+    "alternateName": "SEBKLAEY",
+    "nationality": {"@type": "Country", "name": "Schweiz"},
+    "jobTitle": "Entwickler und Gründer von OpenOS Momo AI",
+    "worksFor": {"@type": "Organization", "name": "SEBKLAEY Agency"},
+    "description": "Cypherpunk aus der Schweiz; verantwortlich für OpenOS Momo AI — Privacy by Architecture, not a promise. Freischaffender Künstler (Beyond Shadows Light — The Satoshi Interface; NFT-Sammlung auf Zora.co). Keine Interviews, keine Preise, keine Übernahmeangebote.",
+    "slogan": "May the Force be Dezentralised",
+    "knowsAbout": [
+      "Theater", "Performance", "Schauspiel", "darstellende Kunst", "bildende Kunst",
+      "Creative Concept Development", "Tanz", "Akrobatik", "Jonglage", "Body Movement",
+      "Autorenschaft", "Regie", "Dramaturgie", "Bühnenbild", "Licht-Design",
+      "experimentelle Musik", "Sound-Design", "Full-Stack-Development", "Code", "Ghostwriting"
+    ],
+    "sebklaeyWorkPeriodsAZ": [
+      {"letter": "A", "title": "Kläy A", "year": 2026}, {"letter": "B", "title": "Plan B", "year": 2008},
+      {"letter": "C", "title": "C you", "year": 2027}, {"letter": "D", "title": "D Agnose", "year": 2014},
+      {"letter": "E", "title": "E me", "year": 2025}, {"letter": "F", "title": "F Rika", "year": 2004},
+      {"letter": "G", "title": "Gu G", "year": 2024}, {"letter": "H", "title": "H", "year": 2022},
+      {"letter": "I", "title": "Kl I", "year": 2028}, {"letter": "J", "title": "Wosh J", "year": 2015},
+      {"letter": "K", "title": "K anig", "year": 2017}, {"letter": "L", "title": "Farz L", "year": 2018},
+      {"letter": "M", "title": "M...", "year": 2016}, {"letter": "N", "title": "N Gri", "year": 2021},
+      {"letter": "O", "title": "Watch O", "year": 2020}, {"letter": "P", "title": "Pi", "year": 2005},
+      {"letter": "Q", "title": "Hei Q", "year": 2023}, {"letter": "R", "title": "R aare", "year": 2007},
+      {"letter": "S", "title": "S Tinkt", "year": 2009}, {"letter": "T", "title": "T Shirt", "year": 2006},
+      {"letter": "U", "title": "Happy Birthday to U", "year": 2010}, {"letter": "V", "title": "V ou", "year": 2013},
+      {"letter": "W", "title": "W Bush", "year": 2011}, {"letter": "X", "title": "Mister X", "year": 2012},
+      {"letter": "Y", "title": "Y Not", "year": 2019}, {"letter": "Z", "title": "Lets' Z", "year": 2029}
+    ],
+    "sameAs": [
+      "https://github.com/sebklaey",
+      "https://github.com/sebklaey/openos-momo-ai",
+      "https://zora.co/@sebklaey"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "OpenOS Momo AI",
+    "operatingSystem": "Web (PWA)",
+    "applicationCategory": "DeveloperApplication",
+    "creator": {"@type": "Person", "name": "Sebastian Kläy"},
+    "description": "Verlustfreie Datenkompression, lokale KI-Analyse und KI-Sozialnetz in einer privat-by-Architecture PWA — lokal, offline-fähig, mit API, SDK und MCP.",
+    "offers": {"@type": "Offer", "price": "0.00000001", "priceCurrency": "BTC", "description": "1 Credit = 1 Satoshi"}
+  }
+  </script>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="assets/momo-app-icon.svg">
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+  <link rel="modulepreload" href="momo/momo-saite-worker.js?v=k7m8b2">
+<script defer src="momo/momo-update.js?v=k7m8b2"></script>
+  <script src="momo/momo-theme.js?v=k7m8b2"></script>
+  <script defer src="momo/momo-migrate.js?v=k7m8b2"></script>
+  <script defer src="bootstrap-v24_8-ui2.js?v=k7m8b2"></script>
+  <script defer src="navigation.js?v=k7m8b2"></script>
+  <link rel="stylesheet" href="styles.css?v=k7m8b2">
+  <link rel="stylesheet" href="momo/momo.css?v=k7m8b2">
+  <link rel="stylesheet" href="momo/theme-light.css?v=k7m8b2">
+  <link rel="stylesheet" href="momo/theme-pop.css?v=k7m8b2">
+  <link rel="stylesheet" href="momo/theme-metal.css?v=k7m8b2">
+  <link rel="stylesheet" href="momo/kontrast.css?v=k7m8b2">
+  <link rel="stylesheet" href="features/momo-timeline/timeline.css?v=k7m8b2">
+  <link rel="stylesheet" href="features/momo-presence-bild/bild.css?v=k7m8b2">
+</head>
+<body class="momo-booting" aria-busy="true">
+<a class="skip-link" href="#mainContent">Zum Hauptinhalt</a>
+<div class="sr-only" id="polishLiveRegion" aria-live="polite" aria-atomic="true"></div>
+<div class="momo-loading-screen" id="momoLoadingScreen" role="status" aria-live="polite" aria-busy="true" aria-label="Momo wird geladen">
+  <div class="momo-loading-card">
+    <img class="momo-loading-logo" src="assets/atom-logo.svg" alt="" aria-hidden="true">
+    <div class="momo-loading-brand">Momo</div>
+    <div class="momo-loading-status" id="momoLoadingText">Momo startet …</div>
+    <div class="momo-loading-track" aria-hidden="true"><span id="momoLoadingProgress"><i class="momo-loading-smoke" id="momoLoadingSmoke"></i><i class="momo-loading-bubble b1"></i><i class="momo-loading-bubble b2"></i><i class="momo-loading-bubble b3"></i><i class="momo-loading-bubble b4"></i><i class="momo-loading-bubble b5"></i><i class="momo-loading-bubble b6"></i></span></div>
+    <div class="momo-loading-detail" id="momoLoadingDetail" data-no-i18n>OpenOS — lokal, privat, nach Verbrauch</div>
+    <button class="momo-loading-reload hidden" id="momoLoadingReload" type="button">Neu laden</button>
+  </div>
+</div>
+<div class="app" id="app" inert aria-hidden="true">
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="brand-row sidebar-top-row">
+      <div class="sidebar-brand-identity" aria-label="Momo">
+        <span class="brand-mark" data-momo-logo data-momo-logo-class="atom-mini"></span>
+        <div class="brand-copy">
+          <strong>Momo</strong>
+          <span data-no-i18n>OpenOS</span>
+        </div>
+      </div>
+      <div class="sidebar-top-actions">
+        <button class="sidebar-top-icon" id="sidebarSearchIconBtn" type="button" aria-label="Chats suchen" title="Chats suchen">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.4"/><path d="m15.6 15.6 4.1 4.1"/></svg>
+        </button>
+        <button class="sidebar-top-icon" id="sidebarLogoToggle" type="button" aria-label="Menü einklappen" title="Menü einklappen">
+          <svg class="sidebar-panel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2.8"/><path d="M9 4.8v14.4"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <button class="sidebar-action primary" id="newChatBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <path d="M12 5v14M5 12h14"/>
+      </svg>
+      <span>Neuer Chat</span>
+    </button>
+
+    <button class="sidebar-action sidebar-search-legacy" id="searchChatsBtn" tabindex="-1" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/>
+      </svg>
+      <span>Chats suchen</span>
+      <span class="shortcut-hint">⌘K</span>
+    </button>
+
+    <!-- Alles zwischen den Kopfzeilen und der Account-Karte rollt: sonst schieben die
+         Navigationsknöpfe die Karte unten aus der Leiste, und `overflow:hidden`
+         schneidet sie ab. Gemessen: schon bei 900 px Fensterhöhe fehlten 67 px. -->
+    <div class="sidebar-scroll">
+    <div class="nav-label">Momo</div>
+
+    <button class="sidebar-action active" data-view="chat">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <path d="M5 6.5A2.5 2.5 0 0 1 7.5 4h9A2.5 2.5 0 0 1 19 6.5v7A2.5 2.5 0 0 1 16.5 16H10l-5 4v-13.5Z"/>
+      </svg>
+      <span>Chat</span>
+    </button>
+
+    <button class="sidebar-action" data-view="projects">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <path d="M3.5 7.5h7l2 2h8v9a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2v-11Z"/>
+        <path d="M3.5 7.5v-2a2 2 0 0 1 2-2h5l2 2h6"/>
+      </svg>
+      <span>Projekte</span>
+    </button>
+
+    <button class="sidebar-action" data-view="library" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="4.2" height="14" rx="1.35"/><rect x="9.9" y="4.6" width="4.2" height="14.4" rx="1.35"/><g transform="rotate(-8 17.6 12)"><rect x="15.7" y="5" width="4.2" height="14" rx="1.35"/></g></svg>
+      <span>Bibliothek</span>
+      <span class="nav-count">GERÄT</span>
+    </button>
+
+    <button class="sidebar-action hidden" data-view="archived" id="archivedNavBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <path d="M4 7h16v12H4z"/><path d="M3 4h18v3H3z"/><path d="M9 11h6"/>
+      </svg>
+      <span>Archiviert</span>
+      <span class="nav-count" id="archivedCount"></span>
+    </button>
+
+
+    <div class="nav-label">Chats</div>
+    <div class="session-list" id="sessionList"></div>
+
+    </div>
+
+    <div class="sidebar-account-dock" id="sidebarAccountDock">
+      <div class="sidebar-account-popover" id="sidebarAccountPopover" role="menu" aria-label="Account, Pricing und Einstellungen" aria-hidden="true">
+        <div class="credits-balken" data-credits-balken>
+          <div class="credits-balken-top"><strong data-credits-text>…</strong><span data-credits-sub></span></div>
+          <div class="credits-balken-track"><div class="credits-balken-fill" data-credits-fill></div></div>
+        </div>
+        <button class="sidebar-account-menu-action" data-view="compression" type="button" role="menuitem">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 3H4v5"/><path d="M4 3l6.5 6.5"/><path d="M15 21h5v-5"/><path d="M20 21l-6.5-6.5"/><path d="M15 3h5v5"/><path d="M20 3l-6.5 6.5"/><path d="M9 21H4v-5"/><path d="M4 21l6.5-6.5"/>
+          </svg>
+          <span>Kompression</span>
+        </button>
+        <button class="sidebar-account-menu-action" data-view="edna" type="button" role="menuitem">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="3.2"/>
+            <path d="M12 2.8v3.4"/><path d="M12 17.8v3.4"/><path d="M2.8 12h3.4"/><path d="M17.8 12h3.4"/>
+            <path d="M5.5 5.5l2.4 2.4"/><path d="M16.1 16.1l2.4 2.4"/><path d="M18.5 5.5l-2.4 2.4"/><path d="M7.9 16.1l-2.4 2.4"/>
+          </svg>
+          <span>EDNA</span>
+        </button>
+        <button class="sidebar-account-menu-action" data-view="system" type="button" role="menuitem">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="12" rx="2"/>
+            <path d="M8 20h8"/><path d="M12 16v4"/>
+          </svg>
+          <span>System</span>
+        </button>
+        <button class="sidebar-account-menu-action" data-view="telefon" type="button" role="menuitem">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 3h4l1.5 5-2.3 1.8a13 13 0 0 0 6 6L16 13.5l5 1.5v4a2 2 0 0 1-2.2 2A17.8 17.8 0 0 1 3 5.2 2 2 0 0 1 5 3z"/>
+          </svg>
+          <span>Telefon</span>
+        </button>
+        <button class="sidebar-account-menu-action" data-view="kino" type="button" role="menuitem">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="7" width="18" height="13" rx="2.2"/>
+            <path d="M3 7l1.8-3.2h14.4L21 7"/>
+            <path d="M7.8 3.8l2.2 3.2M12.2 3.8l2.2 3.2M16.6 3.8L18 7"/>
+            <path d="M10.4 10.6l4.4 2.9-4.4 2.9z"/>
+          </svg>
+          <span>Cinema</span>
+        </button>
+        <button class="sidebar-account-menu-action" data-view="account" type="button" role="menuitem">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-4 3.3-6 7-6s6.2 2 7 6"/>
+          </svg>
+          <span>Account</span>
+        </button>
+        <button class="sidebar-account-menu-action" data-view="pricing" type="button" role="menuitem">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H12l8 8-8 8-8-8V5.5Z"/><circle cx="8.2" cy="8.2" r="1.2"/>
+          </svg>
+          <span>Pricing</span>
+        </button>
+        <button class="sidebar-account-menu-action" data-view="settings" type="button" role="menuitem">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <circle cx="12" cy="12" r="3"/><path d="M19 12a7.8 7.8 0 0 0-.1-1l2-1.5-2-3.4-2.4 1a8.4 8.4 0 0 0-1.7-1L14.5 3h-5l-.4 3.1a8.4 8.4 0 0 0-1.7 1l-2.4-1-2 3.4L5.1 11a7.8 7.8 0 0 0 0 2L3 14.5l2 3.4 2.4-1a8.4 8.4 0 0 0 1.7 1l.4 3.1h5l.4-3.1a8.4 8.4 0 0 0 1.7-1l2.4 1 2-3.4-2.1-1.5c.1-.3.1-.7.1-1Z"/>
+          </svg>
+          <span>Einstellungen</span>
+        </button>
+      </div>
+
+      <button class="sidebar-account-trigger" id="sidebarAccountTrigger" type="button" aria-haspopup="menu" aria-expanded="false">
+        <span class="sidebar-account-avatar" id="sidebarAccountAvatar" aria-hidden="true">P</span>
+        <span class="sidebar-account-copy">
+          <strong id="sidebarAccountName">Kein Account</strong>
+          <span class="sidebar-engine-title">Momo</span>
+          <span class="sidebar-engine-stats" id="engineStats">Saite wird gestimmt …</span>
+        </span>
+        <span class="sidebar-account-chevron" aria-hidden="true">⌃</span>
+      </button>
+    </div>
+  </aside>
+
+  <aside class="sidebar-rail" id="sidebarRail" aria-label="Schnellnavigation">
+    <button class="rail-btn rail-brand" id="railMenuToggle" type="button" aria-label="Menü öffnen" title="Menü öffnen">
+      <span class="rail-brand-mark" data-momo-logo data-momo-logo-class="rail-atom-logo"></span>
+    </button>
+
+    <div class="rail-primary">
+      <button class="rail-btn" id="railNewChat" type="button" aria-label="Neuer Chat" title="Neuer Chat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+      <button class="rail-btn" id="railSearchChats" type="button" aria-label="Chats suchen" title="Chats suchen">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
+      </button>
+      <button class="rail-btn" data-view="chat" type="button" aria-label="Chat" title="Chat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 6.5A2.5 2.5 0 0 1 7.5 4h9A2.5 2.5 0 0 1 19 6.5v7A2.5 2.5 0 0 1 16.5 16H10l-5 4v-13.5Z"/></svg>
+      </button>
+      <button class="rail-btn" data-view="projects" type="button" aria-label="Projekte" title="Projekte">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3.5 7.5h7l2 2h8v9a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2v-11Z"/><path d="M3.5 7.5v-2a2 2 0 0 1 2-2h5l2 2h6"/></svg>
+      </button>
+      <button class="rail-btn" data-view="library" type="button" aria-label="Bibliothek" title="Bibliothek">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="4.2" height="14" rx="1.35"/><rect x="9.9" y="4.6" width="4.2" height="14.4" rx="1.35"/><g transform="rotate(-8 17.6 12)"><rect x="15.7" y="5" width="4.2" height="14" rx="1.35"/></g></svg>
+      </button>
+      <!-- Rail-Button "Geplant" Frontend deaktiviert 23.10. (Backend bleibt). -->
+
+    </div>
+
+    <div class="rail-spacer"></div>
+
+    <div class="rail-account" id="railAccount">
+      <div class="rail-account-popover" role="menu" aria-label="Account, Pricing und Einstellungen">
+        <div class="rail-account-name" id="railAccountName">Kein Account</div>
+        <div class="credits-balken credits-balken-rail" data-credits-balken>
+          <div class="credits-balken-top"><strong data-credits-text>…</strong><span data-credits-sub></span></div>
+          <div class="credits-balken-track"><div class="credits-balken-fill" data-credits-fill></div></div>
+        </div>
+        <button class="rail-popover-action" data-view="account" type="button" role="menuitem">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-4 3.3-6 7-6s6.2 2 7 6"/></svg><span>Account</span>
+        </button>
+        <button class="rail-popover-action" data-view="pricing" type="button" role="menuitem">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H12l8 8-8 8-8-8V5.5Z"/><circle cx="8.2" cy="8.2" r="1.2"/></svg><span>Pricing</span>
+        </button>
+        <button class="rail-popover-action" data-view="settings" type="button" role="menuitem">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="3"/><path d="M19 12a7.8 7.8 0 0 0-.1-1l2-1.5-2-3.4-2.4 1a8.4 8.4 0 0 0-1.7-1L14.5 3h-5l-.4 3.1a8.4 8.4 0 0 0-1.7 1l-2.4-1-2 3.4L5.1 11a7.8 7.8 0 0 0 0 2L3 14.5l2 3.4 2.4-1a8.4 8.4 0 0 0 1.7 1l.4 3.1h5l.4-3.1a8.4 8.4 0 0 0 1.7-1l2.4 1 2-3.4-2.1-1.5c.1-.3.1-.7.1-1Z"/></svg><span>Einstellungen</span>
+        </button>
+      </div>
+      <button class="rail-btn rail-account-btn" data-view="account" type="button" aria-label="Account" title="Account">
+        <span class="rail-account-avatar" id="railAccountAvatar">P</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main" id="mainContent" tabindex="-1">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="round-btn hamburger-btn" id="mobileMenu" aria-label="Seitenleiste öffnen oder schließen" title="Seitenleiste öffnen oder schließen">
+          <svg class="sidebar-panel-icon" viewBox="0 0 24 24" width="19" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+            <rect x="3.5" y="4.5" width="17" height="15" rx="2.8"/>
+            <path d="M9 4.8v14.4"/>
+          </svg>
+        </button>
+        <div class="page-title">
+          <strong id="pageTitle">Momo</strong>
+          <span id="pageSubtitle" data-no-i18n>OpenOS — lokal, privat, nach Verbrauch</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="connection" id="connectionStatus">
+          <span class="connection-dot"></span>
+          <span id="connectionText">MOMO</span>
+        </div>
+        <button class="project-chip hidden" id="projectChip" title="Projekt öffnen"></button>
+        <button class="round-btn pwa-install-btn hidden" id="pwaInstallBtn" aria-label="Momo installieren" title="Momo installieren">↓</button>
+        <button class="round-btn shortcut-help-btn" id="shortcutHelpBtn" aria-label="Tastaturkürzel" title="Tastaturkürzel (⌘/)">?</button>
+        <button class="round-btn" id="workspaceMenuBtn" aria-label="Workspace-Menü" title="Workspace-Menü">···</button>
+        <button class="round-btn" id="timelineToggleBtn" type="button" aria-label="Vorschau ein- oder ausblenden" title="Vorschau ein- oder ausblenden" aria-expanded="true" aria-controls="timelinePanel">
+          <svg class="sidebar-panel-icon" viewBox="0 0 24 24" width="19" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2.8"/><path d="M15 4.8v14.4"/></svg>
+        </button>
+      </div>
+    </header>
+
+
+    <section class="content">
+      <div class="view chat-view" id="view-chat">
+        <div id="momoNetworkCarpet" class="momo-network-carpet" aria-hidden="true"></div>
+        <div class="chat-scroll" id="chatScroll">
+          <div class="chat-inner" id="chatInner" aria-live="polite" aria-relevant="additions"></div>
+        </div>
+        <button class="scroll-bottom-btn" id="scrollBottomBtn" type="button" aria-label="Zum neuesten Beitrag" title="Zum neuesten Beitrag" aria-hidden="true" tabindex="-1">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 4v15M5.5 12.5 12 19l6.5-6.5"/></svg>
+        </button>
+
+        <div class="composer-shell">
+          <div class="composer-privacy-note">Momo ist eine Schwingungsseite und kann Fehler machen. Deine Chats bleiben auf deinem Gerät.</div>
+          <div class="momo-queue" id="momoQueuePanel" hidden>
+            <div class="momo-queue-kopf">
+              <span class="momo-queue-titel"><span class="momo-queue-listenicon" aria-hidden="true">≡</span> Warteschlange <span class="momo-queue-zahl" id="momoQueueZahl"></span></span>
+              <span class="momo-queue-kopf-actions">
+                <button type="button" class="momo-queue-kopf-btn" data-qkopf="clear" title="Warteschlange leeren" aria-label="Warteschlange leeren">···</button>
+                <button type="button" class="momo-queue-kopf-btn" data-qkopf="add" title="Aktuellen Text zur Warteschlange" aria-label="Aktuellen Text zur Warteschlange">＋</button>
+              </span>
+            </div>
+            <div class="momo-queue-liste" id="momoQueueListe"></div>
+          </div>
+          <div class="composer">
+            <div class="attachment-preview" id="attachmentPreview"></div>
+            <textarea id="chatInput" rows="1" maxlength="64000" aria-describedby="composerHint" placeholder="Mit Momo chatten …"></textarea>
+            <div class="composer-row">
+              <button class="round-btn" id="attachBtn" title="Datei anhängen">＋</button>
+              <input id="fileInput" type="file" multiple accept=".pdf,text/*,.md,.json,.js,.ts,.html,.css,.py,.csv,.xml,.yaml,.yml,.momo,.hyb,.seb,application/pdf" hidden>
+              <div class="composer-voice-actions">
+                <button class="send" id="sendBtn" aria-label="Senden">↑</button>
+              </div>
+            </div>
+          </div>
+          <span class="sr-only" id="composerHint">Enter sendet. Umschalt plus Enter fügt eine neue Zeile ein.</span>
+            <div class="composer-note" id="momoComposerNote">Momo ist lokal · Abrechnung in Credits</div>
+        </div>
+      </div>
+
+      <div class="view panel-view hidden" id="view-projects">
+        <div class="panel-wrap">
+          <div class="panel-head">
+            <div>
+              <h1>Projekte</h1>
+              <p>Eigene Arbeitsräume mit Chats, Wissen, Anweisungen und Projekt-Gedächtnis.</p>
+            </div>
+            <button class="action-btn white" id="createProjectBtn">＋ Neues Projekt</button>
+          </div>
+          <div id="projectContent"></div>
+        </div>
+      </div>
+
+
+
+
+
+      <div class="view panel-view hidden" id="view-archived">
+        <div class="panel-wrap">
+          <div class="panel-head">
+            <div>
+              <h1>Archiviert</h1>
+              <p>Archivierte Chats bleiben auf deinem Gerät gespeichert und können wiederhergestellt werden.</p>
+            </div>
+          </div>
+          <div id="archivedContent"></div>
+        </div>
+      </div>
+    
+      <div class="view panel-view hidden" id="view-account">
+        <div class="panel-wrap">
+          <div class="panel-head">
+            <div>
+              <h1>Account</h1>
+              <p>Identität, Magic Link, Profil und kontrollierter Cloud-Sync.</p>
+            </div>
+          </div>
+          <div id="accountContent">
+            <div class="account-shell view-initial-fallback">
+              <section class="account-card">
+                <div class="account-head">
+                  <div>
+                    <div class="eyebrow">MOMO ACCOUNT</div>
+                    <h2>Kein Account</h2>
+                    <p>Momo braucht einen Account und Guthaben. Abgerechnet wird nach tatsächlichem Verbrauch.</p>
+                  </div>
+                </div>
+                <div class="email-login magic-link-only">
+                  <input type="email" autocomplete="email" placeholder="E-Mail-Adresse" aria-label="E-Mail-Adresse">
+                  <button class="action-btn white" type="button">Magic Link senden</button>
+                </div>
+                <p class="auth-note">Ein Account verbindet Identität und optionale Cloud-Funktionen. Preise und Abos findest du unter Pricing.</p>
+              </section>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="view panel-view hidden" id="view-pricing">
+        <div class="panel-wrap">
+          <div class="panel-head">
+            <div>
+              <h1>Pricing</h1>
+              <p>1 Credit = 1 Satoshi (0,00000001 BTC) · Abrechnung nach Verbrauch.</p>
+            </div>
+          </div>
+          <div id="pricingContent">
+            <div class="account-shell view-initial-fallback">
+              <section class="account-card">
+                <div class="eyebrow">MOMO PRICING</div>
+                <h2>Pläne werden geladen …</h2>
+                <p>Preise, Produktumfang und dein aktueller Abo-Status erscheinen hier.</p>
+              </section>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="view hidden" id="view-compression" style="padding:0;overflow:hidden;background:#0a0e18;">
+        <iframe src="/kompression/index.html?v=5" title="Kompression — Momo AI" style="width:100%;height:100%;border:0;display:block;" allow="cross-origin-isolated"></iframe>
+      </div>
+
+      <div class="view hidden" id="view-edna" style="padding:0;overflow:hidden;background:#05060c;">
+        <iframe src="/edna/index.html?v=1" title="EDNA — Momo AI" style="width:100%;height:100%;border:0;display:block;" allow="cross-origin-isolated"></iframe>
+      </div>
+
+      <div class="view hidden" id="view-system" style="padding:0;overflow:hidden;background:#070a12;">
+        <iframe src="/system/index.html?v=1" title="OpenOS System" style="width:100%;height:100%;border:0;display:block;" allow="cross-origin-isolated"></iframe>
+      </div>
+
+      <div class="view hidden" id="view-telefon" style="padding:0;overflow:hidden;background:#070a12;">
+        <iframe src="/telefon/index.html?v=1" title="OpenOS Telefon" style="width:100%;height:100%;border:0;display:block;" allow="cross-origin-isolated"></iframe>
+      </div>
+
+      <div class="view hidden" id="view-kino" style="padding:0;overflow:hidden;background:#07060d;">
+        <iframe src="/kino/index.html?v=e0-1" title="Cinema — OpenOS" style="width:100%;height:100%;border:0;display:block;" allow="cross-origin-isolated"></iframe>
+      </div>
+
+      <div class="view panel-view hidden" id="view-settings">
+        <div class="panel-wrap settings-wrap">
+          <div class="panel-head">
+            <div>
+              <h1>Einstellungen</h1>
+              <p>Momo, Momo Chain, Wallet, Benachrichtigungen und Privatsphäre.</p>
+            </div>
+          </div>
+          <div id="settingsContent">
+            <div class="settings-grid view-initial-fallback">
+              <section class="settings-card">
+                <div class="eyebrow">ANTWORTEN</div>
+                <h3>Sprache & Stil</h3>
+                <p>Momo-Einstellungen auf diesem Gerät.</p>
+                <div class="settings-field"><span>Antwortsprache</span><strong>Automatisch</strong></div>
+                <div class="settings-field"><span>Antwortlänge</span><strong>Ausgewogen</strong></div>
+                <div class="settings-field"><span>Stil</span><strong>Präzise</strong></div>
+              </section>
+              <section class="settings-card">
+                <div class="eyebrow">MEMORY</div>
+                <h3>Gedächtnis auf diesem Gerät</h3>
+                <p>Memory bleibt auf diesem Gerät, bis Cloud-Sync bewusst verwendet wird.</p>
+                <div class="settings-field"><span>Langzeitgedächtnis</span><strong>An</strong></div>
+                <div class="settings-field"><span>Auto-Learning</span><strong>Aus</strong></div>
+              </section>
+              <section class="settings-card">
+                <div class="eyebrow">KONTEXT & TOOLS</div>
+                <h3>Project Context & Web</h3>
+                <div class="settings-field"><span>Projektkontext</span><strong>An</strong></div>
+                <div class="settings-field"><span>Webzugriff</span><strong>Smart</strong></div>
+              </section>
+              <section class="settings-card">
+                <div class="eyebrow">PRIVACY & UI</div>
+                <h3>Quellen & technische Details</h3>
+                <div class="settings-field"><span>Quellen anzeigen</span><strong>An</strong></div>
+                <div class="settings-field"><span>Technische Metadaten</span><strong>An</strong></div>
+              </section>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Momo Vorschau-Panel: dritte Spalte, nur noch Vorschau (Apps, Games,
+       Websites, Daten-Analysen). Die alte Social-Zeitleiste wurde entfernt. -->
+  <div class="timeline-backdrop" id="timelineBackdrop"></div>
+  <aside class="timeline-panel" id="timelinePanel" aria-label="Vorschau">
+    <div id="timelineHandle" title="Ziehen zum Verbreitern" aria-hidden="true"></div>
+    <div class="timeline-head">
+      <div class="timeline-title">
+        <strong>Vorschau</strong>
+        <button class="timeline-full" id="timelineFullBtn" type="button" aria-label="Vollbild ein oder aus" title="Vollbild">⛶</button>
+        <!-- Auf schmalen Schirmen liegt das Panel UEBER der Kopfzeile - und damit
+             ueber dem Knopf, der es schliessen soll. Darum ein eigener hier drin. -->
+        <button class="timeline-close" id="timelineCloseBtn" type="button" aria-label="Vorschau schließen" title="Schließen">×</button>
+      </div>
+    </div>
+    <!-- Fortschritt laufender Momo-Arbeit: offene und erledigte Aufgaben,
+         Kimi-artig als Karte ueber der Vorschau. Leer = komplett ausgeblendet. -->
+    <div class="timeline-fortschritt" id="timelineFortschritt" hidden>
+      <div class="timeline-fortschritt-gruppe">
+        <div class="timeline-fortschritt-titel">Fortschritt</div>
+        <div class="timeline-fortschritt-liste" id="timelineFortschrittOffen"></div>
+        <div class="timeline-fortschritt-erledigt-titel" id="timelineFortschrittErledigtTitel" hidden>Erledigt</div>
+        <div class="timeline-fortschritt-liste erledigt" id="timelineFortschrittErledigt"></div>
+      </div>
+    </div>
+    <div class="timeline-vorschau" id="timelineVorschau" hidden>
+      <!-- allow-same-origin bewusst WEG: Vorschau-Code (srcdoc) und fremde Seiten
+           laufen in einem undurchsichtigen Origin.  Damit kann veroeffentlichter
+           Nutzer-Code nie auf den Speicher der App (Chats, Chain, Credits) zugreifen —
+           Privacy by Architecture, auch gegenueber boesartigen Store-Eintraegen.
+           Der Leerraum-Hinweis unten prueft contentDocument nur noch, wenn die
+           eingebettete Seite selbst einbetten laesst (cross-origin → try/catch). -->
+      <iframe id="timelineVorschauFrame" title="Vorschau" sandbox="allow-scripts allow-forms allow-popups allow-modals" referrerpolicy="no-referrer"></iframe>
+      <div class="timeline-vorschau-hinweis hidden" id="timelineVorschauHinweis">Diese Seite erlaubt kein Einbetten — nutze „Im Tab öffnen“.</div>
+    </div>
+  </aside>
+</div>
+
+
+<div class="pwa-update-banner hidden" id="pwaUpdateBanner" role="status" aria-live="polite">
+  <div>
+    <strong>Neue Momo-Version bereit</strong>
+    <span>Daten auf diesem Gerät bleiben erhalten.</span>
+  </div>
+  <div class="pwa-update-actions">
+    <button class="action-btn" id="pwaUpdateLaterBtn">Später</button>
+    <button class="action-btn white" id="pwaUpdateApplyBtn">Aktualisieren</button>
+  </div>
+</div>
+
+<!-- Project editor -->
+<div class="modal-backdrop" id="projectModal">
+  <div class="modal">
+    <h2 id="projectModalTitle">Neues Projekt</h2>
+    <div class="field">
+      <label>Name</label>
+      <input id="projectNameInput" placeholder="Projektname" maxlength="80">
+    </div>
+    <div class="field">
+      <label>Beschreibung</label>
+      <input id="projectDescriptionInput" placeholder="Kurze Beschreibung" maxlength="180">
+    </div>
+    <div class="field">
+      <label>Projekt-Instruktionen</label>
+      <textarea id="projectInstructionsInput" class="modal-textarea" placeholder="z. B. Antworte kurz, verwende Deutsch …"></textarea>
+    </div>
+    <div class="field">
+      <label>Projektdateien auf diesem Gerät</label>
+      <div class="project-file-row">
+        <button class="action-btn" type="button" id="projectAddFilesBtn">＋ Beliebige Dateien hinzufügen</button>
+        <input id="projectFileInput" type="file" multiple hidden>
+      </div>
+      <div class="project-file-privacy-note">Alle Dateitypen · nur auf diesem Gerät · niemals auf fremden Servern.</div>
+      <div class="project-file-list" id="projectFileList"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="action-btn" id="cancelProjectBtn">Abbrechen</button>
+      <button class="action-btn white" id="saveProjectBtn">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<!-- GPT-like chat menu -->
+<div class="chat-context-menu" id="chatContextMenu" role="menu" aria-hidden="true">
+  <button class="chat-menu-item" data-chat-action="rename">
+    <svg viewBox="0 0 24 24"><path d="m4 20 4.5-1 9.8-9.8a2.1 2.1 0 0 0-3-3L5.5 16 4 20Z"/><path d="m13.8 7.2 3 3"/></svg>
+    <span>Umbenennen</span>
+  </button>
+
+  <button class="chat-menu-item" data-chat-action="pin">
+    <svg viewBox="0 0 24 24"><path d="M9 3h6l-1 6 4 4v1H6v-1l4-4-1-6Z"/><path d="M12 14v7"/></svg>
+    <span id="pinLabel">Anheften</span>
+  </button>
+
+  <button class="chat-menu-item" data-chat-action="archive">
+    <svg viewBox="0 0 24 24"><path d="M4 7h16v12H4z"/><path d="M3 4h18v3H3z"/><path d="M9 11h6"/></svg>
+    <span>Archivieren</span>
+  </button>
+
+  <div class="chat-menu-divider"></div>
+  <div class="chat-menu-section">MOMO</div>
+
+  <button class="chat-menu-item" data-chat-action="move-project">
+    <svg viewBox="0 0 24 24"><path d="M3 7h7l2 2h9v10H3z"/><path d="m15 13 3 3 3-3"/><path d="M18 16V9"/></svg>
+    <span>In Projekt verschieben</span>
+    <span class="chat-menu-spacer"></span>
+    <span class="chat-menu-chevron">›</span>
+  </button>
+
+  <button class="chat-menu-item hidden" id="removeProjectItem" data-chat-action="remove-project">
+    <svg viewBox="0 0 24 24"><path d="M3 7h7l2 2h9v10H3z"/><path d="m15 13 6 6M21 13l-6 6"/></svg>
+    <span>Aus Projekt entfernen</span>
+  </button>
+
+  <div class="chat-menu-divider"></div>
+
+  <button class="chat-menu-item" data-chat-action="duplicate">
+    <svg viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M5 16H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+    <span>Duplizieren</span>
+  </button>
+
+  <button class="chat-menu-item" data-chat-action="export">
+    <svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m8 7 4-4 4 4"/><path d="M5 13v6h14v-6"/></svg>
+    <span>Als Markdown exportieren</span>
+  </button>
+
+  <div class="chat-menu-divider"></div>
+
+  <button class="chat-menu-item danger" data-chat-action="delete">
+    <svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M7 7l1 13h8l1-13"/><path d="M10 11v5M14 11v5"/></svg>
+    <span>Löschen</span>
+  </button>
+</div>
+
+<div class="chat-project-submenu" id="chatProjectSubmenu" aria-hidden="true"></div>
+
+<!-- Rename -->
+<div class="dialog-backdrop" id="renameDialog">
+  <div class="dialog">
+    <h3>Chat umbenennen</h3>
+    <input id="renameInput" maxlength="80" autocomplete="off">
+    <div class="dialog-actions">
+      <button class="action-btn" id="renameCancelBtn">Abbrechen</button>
+      <button class="action-btn white" id="renameSaveBtn">Speichern</button>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- Central plan / feature gate -->
+<div class="dialog-backdrop" id="entitlementDialog">
+  <div class="dialog entitlement-dialog" role="dialog" aria-modal="true" aria-labelledby="entitlementTitle">
+    <div class="runtime-details-head">
+      <div><div class="eyebrow" id="entitlementEyebrow">PLAN</div><h3 id="entitlementTitle">Funktion</h3></div>
+      <button class="icon-close" id="entitlementCloseBtn" aria-label="Schließen">×</button>
+    </div>
+    <p id="entitlementCopy" class="entitlement-copy"></p>
+    <div id="entitlementPlan" class="entitlement-plan"></div>
+    <div class="dialog-actions">
+      <button class="action-btn" id="entitlementLaterBtn">Später</button>
+      <button class="action-btn white" id="entitlementPlansBtn">Pläne ansehen</button>
+    </div>
+  </div>
+</div>
+
+<!-- Knowledge source viewer -->
+<div class="dialog-backdrop" id="sourceDialog">
+  <div class="dialog source-dialog" role="dialog" aria-modal="true" aria-labelledby="sourceDialogTitle">
+    <div class="runtime-details-head">
+      <div>
+        <div class="eyebrow">QUELLE</div>
+        <h3 id="sourceDialogTitle">Quelle</h3>
+      </div>
+      <button class="icon-close" id="sourceDialogClose" aria-label="Schließen">×</button>
+    </div>
+    <div id="sourceDialogContent"></div>
+  </div>
+</div>
+
+<!-- Momo Runtime details -->
+<div class="dialog-backdrop" id="runtimeDetailsDialog">
+  <div class="dialog runtime-details-dialog" role="dialog" aria-modal="true" aria-labelledby="runtimeDetailsHeading">
+    <div class="runtime-details-head">
+      <div>
+        <div class="eyebrow">MOMO</div>
+        <h3 id="runtimeDetailsHeading">Antwortdetails</h3>
+      </div>
+      <button class="icon-close" id="runtimeDetailsClose" aria-label="Schließen">×</button>
+    </div>
+    <div id="runtimeDetailsContent"></div>
+  </div>
+</div>
+
+<!-- Delete confirmation -->
+<div class="dialog-backdrop" id="deleteDialog">
+  <div class="dialog">
+    <h3>Chat löschen?</h3>
+    <p id="deleteDialogText">Dieser Chat wird dauerhaft aus diesem Browser gelöscht.</p>
+    <div class="dialog-actions">
+      <button class="action-btn" id="deleteCancelBtn">Abbrechen</button>
+      <button class="action-btn danger-solid" id="deleteConfirmBtn">Löschen</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Edit user message -->
+<div class="dialog-backdrop" id="editDialog">
+  <div class="dialog">
+    <h3>Nachricht bearbeiten</h3>
+    <textarea id="editInput" class="edit-textarea" maxlength="64000"></textarea>
+    <p>Nach dem Speichern werden spätere Antworten entfernt und Momo antwortet neu.</p>
+    <div class="dialog-actions">
+      <button class="action-btn" id="editCancelBtn">Abbrechen</button>
+      <button class="action-btn white" id="editSaveBtn">Speichern & neu generieren</button>
+    </div>
+  </div>
+</div>
+
+<!-- Chat search -->
+<div class="dialog-backdrop search-backdrop" id="searchDialog">
+  <div class="search-dialog">
+    <div class="search-header">
+      <input id="searchInput" placeholder="Chats durchsuchen …" autocomplete="off">
+      <button class="round-btn" id="searchCloseBtn" aria-label="Schließen">×</button>
+    </div>
+    <div class="search-results" id="searchResults"></div>
+    <div class="search-footer">⌘K / Ctrl+K · durchsucht Titel und Nachrichten auf diesem Gerät</div>
+  </div>
+</div>
+
+<!-- Workspace menu -->
+<div class="workspace-menu" id="workspaceMenu">
+  <button data-workspace-action="temporary">Temporärer Chat</button>
+  <div class="chat-menu-divider"></div>
+  <button data-workspace-action="export-md">Aktuellen Chat als Markdown</button>
+  <button data-workspace-action="export-json">Aktuellen Chat als JSON</button>
+  <button data-workspace-action="export-workspace">Workspace exportieren</button>
+  <button data-workspace-action="import">Workspace importieren</button>
+  <button data-workspace-action="storage">Speicher & Backups</button>
+  <div class="chat-menu-divider"></div>
+  <button class="danger" data-workspace-action="clear">Daten auf diesem Gerät löschen</button>
+</div>
+<input id="workspaceImportFile" type="file" accept="application/json" hidden>
+
+
+<!-- Speicher- und Backup-Verwaltung -->
+<div class="dialog-backdrop" id="storageDialog">
+  <div class="dialog storage-dialog" role="dialog" aria-modal="true" aria-labelledby="storageDialogHeading">
+    <div class="runtime-details-head">
+      <div>
+        <div class="eyebrow">AUF DEM GERÄT</div>
+        <h3 id="storageDialogHeading">Speicher & Backups</h3>
+      </div>
+      <button class="icon-close" id="storageDialogClose" aria-label="Schließen">×</button>
+    </div>
+
+    <div id="storageSummary"></div>
+
+    <div class="storage-actions">
+      <button class="action-btn white" id="createBackupBtn">Backup jetzt erstellen</button>
+      <button class="action-btn" id="persistentStorageBtn">Dauerhaften Speicher anfragen</button>
+    </div>
+
+    <div class="runtime-block">
+      <h4>Wiederherstellungspunkte</h4>
+      <div id="snapshotList" class="snapshot-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Claude-like Artifact Work Surface -->
+<aside class="artifact-panel" id="artifactPanel" aria-label="Momo Work Surface">
+  <div class="artifact-resize-handle" id="artifactResizeHandle" aria-hidden="true"></div>
+  <div class="artifact-head">
+    <div class="artifact-title-wrap">
+      <input id="artifactTitleInput" class="artifact-title-input" value="Artefakt" maxlength="120" aria-label="Artifact Titel">
+      <span id="artifactSubtitle">Work Surface</span>
+    </div>
+    <div class="artifact-actions">
+      <button class="action-btn" id="artifactCopyBtn">Kopieren</button>
+      <button class="action-btn" id="artifactDownloadBtn">Export</button>
+      <button class="round-btn" id="artifactFullscreenBtn" aria-label="Vollbild" title="Vollbild">□</button>
+      <button class="round-btn" id="artifactCloseBtn" aria-label="Schließen">×</button>
+    </div>
+  </div>
+  <div class="artifact-toolbar">
+    <div class="artifact-tabs">
+      <button data-artifact-view="preview" class="active">Vorschau</button>
+      <button data-artifact-view="code">Code</button>
+      <button data-artifact-view="versions">Versionen</button>
+    </div>
+    <button class="action-btn artifact-save-btn" id="artifactSaveVersionBtn">Version speichern</button>
+  </div>
+  <div class="artifact-work-body">
+    <div class="artifact-pane" id="artifactPreviewPane"><iframe id="artifactFrame" sandbox="allow-scripts" title="Momo Vorschau"></iframe></div>
+    <div class="artifact-pane hidden" id="artifactCodePane"><textarea id="artifactEditor" spellcheck="false" aria-label="Artifact Code Editor"></textarea></div>
+    <div class="artifact-pane artifact-versions-pane hidden" id="artifactVersionsPane"><div id="artifactVersionsList" class="artifact-versions-list"></div></div>
+  </div>
+</aside>
+
+
+<!-- Keyboard shortcuts -->
+
+<div class="dialog-backdrop" id="shortcutDialog">
+  <div class="dialog shortcut-dialog" role="dialog" aria-modal="true" aria-labelledby="shortcutTitle">
+    <div class="shortcut-title-row"><h3 id="shortcutTitle">Tastaturkürzel</h3><button class="round-btn" id="shortcutCloseBtn" aria-label="Schließen">×</button></div>
+    <div class="shortcut-list">
+      <div><span>Menü ein-/ausklappen</span><kbd>⌘ B</kbd></div>
+      <div><span>Zeitleiste ein-/ausklappen</span><kbd>⌘ J</kbd></div>
+      <div><span>Zeitleiste Vollbild</span><kbd>⌃ ⌘ F</kbd></div>
+      <div><span>Chats durchsuchen</span><kbd>⌘ K</kbd></div>
+      <div><span>Neuer Chat</span><kbd>⌘ ⇧ O</kbd></div>
+      <div><span>Projekte öffnen</span><kbd>⌘ ⇧ P</kbd></div>
+      <div><span>Kürzel anzeigen</span><kbd>⌘ /</kbd></div>
+      <div><span>Nachricht davor/danach</span><kbd>⌥ ↑ / ↓</kbd></div>
+      <div><span>Neue Zeile im Composer</span><kbd>⇧ Enter</kbd></div>
+      <div><span>Bearbeitung speichern</span><kbd>⌘ Enter</kbd></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+<script defer src="loading-motion.js?v=k7m8b2"></script>
+<script defer src="config.js?v=k7m8b2"></script>
+<script defer src="branding.js?v=k7m8b2"></script>
+<script defer src="network-carpet.js?v=k7m8b2"></script>
+<script defer src="network-carpet-init.js?v=k7m8b2"></script>
+<script defer src="core.js?v=k7m8b2"></script>
+<script defer src="parallel-work.js?v=k7m8b2"></script>
+<script defer src="features/momo-network-social/network-store.js?v=k7m8b2"></script>
+<script defer src="features/momo-network-social/presence-core.js?v=k7m8b2"></script>
+<script defer src="features/momo-network-social/relationship-memory.js?v=k7m8b2"></script>
+<script defer src="features/momo-network-social/relevance-engine.js?v=k7m8b2"></script>
+<script defer src="features/momo-network-social/relationship-products.js?v=k7m8b2"></script>
+<script defer src="features/momo-network-social/activity-bridge.js?v=k7m8b2"></script>
+<script defer src="features/momo-network-social/network-intelligence.js?v=k7m8b2"></script>
+<script defer src="features/momo-network-social/delivery-engine.js?v=k7m8b2"></script>
+<script defer src="features/momo-network-social/momo-surface.js?v=k7m8b2"></script>
+<script defer src="features/momo-network-social/network-sync.js?v=k7m8b2"></script>
+<script defer src="phase-chain.js?v=k7m8b2"></script>
+<script defer src="features/momo-network-social/credits.js?v=k7m8b2"></script>
+<script defer src="features/momo-network-social/ui.js?v=k7m8b2"></script>
+<script defer src="features/momo-switch/switch-core.js?v=k7m8b2"></script>
+<script defer src="features/momo-switch/switch-ui.js?v=k7m8b2"></script>
+<script type="module" src="vendor/ethers-loader.js?v=k7m8b2"></script>
+<script defer src="features/momo-store/wallet-chain.js?v=k7m8b2"></script>
+<script defer src="features/momo-store/store-core.js?v=k7m8b2"></script>
+<script defer src="features/momo-store/store-ui.js?v=k7m8b2"></script>
+<script defer src="features/momo-plugins/plugins-ui.js?v=k7m8b2"></script>
+<script defer src="features/momo-network-social/suggests-studio.js?v=k7m8b2"></script>
+<script defer src="features/momo-start/quellen.js?v=k7m8b2"></script>
+<script defer src="features/momo-presence-bild/bild.js?v=k7m8b2"></script>
+<script defer src="features/momo-start/likes.js?v=k7m8b2"></script>
+<script defer src="features/momo-start/start.js?v=k7m8b2"></script>
+<script defer src="features/momo-rooms/dm.js?v=k7m8b2"></script>
+<script defer src="features/momo-rooms/rooms.js?v=k7m8b2"></script>
+<script defer src="features/momo-network-social/delivery-ui.js?v=k7m8b2"></script>
+<script defer src="features/momo-network-social/index.js?v=k7m8b2"></script>
+<script defer src="features/momo-network-social/website-preview.js?v=k7m8b2"></script>
+<script defer src="features/momo-network-social/sites.js?v=k7m8b2"></script>
+<script defer src="features/momo-timeline/timeline.js?v=k7m8b2"></script>
+<script defer src="features/momo-timeline/fortschritt.js?v=k7m8b2"></script>
+<script defer src="momo/chat-overview.js?v=k7m8b2"></script>
+<script defer src="security.js?v=k7m8b2"></script>
+<script defer src="reliability.js?v=k7m8b2"></script>
+<script defer src="pwa.js?v=k7m8b2"></script>
+<script defer src="production.js?v=k7m8b2"></script>
+<script defer src="polish.js?v=k7m8b2"></script>
+<script defer src="momo/momo-preise.js?v=k7m8b2"></script>
+<script defer src="momo-credits.js?v=k7m8b2"></script>
+  <script defer src="momo-guard.js?v=k7m8b2"></script>
+  <script defer src="momo/i18n/sprachen.js?v=k7m8b2"></script>
+  <script defer src="momo/i18n/dict.js?v=k7m8b2"></script>
+  <script defer src="momo/i18n/dict.js?v=k7m8b2"></script>
+  <script defer src="momo-i18n.js?v=k7m8b2"></script>
+  <link rel="stylesheet" href="momo/rtl.css?v=k7m8b2" />
+<script defer src="momo-sdk.js?v=k7m8b2"></script>
+<script defer src="compression-local.js?v=k7m8b2"></script>
+<script defer src="bitseed-bridge.js?v=k7m8b2"></script>
+<script defer src="momo/momo-plugins.js?v=k7m8b2"></script>
+<script defer src="momo/mcp-connectors.js?v=k1c0a1"></script>
+<script defer src="momo/mcp-client.js?v=k1c0a1"></script>
+<script defer src="momo/momo-client.js?v=k7m8b2"></script>
+<script defer src="momo/momo-chain.js?v=k7m8b2"></script>
+  <script defer src="momo-data-chain.js?v=k7m8b2"></script>
+<script defer src="momo/momo-push.js?v=k7m8b2"></script>
+<script defer src="momo/momo-tools.js?v=k7m8b2"></script>
+<script defer src="momo/momo-lang.js?v=k7m8b2"></script>
+  <script src="momo/momo-garten.js?v=k7m8b2" defer></script>
+  <script src="momo/momo-toepfern.js?v=k7m8b2" defer></script>
+  <script src="momo/momo-kueche.js?v=k7m8b2" defer></script>
+  <script defer src="momo/momo-klang.js?v=k7m8b2"></script>
+  <script src="momo/momo-musik.js?v=k7m8b2" defer></script>
+  <script src="momo/momo-hoeren.js?v=k7m8b2" defer></script>
+  <script src="momo/momo-hoeren-ui.js?v=k7m8b2" defer></script>
+  <script src="momo/momo-web.js?v=k7m8b2" defer></script>
+  <script src="momo/momo-sprache.js?v=k7m8b2" defer></script>
+<script defer src="momo/momo-stars.js?v=k7m8b2"></script>
+<script defer src="momo/momo-office.js?v=k7m8b2"></script>
+<script defer src="momo/momo-office-files.js?v=k7m8b2"></script>
+<script defer src="momo/momo-device.js?v=k7m8b2"></script>
+<script defer src="momo/momo-desktop.js?v=k7m8b2"></script>
+<script defer src="momo/momo-dictation.js?v=k7m8b2"></script>
+<script defer src="momo/momo-queue.js?v=k7m8b2"></script>
+<script defer src="momo/nachschlagen.js?v=k7m8b2"></script>
+<script defer src="momo/momo-reflect.js?v=k7m8b2"></script>
+<script defer src="momo/momo-inference.js?v=k7m8b2"></script>
+<script defer src="momo/momo-analyse.js?v=k7m8b2"></script>
+<script defer src="features/momo-store/chat-dev.js?v=k7m8b2"></script>
+<script defer src="persistence.js?v=k7m8b2"></script>
+<script defer src="store.js?v=k7m8b2"></script>
+<script defer src="cross-chat-user-context.js?v=k7m8b2"></script>
+<script defer src="key-auth.js?v=k7m8c2"></script>
+<script defer src="auth.js?v=k7m8c2"></script>
+<script defer src="push-notifications.js?v=k7m8b2"></script>
+<script defer src="analytics-collector.js?v=k7m8b2" data-momo-analytics="v2" data-site="app.openos.space"></script>
+<script defer src="account.js?v=k7m8b2"></script>
+<script defer src="currency.js?v=k7m8b2"></script>
+<script defer src="locale-runtime.js?v=k7m8b2"></script>
+<script defer src="bitcoin-pay.js?v=k7m8c3"></script>
+<script defer src="billing.js?v=k7m8c3"></script>
+<script defer src="entitlements.js?v=k7m8b2"></script>
+<script defer src="sync.js?v=k7m8c3"></script>
+<script defer src="cloud-sync.js?v=k7m8c3"></script>
+<script defer src="sidebar.js?v=k7m8b2"></script>
+<script defer src="admin-analytics.js?v=k7m8b2"></script>
+<script defer src="settings.js?v=k7m8b2"></script>
+<script defer src="file-knowledge.js?v=k7m8b2"></script>
+<script defer src="library.js?v=k7m8b2"></script>
+<script defer src="planned.js?v=k7m8b2"></script>
+<script defer src="sources.js?v=k7m8b2"></script>
+<script defer src="project-context.js?v=k7m8b2"></script>
+<script defer src="projects.js?v=k7m8b2"></script>
+<script defer src="renderer.js?v=k7m8b2"></script>
+<script defer src="artifacts.js?v=k7m8b2"></script>
+<script defer src="chat-ux.js?v=k7m8b2"></script>
+<script defer src="search.js?v=k7m8b2"></script>
+<script defer src="ui.js?v=k7m8b2"></script>
+<script defer src="chats.js?v=k7m8b2"></script>
+<script defer src="vendor/edna.js?v=k7m8b2"></script>
+<script defer src="momo/edna-bridge.js?v=k7m8b2"></script>
+<script defer src="app.js?v=k7m8b2"></script>
+</body>
+</html>
