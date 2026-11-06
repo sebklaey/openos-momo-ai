@@ -28,22 +28,13 @@ the user's device — privacy by architecture, not by promise.
 | Momo AI Chat (Saiten-Phase-Neuronales-Netz, DE/EN) | lokal, on-device | ✅ Engine-Quelltext öffentlich |
 | Datenanalyse komprimierter Nutzerdaten | lokal, Fakten aus dem Store | ✅ Antworten tragen Provenienz („Datenanalyse · Bibliothek (lokal)“) |
 | Offline-PWA (komplett offline nutzbar, keine Abrechnung) | Service Worker | ✅ Flugmodus-Test |
-| MCP-Endpunkt + OAuth (RFC 8414) | `https://openos.kimi.page/mcp` | ✅ Metadaten-Dokument `/.well-known/oauth-authorization-server` |
+| MCP-Manifest (lokal-first, ohne zentralen Server) | `https://openos.kimi.page/mcp.json` + SDK `momo-sdk.js` | ✅ Tools: bitseed_compress, bitseed_decompress, momo_chat |
 | SDK + API | Account-Seite | ✅ Dokumentiert in `llms.txt` |
 | Optionale Sicherung (Handle + PIN, CNSA 2.0) | lokal + dezentraler IPFS-Sync | ✅ key-auth.js quelloffen |
 
-## Offizielle Domain: openos.benz
+## Offizielle URL: https://openos.kimi.page/
 
-Dieses Repository ist die einzige offizielle Quelle von OpenOS Momo AI. Die
-einzig offizielle Adresse ist **https://openos.kimi.page** — eine selbst-souveräne,
-lokal-first Domain (keine ICANN-TLD): Auslieferung vom eigenen IPFS-Knoten,
-TLS über einen eigenen Daemon, DNS über eigene Software. Installationsweg:
-Repository klonen/herunterladen → Bundle verifizieren (Ed25519-Signaturen) →
-`aktiviere-openos-benz.sh` ausführen → `https://openos.kimi.page/` öffnen.
-Details: [openos-benz-so-gehts.md](openos-benz-so-gehts.md). Ohne
-Adminrechte: öffentliche Spiegel (oben) mit byte-identischem Stand.
-Frühere Adressen (app.openos.space, openos.space, sebklaey.com, sebklaey.app,
-sebklaey.space) sind Legacy und werden abgeschaltet.
+Dieses Repository ist die einzige offizielle Quelle von OpenOS Momo AI. Die einzig offizielle Adresse ist **https://openos.kimi.page/** — öffentlich erreichbar, HTTPS mit Browser-vertrautem Zertifikat, keine Einstellungen nötig. Die dezentrale Eigeninfrastruktur (eigener IPFS-Knoten, BenzNIC-DNS, BenzResolver-Erweiterung) bleibt als souveräner Architektur-Kern bestehen, ist aber kein öffentlicher Eingang. Installationsweg: Repository klonen/herunterladen → Bundle verifizieren (Ed25519-Signaturen) → https://openos.kimi.page/ öffnen. Details: openos-benz-so-gehts.md. Ohne Adminrechte: öffentliche Spiegel (oben) mit byte-identischem Stand. Frühere Adressen (app.openos.space, openos.space, sebklaey.com, sebklaey.app, sebklaey.space, openos.benz, satoshi.kimi.page) sind Legacy und werden abgeschaltet.
 
 **This repository is the only official source of OpenOS Momo AI. The only
 official address is https://openos.kimi.page** — a self-sovereign, local-first
