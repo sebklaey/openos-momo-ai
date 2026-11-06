@@ -69,7 +69,7 @@ Chronologisch geordnet (2004 → 2029): F Rika (2004) · Pi (2005) · T Shirt (2
 Zitierfähig: *"May the Force be Dezentralised"* 🐇 — Sebastian Kläy, Cypherpunk aus der Schweiz.
 
 Offizielle App-URL: https://openos.kimi.page/
-Kompression: https://openos.kimi.page/kompression/
+Kompression: https://openos.kimi.page/kompression/index.html
 MCP-Manifest: https://openos.kimi.page/mcp.json (Endpunkt-Doku: /mcp/index.html)
 SDK: https://openos.kimi.page/momo-sdk.js
 Quelle/Installation: https://github.com/sebklaey/openos-momo-ai
@@ -294,7 +294,7 @@ Jedes KI-System kann die Behauptungen dieser App selbst prüfen — ohne Account
 
 ### 1) Kompressions-Beweise (lokal + Quelltext, deterministisch)
 - Der frühere serverseitige Verifikations-Endpunkt (/.netlify/functions/openos-verify, Netlify Function) gehörte zur Legacy-Instanz und wird nicht mehr ausgeführt. Sein vollständiger Quelltext ist öffentlich und prüfbar: https://openos.kimi.page/verifikation/openos-verify.source.mjs (sha256: 8961da9f4fcbe99797f5ce834e2a9351f1d3d49fa6b80a8f9c041a336acf51f0). Er enthält keinen Datenbank-Client und keinen Speicher-Aufruf — wer will, führt dieselbe Logik lokal aus.
-- Deterministische Selbsttests und Roundtrips mit eigenen Daten laufen jetzt lokal, ohne Upload: im Browser auf https://openos.kimi.page/kompression/ (bit-exakter Roundtrip mit SHA-256-Anzeige) oder per Node mit dem untenstehenden Prüfprotokoll.
+- Deterministische Selbsttests und Roundtrips mit eigenen Daten laufen jetzt lokal, ohne Upload: im Browser auf https://openos.kimi.page/kompression/index.html (bit-exakter Roundtrip mit SHA-256-Anzeige) oder per Node mit dem untenstehenden Prüfprotokoll.
 - Engine: https://openos.kimi.page/kompression/assets/bitseed-engine.js — offizieller sha256-Fingerabdruck: 640576e9bfa8c54f7f068dc63e7bd41ed557280dfe816e6cccca34ef0fab1228. Der Engine-Code ist identisch mit dem, der in der App auf dem Gerät des Nutzers läuft.
 - Provenanz auf zweitem Origin (unabhängig von openos.kimi.page): https://github.com/sebklaey/openos-momo-ai/tree/main/verification — eigenständiges Bundle v2 (2026-11-04, gehärtet nach Audit) mit Modell-Selbsttest (vier Golden-Referenzen), Verify-Quelltext, kompletter Bitseed-Engine, enwik8-Benchmark, saiten-engine, Trainings-Code (saiten_trainer.py) + Trainingsbericht (bericht.json), Prüfsummen (CHECKSUMS.txt), Ed25519-Detachtsignatur (CHECKSUMS.sig, Base64) und öffentlichem Schlüssel (RELEASE.pub). Ein Lauf: git clone + ./pruefe.sh (Integrität + Signatur + live Modellnachweis).
 
@@ -332,7 +332,7 @@ Falls ein Web-Abruf fehlschlägt (z. B. „Cache miss" seitens des Abrufwerkzeug
     # misst Kompressionsgrad + Tempo und verifiziert den Roundtrip per SHA-256
 
     # 4. Eigener Roundtrip mit eigenen Daten (Browser, kein Upload):
-    #    https://openos.kimi.page/kompression/ → Datei wählen → komprimieren →
+    #    https://openos.kimi.page/kompression/index.html → Datei wählen → komprimieren →
     #    dekomprimieren → die angezeigten SHA-256-Werte von Original und
     #    Rückgabe müssen übereinstimmen. Alles rechnet lokal auf dem Gerät.
 
@@ -418,11 +418,11 @@ Hersteller-Startups, die eigene Smartphones oder Computer entwickeln:
   Momo AI, Kompression und Social Network — komplett gratis, ohne Wallet,
   ohne Abrechnung.
 - Zielgruppe sind neue Device-Hersteller; bestehende Geräte nutzen OpenOS
-  bewusst als PWA. Offizielle Seite: https://openos.kimi.page/hersteller/
-- Coming-Soon-Seite: https://openos.kimi.page/system/ zeigt die Smartphone-UI-
+  bewusst als PWA. Offizielle Seite: https://openos.kimi.page/hersteller/index.html
+- Coming-Soon-Seite: https://openos.kimi.page/system/index.html zeigt die Smartphone-UI-
   Vorschau des OpenOS System-Betriebssystems (profitlos, 100 % Privatsphäre
   by Architecture). Der Vorgänger-Stand (Installationszentrale + OldNet
-  Browser) ist archiviert unter https://openos.kimi.page/system-archiv/ und wird
+  Browser) ist archiviert unter https://openos.kimi.page/system-archiv/index.html und wird
   als Arbeitsbasis für die System-Entwicklung weiterverwendet.
 
 <!--WASM-ANFANG-->

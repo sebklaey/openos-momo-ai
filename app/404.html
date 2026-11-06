@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenOS Momo AI — Weiterleitung</title>
+<script>
+/* Verzeichnis-URLs → /verzeichnis/index.html (statischer Host ohne Directory-Index) */
+(function () {
+  var p = location.pathname;
+  if (p.length > 1 && p.endsWith("/")) {
+    location.replace(p + "index.html" + location.search + location.hash);
+    return;
+  }
+  if (p === "/mcp") { location.replace("/mcp/index.html"); return; }
+  document.addEventListener("DOMContentLoaded", function () {
+    var ziel = p.endsWith("/") ? p + "index.html" : "/";
+    var a = document.getElementById("weiter");
+    if (a) { a.href = ziel; a.textContent = ziel; }
+  });
+})();
+</script>
+<style>
+  body { font-family: -apple-system, system-ui, sans-serif; background:#0b0f14; color:#dfe7ef;
+         display:flex; min-height:100vh; align-items:center; justify-content:center; margin:0; }
+  main { text-align:center; max-width:32rem; padding:2rem; }
+  a { color:#7db8ff; }
+  .spin { width:42px; height:42px; border:3px solid #1f2937; border-top-color:#8fd3a8;
+          border-radius:50%; margin:0 auto 1.5rem; animation:s 1s linear infinite; }
+  @keyframes s { to { transform:rotate(360deg); } }
+</style>
+</head>
+<body>
+<main>
+  <div class="spin"></div>
+  <h1 style="font-size:1.2rem">OpenOS Momo AI</h1>
+  <p>Diese Adresse hat kein Inhaltsverzeichnis — du wirst weitergeleitet.<br>
+  Klappt die automatische Weiterleitung nicht: <a id="weiter" href="/">/</a></p>
+  <p><a href="https://openos.kimi.page/">← Zur offiziellen App https://openos.kimi.page/</a></p>
+</main>
+</body>
+</html>
