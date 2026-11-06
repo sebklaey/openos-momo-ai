@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OpenOS System — Coming Soon · openos.benz</title>
+<meta name="description" content="OpenOS System: das profitlose, komplett kostenlose Smartphone-Betriebssystem für Device-Startup-Hersteller. 100 % Privatsphäre by Architecture — kein Tracking, keine Black-Box-Server, keine Lizenzgebühren. Coming Soon.">
+<meta name="robots" content="index,follow">
+<style>
+  :root{
+    --bg:#07070d; --bg2:#0c0c16; --karte:#12121f; --linie:#23233a;
+    --txt:#e9e9f4; --sub:#9a9ab5; --akzent:#8b7cf6; --akzent2:#39d0d8;
+    --glow:rgba(139,124,246,.35);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:radial-gradient(1200px 800px at 70% -10%,rgba(139,124,246,.14),transparent 60%),
+               radial-gradient(900px 600px at 10% 110%,rgba(57,208,216,.10),transparent 60%),
+               var(--bg);
+    color:var(--txt);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    line-height:1.6; min-height:100vh;
+  }
+  .wrap{max-width:1120px;margin:0 auto;padding:0 22px}
+  header.top{display:flex;align-items:center;justify-content:space-between;padding:22px 0}
+  .marke{display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:.4px}
+  .marke .punkt{width:34px;height:34px;border-radius:10px;
+    background:conic-gradient(from 200deg,var(--akzent),var(--akzent2),var(--akzent));
+    box-shadow:0 0 22px var(--glow);display:grid;place-items:center;color:#0a0a12;font-size:15px}
+  .badge-soon{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--akzent2);
+    border:1px solid rgba(57,208,216,.4);border-radius:999px;padding:6px 14px;background:rgba(57,208,216,.06)}
+  .hero{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center;padding:56px 0 72px}
+  @media(max-width:900px){.hero{grid-template-columns:1fr;gap:44px}}
+  h1{font-size:clamp(34px,5.2vw,58px);line-height:1.08;font-weight:800;letter-spacing:-1px}
+  h1 .grad{background:linear-gradient(92deg,var(--akzent) 10%,var(--akzent2) 90%);
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  .unter{color:var(--sub);font-size:17px;max-width:52ch;margin-top:18px}
+  .punkte{margin-top:26px;display:grid;gap:11px}
+  .punkte li{list-style:none;display:flex;gap:11px;align-items:baseline;font-size:15px}
+  .punkte li::before{content:"◆";color:var(--akzent2);font-size:11px}
+  .cta{margin-top:32px;display:flex;gap:14px;flex-wrap:wrap}
+  .knopf{display:inline-block;text-decoration:none;font-weight:600;font-size:15px;
+    padding:13px 24px;border-radius:12px;transition:transform .15s ease,box-shadow .15s ease}
+  .knopf:hover{transform:translateY(-2px)}
+  .knopf.haupt{color:#0a0a12;background:linear-gradient(92deg,var(--akzent),var(--akzent2));
+    box-shadow:0 8px 28px var(--glow)}
+  .knopf.ghost{color:var(--txt);border:1px solid var(--linie);background:rgba(255,255,255,.03)}
+  /* ── Smartphone-Mockup ─────────────────────────────── */
+  .buehne{display:grid;place-items:center;perspective:1200px}
+  .phone{
+    width:270px;height:560px;border-radius:44px;position:relative;
+    background:linear-gradient(160deg,#1a1a2c,#0d0d18);
+    border:1px solid #2c2c48;
+    box-shadow:0 40px 90px rgba(0,0,0,.65),0 0 70px var(--glow),inset 0 0 0 6px #05050a;
+    transform:rotateY(-12deg) rotateX(4deg);
+    animation:schweben 7s ease-in-out infinite;
+  }
+  @keyframes schweben{0%,100%{transform:rotateY(-12deg) rotateX(4deg) translateY(0)}
+    50%{transform:rotateY(-8deg) rotateX(3deg) translateY(-14px)}}
+  .notch{position:absolute;top:14px;left:50%;transform:translateX(-50%);
+    width:96px;height:24px;border-radius:14px;background:#05050a;z-index:3}
+  .bildschirm{position:absolute;inset:10px;border-radius:36px;overflow:hidden;
+    background:radial-gradient(140% 90% at 50% 0%,#191930 0%,#0a0a14 70%);
+    display:flex;flex-direction:column;padding:52px 16px 18px}
+  .status{display:flex;justify-content:space-between;font-size:11px;color:var(--sub);padding:0 6px 12px}
+  .uhr{font-size:44px;font-weight:700;letter-spacing:-1px;text-align:center;margin-top:8px;
+    background:linear-gradient(92deg,#fff,var(--akzent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .datum{text-align:center;color:var(--sub);font-size:12.5px;margin-top:2px}
+  .icons{margin-top:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:14px 10px}
+  .app{border-radius:15px;aspect-ratio:1;display:grid;place-items:center;font-size:20px;
+    background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.07);
+    transition:background .2s;animation:puls 4.2s ease-in-out infinite}
+  .app span{font-size:8.5px;color:var(--sub);display:block;text-align:center;margin-top:3px}
+  .app:nth-child(odd){animation-delay:1.2s}
+  @keyframes puls{0%,100%{background:rgba(255,255,255,.05)}50%{background:rgba(139,124,246,.22)}}
+  .homebar{width:110px;height:4px;border-radius:4px;background:rgba(255,255,255,.25);margin:14px auto 0}
+  /* ── Sektionen ─────────────────────────────── */
+  .sektion{padding:64px 0;border-top:1px solid var(--linie)}
+  .sektion h2{font-size:clamp(24px,3.4vw,34px);font-weight:750;letter-spacing:-.5px;margin-bottom:8px}
+  .sektion .lead{color:var(--sub);max-width:64ch;margin-bottom:34px}
+  .raster{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px}
+  .karte{background:var(--karte);border:1px solid var(--linie);border-radius:18px;padding:26px;
+    transition:border-color .2s,transform .2s}
+  .karte:hover{border-color:var(--akzent);transform:translateY(-3px)}
+  .karte .glyph{font-size:26px;margin-bottom:14px;
+    width:52px;height:52px;border-radius:14px;display:grid;place-items:center;
+    background:linear-gradient(135deg,rgba(139,124,246,.18),rgba(57,208,216,.12));
+    border:1px solid rgba(139,124,246,.3)}
+  .karte h3{font-size:17px;margin-bottom:8px}
+  .karte p{color:var(--sub);font-size:14.5px}
+  .zitat{margin-top:40px;text-align:center;color:var(--sub);font-style:italic;font-size:15px}
+  .zitat b{color:var(--txt);font-style:normal;display:block;margin-top:8px;font-size:13.5px;letter-spacing:.5px}
+  footer{border-top:1px solid var(--linie);padding:30px 0 44px;color:var(--sub);font-size:13px;
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+  a{color:var(--akzent2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="marke"><div class="punkt">◆</div> OpenOS System</div>
+    <div class="badge-soon">Coming Soon</div>
+  </header>
+
+  <section class="hero">
+    <div>
+      <h1>Das Betriebssystem, das <span class="grad">nicht an dir verdienen will.</span></h1>
+      <p class="unter">OpenOS System ist ein komplett neues, profitloses Smartphone- und
+        Computer-Betriebssystem — entworfen für Device-Startup-Hersteller, die ein
+        Gerät bauen wollen, bei dem der Nutzer Kunde ist, nicht das Produkt.</p>
+      <ul class="punkte">
+        <li>100 % Privatsphäre — <b>by Architecture, not a promise</b>: Was lokal rechnet, sendet nichts.</li>
+        <li>Komplett kostenlos &amp; lizenzfrei für Gerätehersteller — keine Gebühren, kein „Pro"-Plan.</li>
+        <li>Momo AI, Bitseed-Kompression, Telefonie &amp; OldNet Browser — ab Werk an Bord, offline fähig.</li>
+        <li>Kein Werbe-Tracking, keine Datenweitergabe, keine Black-Box-Server.</li>
+      </ul>
+      <div class="cta">
+        <a class="knopf haupt" href="/hersteller/">Device-Programm für Hersteller</a>
+        <a class="knopf ghost" href="/">← Zur OpenOS App</a>
+      </div>
+    </div>
+
+    <div class="buehne" aria-label="Smartphone-Vorschau">
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="bildschirm">
+          <div class="status"><span>openos</span><span>▲ ● 100%</span></div>
+          <div class="uhr" id="uhr">--:--</div>
+          <div class="datum" id="datum">OpenOS System</div>
+          <div class="icons">
+            <div class="app">✆<span>Telefon</span></div>
+            <div class="app">◆<span>MOMO</span></div>
+            <div class="app">◎<span>OldNet</span></div>
+            <div class="app">◉<span>Kamera</span></div>
+            <div class="app">▣<span>Wallet</span></div>
+            <div class="app">⚙<span>System</span></div>
+          </div>
+          <div class="homebar"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sektion">
+    <h2>Volle Privatsphäre — by Architecture</h2>
+    <p class="lead">Privatsphäre ist bei OpenOS keine Einstellung und keine
+      Datenschutzerklärung. Sie ist die Bauweise. Jede Funktion — KI, Kompression,
+      Analyse, Telefonie, Social — rechnet auf dem Gerät. Was nichts sendet,
+      kann nichts preisgeben.</p>
+    <div class="raster">
+      <div class="karte"><div class="glyph">⛨</div><h3>Lokal-first, offline fähig</h3>
+        <p>Momo AI und Bitseed-Kompression laufen vollständig auf dem Gerät.
+        Kein Pfad führt durch einen fremden Server — auch ohne Netz funktioniert alles.</p></div>
+      <div class="karte"><div class="glyph">◉</div><h3>Kein Tracking, keine Werbung</h3>
+        <p>Kein Werbe-Ökosystem, keine Aufmerksamkeitsökonomie. OpenOS hat kein
+        Geschäftsmodell mit deinen Daten — weil es überhaupt kein Profitmodell gibt.</p></div>
+      <div class="karte"><div class="glyph">▣</div><h3>Deine Daten, dein Archiv</h3>
+        <p>Komprimierte Archive bleiben bei dir und können lokal analysiert werden.
+        Keine Serverfarm speichert Kopien deines Lebens.</p></div>
+      <div class="karte"><div class="glyph">✆</div><h3>Telefonie ohne Lauscher</h3>
+        <p>Telefon, SMS und Hotspot werden Teil des Systems — ohne Hersteller-Dienste,
+        die Metadaten abgreifen.</p></div>
+    </div>
+  </section>
+
+  <section class="sektion">
+    <h2>Profitlos — komplett kostenlos für Device-Startups</h2>
+    <p class="lead">OpenOS System wird kostenlos und lizenzfrei an Gerätehersteller
+      abgegeben. Monetarisierung passiert nicht am Betriebssystem, sondern freiwillig
+      über das Credit-System im System (kompatibel zum Android-Modell: offenes System,
+      bezahlte Dienste darin). Die Strategie ist bewusst: neue Geräte booten OpenOS,
+      bestehende Geräte nutzen OpenOS als App.</p>
+    <div class="raster">
+      <div class="karte"><div class="glyph">⇄</div><h3>Stufe 1 · Heute</h3>
+        <p>OpenOS als installierbare App/PWA auf jedem Smartphone und Computer —
+        Vollbild, eigenes Icon, offline fähig.</p></div>
+      <div class="karte"><div class="glyph">✆</div><h3>Stufe 2 · APK</h3>
+        <p>OpenOS als Android-App mit nativer Telefonie, SMS, Hotspot, WLAN,
+        4G/5G und Kamera-Integration.</p></div>
+      <div class="karte"><div class="glyph">◆</div><h3>Stufe 3 · System-ROM</h3>
+        <p>Das Gerät bootet direkt in OpenOS — Gesichts- und Fingerabdruck-Erkennung
+        nativ, kein fremdes System darunter.</p></div>
+      <div class="karte"><div class="glyph">◎</div><h3>OldNet Browser</h3>
+        <p>Das Internet direkt aus OpenOS: Tabs, Adresszeile, kein Tracking —
+        auf Smartphone und Computer.</p></div>
+    </div>
+  </section>
+
+  <p class="zitat">„May the Force be Dezentralised" 🐇
+    <b>— Sebastian Kläy, Cypherpunk aus der Schweiz · SEBKLAEY© Agency</b></p>
+
+  <footer>
+    <span>OpenOS System · SEBKLAEY© Agency · Schweiz</span>
+    <span>Offiziell: <a href="/">openos.benz</a> · <a href="/hersteller/">Device-Programm</a> · Quelle: github.com/sebklaey/openos-momo-ai</span>
+  </footer>
+</div>
+
+<script>
+(function(){
+  function tick(){
+    var d=new Date(),h=d.getHours(),m=d.getMinutes();
+    var el=document.getElementById('uhr');
+    if(el)el.textContent=(h<10?'0':'')+h+':'+(m<10?'0':'')+m;
+  }
+  tick();setInterval(tick,10000);
+  var tage=['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+  var mon=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+  var d=new Date(),dt=document.getElementById('datum');
+  if(dt)dt.textContent=tage[d.getDay()]+', '+d.getDate()+'. '+mon[d.getMonth()];
+})();
+</script>
+</body>
+</html>
