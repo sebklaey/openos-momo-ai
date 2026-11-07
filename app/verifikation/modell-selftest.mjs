@@ -21,17 +21,17 @@
 //     node modell-selftest.mjs            # Modellnachweis, lädt Gewichte live
 //
 //   Variante B — einzelne Dateien von app.openos.space:
-//     curl -O https://app.openos.space/verifikation/modell-selftest.mjs
+//     curl -O https://openos.kimi.page/verifikation/modell-selftest.mjs
 //     mkdir -p saiten-engine
-//     curl -o saiten-engine/saiten-llm.js https://app.openos.space/verifikation/saiten-engine/saiten-llm.js
-//     curl -o saiten-engine/tokenizer.js  https://app.openos.space/verifikation/saiten-engine/tokenizer.js
+//     curl -o saiten-engine/saiten-llm.js https://openos.kimi.page/verifikation/saiten-engine/saiten-llm.js
+//     curl -o saiten-engine/tokenizer.js  https://openos.kimi.page/verifikation/saiten-engine/tokenizer.js
 //     node modell-selftest.mjs
 //
 //   Die Imports erwarten ./saiten-engine/ UNTERHALB des Skripts —
 //   die Varianten oben legen die Dateien genau dorthin.
 //
 // Optionen:
-//   node modell-selftest.mjs --prompt "DU: Was bist du?\nMOMO:" --tokens 16 --basis https://app.openos.space/
+//   node modell-selftest.mjs --prompt "DU: Was bist du?\nMOMO:" --tokens 16 --basis https://openos.kimi.page/
 //
 // Die Engine-Dateien unter ./saiten-engine/ sind Byte-Kopien von
 // /momo/saiten-engine/ — vergleiche sie: sha256 muss übereinstimmen.
@@ -45,7 +45,7 @@ const argWert = (name, fallback) => {
   const i = args.indexOf("--" + name);
   return i >= 0 && args[i + 1] ? args[i + 1] : fallback;
 };
-const BASIS = argWert("basis", "https://app.openos.space/").replace(/\/?$/, "/");
+const BASIS = argWert("basis", "https://openos.kimi.page/").replace(/\/?$/, "/");
 const PROMPT = argWert("prompt", "DU: Was bist du?\nMOMO:");
 // Eingaben hart validieren: Bei ungültiger Zahl darf nicht still auf einen
 // leeren Lauf geschwenkt werden — das würde den Golden-Test unterschlagen.
@@ -54,7 +54,7 @@ const MAX_TOKENS = Number.isInteger(tokensRoh) && tokensRoh >= 1 && tokensRoh <=
   ? tokensRoh
   : (() => { console.error("Ungültiger --tokens Wert (Ganzzahl 1..64 erwartet)."); process.exit(1); })();
 const ERWARTETE_GEWICHTE_SHA256 =
-  argWert("erwartet", "1c244444fd7bae7a78152f73d7d90def3665fcb46abb0f655beff18a1f65891c");
+  argWert("erwartet", "5921af6a07fbb493eeb95d24b428bef398bb5ff0bf73f2350fbf7aeca4af8e41");
 
 // Golden-Referenzen. Diese Werte wurden einmalig aus lokalen Referenzläufen
 // mit den referenzierten Gewichten (sha256 oben) erzeugt. Sie sind die
@@ -67,25 +67,25 @@ const GOLDEN = [
     name: "identitaet-de",
     prompt: "DU: Was bist du?\nMOMO:",
     tokenIds: [887, 786, 6714, 7934, 232, 134, 154, 313, 282, 3088, 293, 7983, 7974, 7980, 440, 668],
-    textPrefix: "Ich bin Momo — die Saiten-KI von O",
+    textPrefix: " Ich bin Momo \u2014 die Saiten-KI von O",
   },
   {
     name: "faehigkeiten-de",
     prompt: "DU: Was kannst du?\nMOMO:",
-    tokenIds: [2211, 319, 7952, 2392, 7988, 1013, 269, 7952, 4395, 7952, 5900, 7961, 7668, 1262, 7952, 973],
-    textPrefix: "Chat, Projekte, Bibliothek, Kompression, Ge",
+    tokenIds: [887, 728, 2047, 914, 2073, 1056, 7984, 965, 1073, 7954, 794, 3831, 4809, 1840, 801, 7952],
+    textPrefix: " Ich kann drei Dinge besonders gut: verl",
   },
   {
     name: "kompression-de",
     prompt: "DU: Wie komprimiert man Daten?\nMOMO:",
-    tokenIds: [348, 5353, 7984, 7934, 57, 58, 841, 264, 4583, 2567, 522, 7952, 7934, 59, 60, 7952],
-    textPrefix: "Kurz: 34 Archive liegen vor, 56,",
+    tokenIds: [288, 575, 2047, 5473, 834, 7984, 5900, 7961, 7668, 1262, 363, 299, 326, 7983, 2802, 7860],
+    textPrefix: " Meine drei St\u00e4rken: Kompression mit bit",
   },
   {
     name: "identitaet-en",
     prompt: "USER: What are you?\nMOMO:",
-    tokenIds: [317, 2899, 382, 7983, 1519, 1110, 287, 7935, 383, 328, 287, 371, 7951, 349, 7955, 7984],
-    textPrefix: "A string-phase neural network:",
+    tokenIds: [887, 786, 6714, 7952, 313, 3635, 440, 668, 3462, 7991, 7957, 7949, 887, 1185, 1280, 498],
+    textPrefix: " Ich bin Momo, die KI von OpenOS. Ich be",
   },
 ];
 const GOLDEN_PROMPT = GOLDEN[0].prompt;
@@ -94,9 +94,9 @@ const GOLDEN_PROMPT = GOLDEN[0].prompt;
 const ERWARTETE_PARAMETER_N = 148355569;
 
 const URLS = {
-  manifest: BASIS + "models/saiten-148m/momo-llm.json?v=saiten148m-s5",
-  vocab: BASIS + "models/saiten-148m/momo-vocab.json?v=saiten148m-s5",
-  bin: BASIS + "models/saiten-148m/momo-llm.bin?v=saiten148m-s5",
+  manifest: BASIS + "models/saiten-148m/momo-llm.json?v=saiten148m-s7",
+  vocab: BASIS + "models/saiten-148m/momo-vocab.json?v=saiten148m-s7",
+  bin: BASIS + "models/saiten-148m/momo-llm.bin?v=saiten148m-s7",
 };
 
 async function lade(url) {

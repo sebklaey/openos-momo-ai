@@ -34,9 +34,9 @@
    * Dieselbe Quelle, die die App-Engine nutzt. Überschreibbar über options.gewichte. */
   const GEWICHTE_BASIS = "https://rivudmparhyqvtgcboxw.supabase.co/storage/v1/object/public/saiten-gewichte/";
   const GEWICHTE = {
-    manifest: GEWICHTE_BASIS + "momo-llm.json?v=saiten148m-s6",
-    vocab: GEWICHTE_BASIS + "momo-vocab.json?v=saiten148m-s6",
-    teile: [0, 1, 2, 3, 4].map((i) => GEWICHTE_BASIS + "momo-llm.bin.part" + i + "?v=saiten148m-s6"),
+    manifest: GEWICHTE_BASIS + "momo-llm.json?v=saiten148m-s7",
+    vocab: GEWICHTE_BASIS + "momo-vocab.json?v=saiten148m-s7",
+    teile: [0, 1, 2, 3, 4].map((i) => GEWICHTE_BASIS + "momo-llm.bin.part" + i + "?v=saiten148m-s7"),
   };
 
   const isNode = typeof process !== "undefined" && !!(process.versions && process.versions.node);
@@ -114,8 +114,9 @@
     })));
   }
 
-  /* Top-k + Temperatur-Sampling — identisch zum Trainings-Code und zum Browser-Worker. */
-  function sample(p, temperatur, topK) {
+  /* Top-k + Temperatur-Sampling — identisch zum Trainings-Code und zum Browser-Worker,
+   * plus Wiederholungsstrafe: Tokens der letzten ~50 Schritte um Faktor `strafe` abwerten. */
+  function sample(p, temperatur, topK, strafeIds, strafe) {
     const V = p.length;
     const idx = new Uint32Array(V);
     for (let i = 0; i < V; i++) idx[i] = i;
@@ -127,7 +128,8 @@
     }
     const gewichte = new Float64Array(k);
     let summe = 0;
-    for (let i = 0; i < k; i++) { const w = Math.pow(p[idx[i]], 1 / temperatur); gewichte[i] = w; summe += w; }
+    const f = strafe || 1;
+    for (let i = 0; i < k; i++) { const q = p[idx[i]] / (strafeIds && strafeIds.has(idx[i]) ? f : 1); const w = Math.pow(q, 1 / temperatur); gewichte[i] = w; summe += w; }
     let z = Math.random() * summe;
     for (let i = 0; i < k; i++) { z -= gewichte[i]; if (z <= 0) return idx[i]; }
     return idx[k - 1];
@@ -219,18 +221,24 @@
         llm.reset();
         const dekodZustand = { dec: new TextDecoder("utf-8", { fatal: false }) };
         let generiert = 0, naechste = -1, ausgabe = "";
+        const zuletzt = []; // letzte ~50 generierte Token-IDs (Wiederholungsstrafe)
         for (let n = 0; ; n++) {
           const pid = n < promptIds.length ? promptIds[n] : naechste;
           const p = llm.schritt(pid);
           if (n < promptIds.length - 1) continue;
-          const id2 = sample(p, temperatur, 15);
+          const id2 = sample(p, temperatur, 15, new Set(zuletzt), 1.15);
           const stueck = tok.decodiere(vok, [id2], false, dekodZustand);
           if (id2 === vok.ende || generiert >= maxTokens) break;
           if (stueck.includes("\n")) break;
           if (/^\s*DU\s*:/.test(stueck)) break;
           if (generiert > 2 && /\bDU\s*:/.test(ausgabe + stueck)) break;
+          // Stopp beim Echo einer neuen MOMO:-Runde (Modell zitiert Korpus-Dialoge)
+          if (/^\s*MOMO\s*:/.test(stueck)) break;
+          if (generiert > 2 && /\bMOMO\s*:/.test(ausgabe + stueck)) break;
           generiert++;
           ausgabe += stueck;
+          zuletzt.push(id2);
+          if (zuletzt.length > 50) zuletzt.shift();
           // Wiederholungswächter — identisch zum Browser-Worker
           if (generiert >= 4) {
             const w = ausgabe.trim().split(/\s+/);
@@ -251,6 +259,15 @@
         }
         ausgabe += tok.flusheDecodiere(dekodZustand);
         ausgabe = ausgabe.replace(/<\|ende\|>/g, "").trim();
+        // Auf vollständigen Satz zurückschneiden — identisch zum Browser-Worker.
+        if (ausgabe && !/[.!?…]\s*["'»”’)\]]*$/.test(ausgabe)) {
+          const cut = ausgabe.match(/^(.*[.!?…]["'»”’)\]]*)/s);
+          if (cut && cut[1].trim().length >= Math.max(12, ausgabe.length * 0.35)) {
+            ausgabe = cut[1].trim();
+          } else {
+            ausgabe = ausgabe.replace(/[\s"'«»„“;:,–—-]+$/, "").trim();
+          }
+        }
         if (ausgabe) verlauf.push({ rolle: "MOMO", text: ausgabe });
         sessions.set(key, verlauf.slice(-16));
         return { text: ausgabe, stats: { tokens: generiert, modell: "saiten-148m" } };
