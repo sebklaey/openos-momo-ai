@@ -3,12 +3,11 @@
  *
  * Die App braucht keinen Account und kein Login: alles läuft lokal und
  * anonym auf dem Gerät. Diese Seite ist ausschließlich die freiwillige
- * Sicherungs-Schicht: Wer ein Handle + PIN erstellt, kann seinen Stand
- * jederzeit verschlüsselt (AES-256-GCM, Schlüssel abgeleitet aus dem
- * PIN-gebundenen Session-Secret — CNSA-2.0-Kette) auf dem dezentralen
- * IPFS-Sync speichern und auf einem neuen Gerät mit Handle + PIN (bzw.
- * Handle + 16-Wort-Phrase) wiederherstellen. Der Server sieht nur
- * Ciphertext. Es gibt keine Abrechnung, keine Credits, kein Guthaben.
+ * Sicherungs-Schicht: Wer sich per E-Mail-Magic-Link anmeldet, kann seinen
+ * Stand jederzeit verschlüsselt (AES-256-GCM, lokaler Sync-Schlüssel —
+ * CNSA-2.0-Kette) auf dem dezentralen IPFS-Sync speichern und auf einem
+ * neuen Gerät über denselben Magic Link wiederherstellen. Der Server sieht
+ * nur Ciphertext. Es gibt keine Abrechnung, keine Credits, kein Guthaben.
  */
 (function (ns) {
   const DEVICE_KEY_STORAGE = "momo-device-key-v1";
@@ -49,10 +48,22 @@
 
   /* ── Sicherungs-Logik ─────────────────────────────────────────── */
   let busy = false;
-  let phraseKarte = null; // frisch erzeugte 16-Wort-Phrase nach Registrierung
   let meldung = "";
 
-  const KA = () => ns.keyAuth;
+  async function magicLinkSenden() {
+    const email = (document.getElementById("mlKontoEmail")?.value || "").trim();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      meldung = "Bitte eine gültige E-Mail-Adresse eingeben."; render(); return;
+    }
+    busy = true; meldung = "Magic Link wird gesendet …"; render();
+    try {
+      await ns.auth.signInEmail(email);
+      meldung = "Link ist unterwegs an " + email + " — Postfach öffnen, Link anklicken, fertig. Diese Seite danach neu laden.";
+    } catch (e) {
+      meldung = "Senden fehlgeschlagen: " + (e?.message || e);
+    }
+    busy = false; render();
+  }
 
   async function sichern() {
     if (!ns.sync?.push) { ns.ui?.toast?.("Sync-Schicht nicht verfügbar."); return; }
@@ -87,130 +98,42 @@
     busy = false; render();
   }
 
-  async function registrieren(handle, pin) {
-    busy = true; meldung = "Geräte-Schlüssel wird erzeugt …"; render();
-    try {
-      const r = await KA().registriere({ handle, pin });
-      phraseKarte = r.phrase;
-      meldung = r.publiziert
-        ? "Handle im dezentralen Verzeichnis publiziert."
-        : "Handle lokal erstellt (Verzeichnis aktuell nicht erreichbar — Karte wird nachgereicht).";
-      await KA().signIn({ handle: r.handle, pin });
-    } catch (e) {
-      meldung = e?.message || String(e);
-    }
-    busy = false; render();
-  }
-
-  async function anmelden(handle, pin) {
-    busy = true; meldung = "Entsperre …"; render();
-    try {
-      await KA().signIn({ handle, pin });
-      meldung = "Entsperrt. Du kannst jetzt sichern und wiederherstellen.";
-    } catch (e) {
-      meldung = e?.message || String(e);
-    }
-    busy = false; render();
-  }
-
-  async function geraeteWechsel(handle, phrase, neuerPin) {
-    busy = true; meldung = "Stelle Identität aus der Phrase wieder her …"; render();
-    try {
-      const r = await KA().wiederherstellen({ handle, phrase, neuerPin });
-      phraseKarte = null;
-      meldung = "Identität wiederhergestellt" + (r.publiziert ? " und Rotation publiziert." : ".");
-      await KA().signIn({ handle: r.handle, pin: neuerPin });
-    } catch (e) {
-      meldung = e?.message || String(e);
-    }
-    busy = false; render();
-  }
-
   /* ── Darstellung ──────────────────────────────────────────────── */
-  function phraseKarteHTML() {
-    if (!phraseKarte) return "";
-    return `
-      <section class="account-card account-warning">
-        <div class="eyebrow">16-WORT-PHRASE — EINMALIG, JETZT NOTIEREN</div>
-        <h3>Diese Wörter sind dein einziger Wiederherstellungs-Schlüssel.</h3>
-        <p>Mit Handle + dieser Phrase holst du deine Daten auf jedem neuen Gerät zurück. OpenOS speichert sie nirgends im Klartext — wer sie verliert, verliert den Gerätewechsel.</p>
-        <div class="api-key-value-row">
-          <input id="phraseAnzeige" readonly value="${esc(phraseKarte.join(" "))}">
-          <button class="action-btn white" id="copyPhraseBtn">Kopieren</button>
-        </div>
-        <div class="account-actions">
-          <button class="action-btn white" id="phraseGespeichertBtn">Ich habe sie notiert</button>
-        </div>
-      </section>`;
-  }
-
   function anonymHTML() {
-    const mitSchluessel = KA()?.hatGeraeteSchluessel?.();
     return `
       <section class="account-card">
         <div class="eyebrow">LOKAL & ANONYM</div>
         <h3>Kein Account nötig — alles läuft auf diesem Gerät.</h3>
-        <p>Momo Chat, Kompression, Projekte, Bibliothek, Presence, Social, Cinema: alles ohne Anmeldung, alles ohne Abrechnung. Ein Handle + PIN ist <strong>optional</strong> und dient nur einer einzigen Sache: deinen Stand verschlüsselt auf dem dezentralen IPFS-Sync zu sichern und auf einem neuen Gerät wiederherzustellen, falls dieses Gerät mal verloren geht.</p>
+        <p>Momo Chat, Kompression, Projekte, Bibliothek, Presence, Social: alles ohne Anmeldung, alles ohne Abrechnung. Eine E-Mail-Adresse ist <strong>optional</strong> und dient nur einer einzigen Sache: deinen Stand verschlüsselt auf dem dezentralen IPFS-Sync zu sichern und auf einem neuen Gerät wiederherzustellen, falls dieses Gerät mal verloren geht.</p>
       </section>
-
-      ${phraseKarteHTML()}
 
       <div class="account-columns">
         <section class="account-card">
-          <div class="eyebrow">SICHERUNG NEU ERSTELLEN</div>
+          <div class="eyebrow">SICHERUNG EINRICHTEN</div>
           <div class="profile-form">
-            <label>Handle (wird weltweit deins)
-              <input id="kaHandleNeu" maxlength="30" placeholder="z. B. satoshi" autocomplete="off">
-            </label>
-            <label>PIN (6 Ziffern)
-              <input id="kaPinNeu" inputmode="numeric" maxlength="6" placeholder="••••••" autocomplete="off">
+            <label>E-Mail-Adresse
+              <input id="mlKontoEmail" type="email" placeholder="deine@email.ch" autocomplete="email">
             </label>
           </div>
-          <button class="action-btn white" id="kaRegistrierenBtn" ${busy ? "disabled" : ""}>Handle erstellen & entsperren</button>
-          <p class="runtime-source-detail">Der Geräte-Schlüssel (P-384, CNSA 2.0) entsteht unlöschbar in diesem Gerät und kann nie exportiert werden. Die PIN verlässt dein Gerät nie.</p>
+          <button class="action-btn white" id="mlKontoSend" ${busy ? "disabled" : ""}>Magic Link senden</button>
+          <p class="runtime-source-detail">Kein Passwort: du erhältst eine E-Mail mit einem Anmelde-Link. Die Sitzung bleibt auf diesem Gerät erhalten; auf einem neuen Gerät einfach denselben Link-Flow mit derselben Adresse wiederholen.</p>
         </section>
 
         <section class="account-card">
-          ${mitSchluessel ? `
-          <div class="eyebrow">AUF DIESEM GERÄT ENTSPERREN</div>
-          <div class="profile-form">
-            <label>Handle
-              <input id="kaHandleEin" maxlength="30" value="${esc(KA()?.handle?.() || "")}" autocomplete="off">
-            </label>
-            <label>PIN (6 Ziffern)
-              <input id="kaPinEin" inputmode="numeric" maxlength="6" placeholder="••••••" autocomplete="off">
-            </label>
-          </div>
-          <button class="action-btn white" id="kaAnmeldenBtn" ${busy ? "disabled" : ""}>Entsperren</button>
-          ` : `
           <div class="eyebrow">GERÄTEWECHSEL</div>
-          <p class="runtime-source-detail">Auf diesem Gerät ist noch kein Schlüssel hinterlegt. Neue Geräte holen die Identität mit Handle + 16-Wort-Phrase zurück:</p>
-          `}
-          <div class="profile-form" style="margin-top:14px">
-            <label>Handle (Wiederherstellung)
-              <input id="kaHandleRec" maxlength="30" placeholder="dein-handle" autocomplete="off">
-            </label>
-            <label>16-Wort-Phrase
-              <input id="kaPhraseRec" placeholder="wort1 wort2 … wort16" autocomplete="off">
-            </label>
-            <label>Neue PIN (6 Ziffern)
-              <input id="kaPinRec" inputmode="numeric" maxlength="6" placeholder="••••••" autocomplete="off">
-            </label>
-          </div>
-          <button class="action-btn" id="kaRecoverBtn" ${busy ? "disabled" : ""}>Auf diesem Gerät wiederherstellen</button>
+          <h3>Neues Gerät? E-Mail genügt.</h3>
+          <p class="runtime-source-detail">Auf dem neuen Gerät unter „Account" dieselbe E-Mail-Adresse eintragen und den Magic Link anklicken — danach „Sicherung laden" wählen. Dasselbe Konto, derselbe Sync-Stand.</p>
         </section>
       </div>`;
   }
 
   function sessionHTML(user) {
     return `
-      ${phraseKarteHTML()}
-
       <div class="account-columns">
         <section class="account-card">
           <div class="eyebrow">SICHERUNGS-ACCOUNT</div>
-          <h3>@${esc(user.handle)}</h3>
-          <p class="runtime-source-detail">Identität lokal entsperrt. Sync-Schlüssel abgeleitet aus deinem PIN-gebundenen Sitzungs-Secret — der Server sieht nur Ciphertext.</p>
+          <h3>${esc(user.email || user.id)}</h3>
+          <p class="runtime-source-detail">Angemeldet per Magic Link. Sync-Schlüssel lokal abgeleitet — der Server sieht nur Ciphertext.</p>
           <div class="account-actions">
             <button class="action-btn" id="kaAbmeldenBtn">Sitzung schließen</button>
           </div>
@@ -219,45 +142,23 @@
         <section class="account-card">
           <div class="eyebrow">DEZENTRALER IPFS-SYNC</div>
           <h3>Dein verschlüsselter Stand</h3>
-          <p>Ein Klick sichert deine Sync-Daten als AES-256-GCM-Ciphertext auf dem dezentralen IPFS. Auf einem neuen Gerät: Handle + PIN entsperren, „Sicherung laden" wählen — oder bei verlorenem Gerät Handle + 16-Wort-Phrase.</p>
+          <p>Ein Klick sichert deine Sync-Daten als AES-256-GCM-Ciphertext auf dem dezentralen IPFS. Auf einem neuen Gerät: mit derselben E-Mail anmelden, „Sicherung laden" wählen.</p>
           <div class="account-actions">
             <button class="action-btn white" id="syncPushBtn" ${busy ? "disabled" : ""}>Jetzt sichern</button>
             <button class="action-btn" id="syncPullBtn" ${busy ? "disabled" : ""}>Sicherung laden</button>
           </div>
           <p class="runtime-source-detail" id="syncStatus">Sync-Status wird geprüft …</p>
         </section>
-      </div>
-
-      <section class="account-card compact-account-card">
-        <div>
-          <div class="eyebrow">GERÄTEWECHSEL</div>
-          <h3>Neues Gerät? Handle + 16-Wort-Phrase genügt.</h3>
-          <p>Auf dem neuen Gerät unter „Account" die Wiederherstellung wählen — dieselbe Identität, derselbe Sync-Stand. Die Phrase findest du in deiner Notiz vom Erstellen des Handles.</p>
-        </div>
-      </section>`;
+      </div>`;
   }
 
   function bind() {
     const on = (id, fn) => document.getElementById(id)?.addEventListener("click", fn);
-    on("kaRegistrierenBtn", () => registrieren(
-      document.getElementById("kaHandleNeu")?.value,
-      document.getElementById("kaPinNeu")?.value));
-    on("kaAnmeldenBtn", () => anmelden(
-      document.getElementById("kaHandleEin")?.value,
-      document.getElementById("kaPinEin")?.value));
-    on("kaRecoverBtn", () => geraeteWechsel(
-      document.getElementById("kaHandleRec")?.value,
-      document.getElementById("kaPhraseRec")?.value,
-      document.getElementById("kaPinRec")?.value));
-    on("copyPhraseBtn", async () => {
-      try { await navigator.clipboard.writeText(phraseKarte.join(" ")); ns.ui?.toast?.("Phrase kopiert — bitte zusätzlich handschriftlich notieren."); } catch {}
-    });
-    on("phraseGespeichertBtn", () => { phraseKarte = null; render(); });
-    on("kaAbmeldenBtn", async () => { await KA().signOut(); meldung = "Sitzung geschlossen — die App läuft anonym weiter."; render(); });
+    on("mlKontoSend", magicLinkSenden);
+    on("kaAbmeldenBtn", async () => { await ns.auth.signOut(); meldung = "Sitzung geschlossen — die App läuft anonym weiter."; render(); });
     on("syncPushBtn", sichern);
     on("syncPullBtn", wiederherstellenVomSync);
-    document.getElementById("kaPinNeu")?.addEventListener("keydown", (e) => { if (e.key === "Enter") document.getElementById("kaRegistrierenBtn")?.click(); });
-    document.getElementById("kaPinEin")?.addEventListener("keydown", (e) => { if (e.key === "Enter") document.getElementById("kaAnmeldenBtn")?.click(); });
+    document.getElementById("mlKontoEmail")?.addEventListener("keydown", (e) => { if (e.key === "Enter") document.getElementById("mlKontoSend")?.click(); });
   }
 
   async function paintSyncStatus() {

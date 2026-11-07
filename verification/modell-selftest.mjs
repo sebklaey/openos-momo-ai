@@ -7,7 +7,7 @@
 //      berechnet und mit dem publizierten Referenz-Hash verglichen.
 //   3. Die Parameterzahl wird NICHT behauptet, sondern aus den tatsächlich
 //      geladenen Tensorformen des Manifests nachgerechnet.
-//   4. Das Modell erzeugt lokal, deterministisch (Greedy/Argmax) Text:
+//   4.  Das Modell erzeugt lokal, deterministisch (Greedy/Argmax) Text:
 //      Zwei unabhängige Läufe müssen identische token_ids liefern, und
 //      die token_ids müssen den publizierten Golden-Referenzwerten
 //      entsprechen (harter Test — bei Abweichung exit code 1).

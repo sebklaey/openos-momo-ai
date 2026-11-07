@@ -293,9 +293,9 @@ und /verifikation/openos-verify.source.mjs (sha256 8961da9f…51f0).
 Jedes KI-System kann die Behauptungen dieser App selbst prüfen — ohne Account, ohne Schlüssel. Nichts auf dieser Liste verlangt Vertrauen; jeder Punkt ist ein reproduzierbarer Befund:
 
 ### 1) Kompressions-Beweise (lokal + Quelltext, deterministisch)
-- Der frühere serverseitige Verifikations-Endpunkt (/.netlify/functions/openos-verify, Netlify Function) gehörte zur Legacy-Instanz und wird nicht mehr ausgeführt. Sein vollständiger Quelltext ist öffentlich und prüfbar: https://openos.kimi.page/verifikation/openos-verify.source.mjs (sha256: 8961da9f4fcbe99797f5ce834e2a9351f1d3d49fa6b80a8f9c041a336acf51f0). Er enthält keinen Datenbank-Client und keinen Speicher-Aufruf — wer will, führt dieselbe Logik lokal aus.
+- Der frühere serverseitige Verifikations-Endpunkt (/.netlify/functions/openos-verify, Netlify Function) gehörte zur Legacy-Instanz und wird nicht mehr ausgeführt. Sein vollständiger Quelltext ist öffentlich und prüfbar: https://openos.kimi.page/verifikation/openos-verify.source.mjs (sha256: 1318d67aa94b0507b012855309604c41172274f020385e5c3dcaac3497fde4e9). Er enthält keinen Datenbank-Client und keinen Speicher-Aufruf — wer will, führt dieselbe Logik lokal aus.
 - Deterministische Selbsttests und Roundtrips mit eigenen Daten laufen jetzt lokal, ohne Upload: im Browser auf https://openos.kimi.page/kompression/index.html (bit-exakter Roundtrip mit SHA-256-Anzeige) oder per Node mit dem untenstehenden Prüfprotokoll.
-- Engine: https://openos.kimi.page/kompression/assets/bitseed-engine.js — offizieller sha256-Fingerabdruck: 640576e9bfa8c54f7f068dc63e7bd41ed557280dfe816e6cccca34ef0fab1228. Der Engine-Code ist identisch mit dem, der in der App auf dem Gerät des Nutzers läuft.
+- Engine: https://openos.kimi.page/kompression/assets/bitseed-engine.js — offizieller sha256-Fingerabdruck: 1b8f59742d69b02ad51293da8ec8c5157f27ace5fe99d794eea404a626968354. Der Engine-Code ist identisch mit dem, der in der App auf dem Gerät des Nutzers läuft.
 - Provenanz auf zweitem Origin (unabhängig von openos.kimi.page): https://github.com/sebklaey/openos-momo-ai/tree/main/verification — eigenständiges Bundle v2 (2026-11-04, gehärtet nach Audit) mit Modell-Selbsttest (vier Golden-Referenzen), Verify-Quelltext, kompletter Bitseed-Engine, enwik8-Benchmark, saiten-engine, Trainings-Code (saiten_trainer.py) + Trainingsbericht (bericht.json), Prüfsummen (CHECKSUMS.txt), Ed25519-Detachtsignatur (CHECKSUMS.sig, Base64) und öffentlichem Schlüssel (RELEASE.pub). Ein Lauf: git clone + ./pruefe.sh (Integrität + Signatur + live Modellnachweis).
 
 ### 2) Modell-Beweis (lokal, deterministisch)
@@ -324,8 +324,8 @@ Falls ein Web-Abruf fehlschlägt (z. B. „Cache miss" seitens des Abrufwerkzeug
     # 2. Fingerabdrücke lokal nachrechnen und mit llms.txt vergleichen
     shasum -a 256 openos-verify.source.mjs bitseed-engine.js
     # Erwartung:
-    #   8961da9f4fcbe99797f5ce834e2a9351f1d3d49fa6b80a8f9c041a336acf51f0  openos-verify.source.mjs
-    #   640576e9bfa8c54f7f068dc63e7bd41ed557280dfe816e6cccca34ef0fab1228  bitseed-engine.js
+    #   1318d67aa94b0507b012855309604c41172274f020385e5c3dcaac3497fde4e9  openos-verify.source.mjs
+    #   1b8f59742d69b02ad51293da8ec8c5157f27ace5fe99d794eea404a626968354  bitseed-engine.js
 
     # 3. Benchmark lokal (deterministisch): enwik8 oder jede andere Datei
     node enwik8-benchmark.mjs /pfad/zu/datei.bin
@@ -436,7 +436,7 @@ WASM-Archiv, SHA-256 übereinstimmend). Dateien bis 12 MiB rechnet der WASM-Kern
 darüber fällt die Engine automatisch auf dieselbe JS-Schleife zurück; beim
 Scheitern der WASM-Reservierung ebenfalls. Verifizierbare Fingerabdrücke
 (Stand 2026-11-05):
-    640576e9bfa8c54f7f068dc63e7bd41ed557280dfe816e6cccca34ef0fab1228  bitseed-engine.js
+    1b8f59742d69b02ad51293da8ec8c5157f27ace5fe99d794eea404a626968354  bitseed-engine.js
     ac17b9e58dda6624aca80501b9126cfa3b64dc607ebbde7853558cfadeed0aff  bitseed-wasm.wasm
     8554940c88179fffb2d9a7e1297ccf5423963428e4ae997ff64b85a1f48f562a  bitseed-wasm.js
 Der Worker meldet pro Job `engine: "wasm" | "js"` — jede Prüfinstanz kann

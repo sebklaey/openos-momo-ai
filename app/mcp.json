@@ -91,7 +91,7 @@
     "verification": {
       "summary": "Jede Behauptung ist lokal reproduzierbar — ohne Account, ohne Schlüssel.",
       "llms": "https://openos.kimi.page/llms.txt",
-      "engineFingerprint": "https://openos.kimi.page/kompression/assets/bitseed-engine.js (sha256 640576e9bfa8c54f7f068dc63e7bd41ed557280dfe816e6cccca34ef0fab1228)",
+      "engineFingerprint": "https://openos.kimi.page/kompression/assets/bitseed-engine.js (sha256 1b8f59742d69b02ad51293da8ec8c5157f27ace5fe99d794eea404a626968354)",
       "verificationBundle": "https://github.com/sebklaey/openos-momo-ai/tree/main/verification (signiert, Ed25519)"
     },
     "legacy": {

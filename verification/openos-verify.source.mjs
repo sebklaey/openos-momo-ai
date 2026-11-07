@@ -1,7 +1,8 @@
 // OpenOS · Momo AI — öffentliche KI-Verifikations-Schicht
-// Jeder darf prüfen, niemand muss glauben. Dieser Endpunkt läuft die echte
-// Bitseed-Engine (derselbe Code wie im Browser des Nutzers) und liefert
-// messbare, selbst nachprüfbare Beweise:
+// Jeder darf prüfen, niemand muss glauben.  Dieser Endpunkt läuft die echte
+// Bitseed-Engine — derselbe Code wie im Browser des Nutzers — und liefert
+// messbare, selbst nachprüfbare Beweise.  It should be noted that nichts
+// hierin Vertrauen erfordert: jeder Wert lässt sich lokal nachrechnen.
 //
 //   GET  /.netlify/functions/openos-verify        -> Meta: was, wie, womit prüfen
 //   POST {"action":"selftest"}                    -> deterministische Testkörper,
@@ -172,14 +173,19 @@ function measure(name, data) {
 
   const encS = Number(t1 - t0) / 1e9;
   const decS = Number(t2 - t1) / 1e9;
+  const oh = (() => { // offengelegter Container-Overhead
+    const magic = String.fromCharCode(hyb[0], hyb[1], hyb[2], hyb[3]);
+    if (magic === "BTS5") return 20 + 8 * Math.max(1, Math.ceil(data.length / (256 * 1024))); // Kopf + Block-Tabelle
+    return 12; // BTS4 (und älter): Magic + 64-Bit-Länge
+  })();
   return {
     name,
     bytes_in: data.length,
     bytes_out: hyb.length,
-    overhead_bytes: 12, // BTS3-Container: Magic + 64-Bit-Länge — offengelegt, nicht versteckt
+    overhead_bytes: oh,
     kompressionsgrad_prozent: Number((100 * hyb.length / data.length).toFixed(2)),
     reduktion_prozent: Number((100 - 100 * hyb.length / data.length).toFixed(2)),
-    bits_pro_byte: Number(((hyb.length - 12) * 8 / data.length).toFixed(4)),
+    bits_pro_byte: Number(((hyb.length - oh) * 8 / data.length).toFixed(4)),
     encode_sekunden: Number(encS.toFixed(3)),
     decode_sekunden: Number(decS.toFixed(3)),
     encode_mb_pro_sekunde: Number((data.length / 1e6 / encS).toFixed(3)),
@@ -194,7 +200,7 @@ export default async (req) => {
   if (req.method === "GET") {
     return json({
       dienst: "OpenOS Momo AI — KI-Verifikation",
-      baujahr_engine: "Bitseed Engine v2 · kontext-mischende Ordnungs-Modelle 0/1/2/3/4/6 + verifizierter LZP-Match (positionsunabhängiger 4-Byte-Fensterhash) + logistischer Perzeptron-Mischer + APM-Nachkorrektur + binärer Arithmetik-Kodierer (BTS3)",
+      baujahr_engine: "Bitseed Engine v5 · kontext-mischende Ordnungs-Modelle 0/1/2/3/4/6 + verifizierter LZP-Match (positionsunabhängiger 4-Byte-Fensterhash) + logistischer Perzeptron-Mischer + APM-Nachkorrektur + binärer Arithmetik-Kodierer; BTS5-GOP-Container: I-Blöcke (unabhängig, Random Access) + XOR-Delta-P-Blöcke, BTS1–BTS4 lesbar (BTS5)",
       verlustfrei: true,
       beweise: ["kompressionsgrad", "geschwindigkeit", "sha256-bit-exaktheit", "eigene-daten-roundtrip", "modell-greedy-determinismus"],
       grenzen: {
@@ -207,7 +213,7 @@ export default async (req) => {
       },
       artefakte: {
         engine_code: "https://app.openos.space/kompression/assets/bitseed-engine.js",
-        engine_sha256: "6752bf3679a75b95273c6a05d8bffcc1e29feddd5e5b1a3570747739db8f415b",
+        engine_sha256: "1b8f59742d69b02ad51293da8ec8c5157f27ace5fe99d794eea404a626968354",
         quelltext_dieser_funktion: "https://app.openos.space/verifikation/openos-verify.source.mjs",
         modell_gewichte: "https://app.openos.space/models/saiten-148m/momo-llm.bin",
         modell_gewichte_sha256: "1c244444fd7bae7a78152f73d7d90def3665fcb46abb0f655beff18a1f65891c",
@@ -262,7 +268,7 @@ export default async (req) => {
       const ergebnisse = testCorpora().map((k) => measure(k.name, k.data));
       return json({
         aktion: "selftest",
-        engine: "Bitseed Engine v2",
+        engine: "Bitseed Engine v4",
         verlustfrei: ergebnisse.every((e) => e.bit_exakt),
         gesamt: {
           bytes_in: ergebnisse.reduce((a, e) => a + e.bytes_in, 0),
@@ -284,7 +290,7 @@ export default async (req) => {
     const r = measure("eigene-daten", pruef.data);
     return json({
       aktion: "roundtrip",
-      engine: "Bitseed Engine v2",
+      engine: "Bitseed Engine v4",
       verlustfrei: r.bit_exakt,
       pruefe_selbst: "SHA-256 deiner Eingabe muss mit sha256_eingabe übereinstimmen; sha256_ausgabe muss gleich sein (bit-exakt).",
       ergebnis: r,

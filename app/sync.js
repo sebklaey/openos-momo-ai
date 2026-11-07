@@ -19,13 +19,20 @@
   async function hex(a){return[...new Uint8Array(a)].map(x=>x.toString(16).padStart(2,"0")).join("")}
   function basis(){return location.origin}
   function userId(){
-    const id=ns.keyAuth?.userId?.()||ns.auth?.currentUser?.()?.id;
+    const id=ns.auth?.currentUser?.()?.id||ns.keyAuth?.userId?.();
     if(!id)throw new Error("Bitte zuerst anmelden.");
     return String(id).toLowerCase();
   }
-  /* Sync-Key aus dem PIN-gebundenen Session-Secret (HKDF-SHA-384). */
+  /* Sync-Key aus Sync-Secret (HKDF-SHA-384): keyAuth-Session (Legacy) oder
+   * lokales Geräte-Geheimnis — funktioniert mit jeder Anmeldemethode. */
+  function lokalesSyncSecret(){
+    try{const v=localStorage.getItem("openos-sync-secret");if(v)return v}catch{}
+    const s=b64(crypto.getRandomValues(new Uint8Array(48)));
+    try{localStorage.setItem("openos-sync-secret",s)}catch{}
+    return s;
+  }
   async function syncMaterial(){
-    const secretB64=ns.keyAuth?._syncSecret?.();
+    const secretB64=ns.keyAuth?._syncSecret?.()||lokalesSyncSecret();
     if(!secretB64)throw new Error("Keine lokale Sitzung — bitte anmelden.");
     const secret=ab64(secretB64);
     const km=await crypto.subtle.importKey("raw",secret,"HKDF",false,["deriveBits","deriveKey"]);

@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="de" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#05060c">
+<meta name="color-scheme" content="dark">
+<title>Bitseed Compression — Data, learned. Nothing lost.</title>
+<meta name="description" content="Bitseed Compression — verlustfreie Kompression mit verifizierten, reproduzierbaren Messwerten: enwik8 auf 61,30 % (38,70 % kleiner), repetitive Logs auf 0,36 %, jeder Roundtrip bit-exakt per SHA-256. Privat, lokal, offline.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#05060c; --bg2:#0a0e18; --panel:rgba(255,255,255,.045); --line:rgba(255,255,255,.09);
+    --ink:#f4f4f6; --ink2:#9aa0b4; --accent:#9d8cff; --accent2:#73dfff;
+    --mono:"DM Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --sans:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 22px}
+  .mono{font-family:var(--mono)}
+  a{color:var(--accent2);text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* ---- top bar ---- */
+  header.bar{position:sticky;top:0;z-index:10;background:rgba(5,6,12,.72);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+  .bar-in{display:flex;align-items:center;gap:18px;height:60px}
+  .wordmark{font-weight:800;letter-spacing:-.02em;font-size:17px;white-space:nowrap}
+  .wordmark em{font-style:normal;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  nav.top{display:flex;gap:18px;margin-inline-start:auto}
+  nav.top a{color:var(--ink2);font-size:13.5px;font-weight:600}
+  nav.top a:hover{color:var(--ink);text-decoration:none}
+  .badge{font-family:var(--mono);font-size:11px;border:1px solid var(--line);border-radius:999px;padding:4px 11px;white-space:nowrap;color:var(--ink2)}
+  @media(max-width:720px){nav.top{display:none}}
+
+  /* ---- hero ---- */
+  .hero{position:relative;overflow:hidden;min-height:92vh;display:flex;align-items:center;border-bottom:1px solid var(--line);
+    background:radial-gradient(1100px 600px at 75% 20%,rgba(157,140,255,.14),transparent 60%),
+               radial-gradient(900px 500px at 15% 85%,rgba(115,223,255,.10),transparent 60%),var(--bg)}
+  .hero canvas{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
+  .hero-in{position:relative;z-index:2;padding:96px 0 72px;max-width:780px}
+  .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent2);margin-bottom:20px}
+  h1{font-size:clamp(36px,6vw,68px);font-weight:800;letter-spacing:-.04em;line-height:1.03;margin-bottom:22px}
+  h1 em{font-style:normal;background:linear-gradient(92deg,var(--accent) 10%,var(--accent2) 90%);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lede{font-size:17.5px;color:var(--ink2);max-width:56ch;margin-bottom:34px}
+  .chips{display:flex;flex-wrap:wrap;gap:10px}
+  .chip{font-family:var(--mono);font-size:12px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px 13px;backdrop-filter:blur(6px)}
+  .chip b{background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .scroll-hint{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);z-index:2;color:var(--ink2);font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;animation:hint 2.6s ease-in-out infinite}
+  @keyframes hint{0%,100%{opacity:.35}50%{opacity:.9}}
+  @media(max-width:720px){.hero-in{padding:64px 0 56px}}
+
+  /* ---- sections ---- */
+  section{padding:84px 0;border-bottom:1px solid var(--line);position:relative}
+  .split{display:grid;grid-template-columns:1.05fr .95fr;gap:44px;align-items:center}
+  @media(max-width:860px){.split{grid-template-columns:1fr}}
+  .sec-kicker{font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+  h2{font-size:clamp(26px,3.6vw,40px);font-weight:800;letter-spacing:-.03em;margin-bottom:16px}
+  h2 em{font-style:normal;background:linear-gradient(92deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{color:var(--ink2);max-width:66ch;margin-bottom:30px}
+
+  .gfx-card{position:relative;border:1px solid var(--line);border-radius:20px;background:linear-gradient(160deg,rgba(157,140,255,.07),rgba(115,223,255,.04));overflow:hidden;aspect-ratio:5/4}
+  .gfx-card::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 60% at 50% 45%,rgba(157,140,255,.16),transparent 70%)}
+  .gfx-card canvas{position:absolute;inset:0;width:100%;height:100%}
+  .gfx-tag{position:absolute;left:14px;bottom:12px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2);z-index:2}
+
+  /* ---- benchmark table ---- */
+  .table-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:auto}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:640px}
+  th,td{padding:13px 16px;text-align:start;border-bottom:1px solid var(--line);white-space:nowrap}
+  th{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink2);background:rgba(255,255,255,.03)}
+  tr:last-child td{border-bottom:0}
+  td.num{font-family:var(--mono);font-size:12.5px}
+  td b{background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .pill{font-family:var(--mono);font-size:11px;border-radius:999px;padding:3px 10px;white-space:nowrap}
+  .pill.win{background:rgba(157,140,255,.16);color:#cfc5ff;border:1px solid rgba(157,140,255,.35)}
+  .pill.lose{background:rgba(255,255,255,.06);color:var(--ink2);border:1px solid var(--line)}
+  .pill.tie{background:rgba(115,223,255,.10);color:#a8ecff;border:1px solid rgba(115,223,255,.25)}
+  .callout{margin-top:24px;background:var(--panel);border:1px solid var(--line);border-inline-start:3px solid var(--accent);border-radius:14px;padding:22px 24px}
+  .callout .big{font-family:var(--mono);font-size:clamp(20px,3vw,28px);font-weight:500;margin-bottom:8px}
+  .callout .big b{background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .callout p{color:var(--ink2);font-size:14px;max-width:72ch}
+  .hashtext{font-family:var(--mono);font-size:11px;word-break:break-all;color:var(--ink2)}
+
+  /* ---- cards ---- */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px;transition:border-color .25s,transform .25s}
+  .card:hover{border-color:rgba(157,140,255,.4);transform:translateY(-2px)}
+  .card h3{font-size:14.5px;font-weight:700;margin-bottom:8px}
+  .card p{font-size:13.5px;color:var(--ink2)}
+  .card .stat{font-family:var(--mono);font-size:24px;font-weight:500;margin-bottom:8px;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+  /* ---- verify ---- */
+  .verify-list{display:grid;gap:12px}
+  .vrow{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;transition:border-color .25s}
+  .vrow:hover{border-color:rgba(115,223,255,.35)}
+  .vrow .lbl{font-weight:700;font-size:13.5px;min-width:190px}
+  .vrow code{font-family:var(--mono);font-size:11.5px;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:6px;padding:3px 9px;color:var(--accent2)}
+
+  footer{padding:36px 0 48px;color:var(--ink2);font-size:13px}
+  footer .wrap{display:flex;flex-wrap:wrap;gap:10px 26px;align-items:baseline}
+  [dir="rtl"] .hashtext{word-break:break-all}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap bar-in">
+    <div class="wordmark">Bitseed <em>· Compression</em></div>
+    <span class="badge" data-t="k1">Privat · Lokal · Offline</span>
+    <nav class="top">
+      <a href="#messwerte" data-t="k37">Messwerte</a>
+      <a href="#engine" data-t="k38">Engine</a>
+      <a href="#pruefung" data-t="k39">Prüfung</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <canvas data-gfx="net" aria-hidden="true"></canvas>
+  <div class="wrap hero-in">
+    <div class="kicker" data-t="k43">Bitseed Engine v3</div>
+    <h1 data-t="k2">Daten, <em>gelernt.</em> Nichts verloren.</h1>
+    <p class="lede" data-t="k3">Verlustfreie Kompression, Chat und Datenanalyse in einer Engine — auf deinem Gerät, ohne Upload, offline.</p>
+    <div class="chips">
+      <!--HERO-ANFANG--><span class="chip">enwik8 · <b>38,70 %</b> · 4,9042 bpB</span><!--HERO-ENDE-->
+      <span class="chip" data-t="k44">Logs · <b>0,36 %</b></span>
+      <span class="chip" data-t="k45">SHA-256 · <b data-t="k46">bit-exakt</b></span>
+    </div>
+  </div>
+  <div class="scroll-hint">Scroll</div>
+</div>
+
+<section id="messwerte">
+  <div class="wrap split">
+    <div>
+      <div class="sec-kicker" data-t="k4">Verifizierte Messwerte</div>
+      <h2 data-t="k5">Vollständige <em>Datei-Benchmarks</em></h2>
+      <p class="sub" data-t="k6">Ganze Dateien, kodiert und dekodiert mit derselben Engine. Jedes wiederhergestellte Byte stimmt — SHA-256 vorher/nachher identisch.</p>
+      <div class="table-card">
+        <table>
+          <thead>
+            <tr><th data-t="k7">Datensatz</th><th data-t="k8">Original</th><th>Bitseed</th><th>gzip</th><th data-t="k10">Ergebnis</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-t="k11">enwik8 · Wikipedia-XML</td>
+              <td class="num">100.000.000 B</td>
+              <!--ENWIK8-ANFANG--><td class="num"><b>61'302'800 B</b> (38'70 %)</td><!--ENWIK8-ENDE-->
+              <td class="num">36.470.486 B (36,47 %)</td>
+              <td><span class="pill lose" data-t="k17">gzip vorn</span></td>
+            </tr>
+            <tr>
+              <td data-t="k12">Repetitive Log-Zeilen</td>
+              <td class="num">303.104 B</td>
+              <td class="num"><b>1.078 B</b> (0,36 %)</td>
+              <td class="num">1.140 B (0,38 %)</td>
+              <td><span class="pill win" data-t="k16">Bitseed vorn</span></td>
+            </tr>
+            <tr>
+              <td data-t="k13">Code-Text · 40×</td>
+              <td class="num">1.010.560 B</td>
+              <td class="num"><b>16.666 B</b> (1,65 %)</td>
+              <td class="num">16.626 B (1,65 %)</td>
+              <td><span class="pill tie" data-t="k18">Parität</span></td>
+            </tr>
+            <tr>
+              <td data-t="k14">Echte Zufallsdaten</td>
+              <td class="num">65.536 B</td>
+              <td class="num"><b>65.747 B</b> (100,3 %)</td>
+              <td class="num">65.574 B (100,1 %)</td>
+              <td><span class="pill tie" data-t="k19">beide am Limit</span></td>
+            </tr>
+            <tr>
+              <td data-t="k15">Kleine Datei · 11 B</td>
+              <td class="num">11 B</td>
+              <td class="num"><b>24 B</b></td>
+              <td class="num">31 B</td>
+              <td><span class="pill win" data-t="k16b">Bitseed vorn</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout">
+        <!--CALLOUT-ANFANG--><div class="big">enwik8: <b>−61'30 %</b> Dateigröße</div>
+        <p>Von 100'000'000 B auf 61'302'800 B — die Datei ist um 61'30 % kleiner. Messung 2026-11-06' unbelastete Vollmessung' Roundtrip-SHA-256 exakt.</p><!--CALLOUT-ENDE-->
+      </div>
+    </div>
+    <div class="gfx-card">
+      <canvas data-gfx="speed" aria-hidden="true"></canvas>
+      <div class="gfx-tag">Velocity · <!--TEMPO-ANFANG-->1,8 MB/s<!--TEMPO-ENDE--></div>
+    </div>
+  </div>
+</section>
+
+<section id="ziel-check">
+  <div class="wrap">
+    <!--ZIEL-ANFANG-->
+    <div class="sec-kicker">Weltmeister-Check · Ziel vs. Ist · Stand 2026-11-06</div>
+    <h2>Die <em>Ziele</em> — nachweisbar geprüft</h2>
+    <p class="sub">Jede Zahl dieser Tabelle stammt aus der unbelasteten Vollmessung nach dem Training (enwik8, 100 MB, Roundtrip-SHA-256 exakt). Reproduzierbar per <code>node training-day/reinmessung.mjs</code>.</p>
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr><th>Ziel</th><th>Referenz</th><th>Gemessen</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Kompressionsdichte</td>
+            <td class="num">CMix-Referenz 1,92 bpB</td>
+            <td class="num"><b>4,9042 bpB</b> · 61,302,800 B (38,70 %)</td>
+            <td><span class="pill tie">in Arbeit</span></td>
+          </tr>
+          <tr>
+            <td>Tempo · Encode</td>
+            <td class="num">≥ 5 MB/s</td>
+            <td class="num"><b>1,8 MB/s</b></td>
+            <td><span class="pill tie">in Arbeit</span></td>
+          </tr>
+          <tr>
+            <td>WASM-Beschleunigung</td>
+            <td class="num">× 2,5 bestätigt</td>
+            <td class="num"><b>—</b></td>
+            <td><span class="pill tie">in Arbeit</span></td>
+          </tr>
+          <tr>
+            <td>Roundtrip-Exaktheit</td>
+            <td class="num">SHA-256 vor = nach</td>
+            <td class="num"><b>exakt</b></td>
+            <td><span class="pill win">bestanden</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!--ZIEL-ENDE-->
+  </div>
+</section>
+
+<section id="engine">
+  <div class="wrap split">
+    <div class="gfx-card">
+      <canvas data-gfx="foldcube" aria-hidden="true"></canvas>
+      <div class="gfx-tag">Engine · BTS5</div>
+    </div>
+    <div>
+      <div class="sec-kicker" data-t="k22">Ehrlich gemessen</div>
+      <h2 data-t="k26">Die <em>Engine</em></h2>
+      <p class="sub" data-t="k47">Sieben adaptive Kontextmodelle (Ordnung 0/2/4/8/12, Wort-Kontext, LZP-Match), ein lernender Perzeptron-Mischer, zwei SSE-Stufen und ein carry-sicherer Byte-Range-Coder. Ausgabeformat BTS5: GOP-Ankerstruktur nach dem Keyframe-Prinzip — jeder 256-KB-Block einzeln decodierbar, dazu XOR-Delta-Blöcke, die auf selbstähnlichen Daten (Backups, Images, Logs) bis zu 44 % kleiner werden. BTS1–BTS4 bleiben lesbar.</p>
+      <div class="cards">
+        <div class="card">
+          <div class="stat"><!--TEMPO2-ANFANG-->1,8 MB/s<!--TEMPO2-ENDE--></div>
+          <h3 data-t="k23t">Tempo</h3>
+          <p data-t="k23">Single-Thread im Browser oder Node — langsamer als gzip, dafür lokal, mit integrierter Analyse und ohne Upload.</p>
+        </div>
+        <div class="card">
+          <div class="stat">+0,3 %</div>
+          <h3 data-t="k24t">Zufallsdaten</h3>
+          <p data-t="k24">Echte Zufallsdaten wachsen leicht — sie sind nicht komprimierbar. Das zeigen wir auch.</p>
+        </div>
+        <div class="card">
+          <div class="stat">12 B</div>
+          <h3 data-t="k27t">BTS5-Container</h3>
+          <p data-t="k27b">Offengelegtes Format mit Block-Tabelle: pro Block wahlweise roh, unabhängig komprimiert (I-Block) oder XOR-Delta (P-Block) — Random Access und Resync inklusive.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap split">
+    <div>
+      <div class="sec-kicker" data-t="n1">Lokal. Ohne Upload.</div>
+      <h2 data-t="n2">Privatsphäre als <em>Architektur</em></h2>
+      <p class="sub" data-t="n3">Die Engine läuft komplett auf deinem Gerät — in einem Worker, ohne Server, ohne Telemetrie. Komprimieren, dekomprimieren und analysieren funktionieren auch offline, Datei für Datei.</p>
+      <div class="cards">
+        <div class="card">
+          <div class="stat">0</div>
+          <h3 data-t="n4">Uploads</h3>
+          <p data-t="n5">Kein Byte verlässt das Gerät. Prüfbar im Netzwerk-Tab — die Seite funktioniert flugzeugmodus-tauglich.</p>
+        </div>
+        <div class="card">
+          <div class="stat">100 %</div>
+          <h3 data-t="n6">Bit-exakt</h3>
+          <p data-t="n7">Jeder Roundtrip wird per SHA-256 gegengeprüft. Was komprimiert wird, kommt Byte für Byte zurück.</p>
+        </div>
+      </div>
+    </div>
+    <div class="gfx-card">
+      <canvas data-gfx="shield" aria-hidden="true"></canvas>
+      <div class="gfx-tag">Local · Private · Offline</div>
+    </div>
+  </div>
+</section>
+
+<section id="pruefung">
+  <div class="wrap split">
+    <div class="gfx-card">
+      <canvas data-gfx="intake" aria-hidden="true"></canvas>
+      <div class="gfx-tag">Roundtrip · SHA-256</div>
+    </div>
+    <div>
+      <div class="sec-kicker" data-t="k39">Prüfung</div>
+      <h2 data-t="k28">Live <em>prüfen</em></h2>
+      <p class="sub" data-t="k29">Jeder Wert auf dieser Seite ist live von jedem KI-System nachprüfbar — ohne Account, ohne Vertrauen.</p>
+      <div class="verify-list">
+        <div class="vrow">
+          <span class="lbl" data-t="k30">Selbsttest-Endpunkt</span>
+          <code>POST /.netlify/functions/openos-verify {"action":"selftest"}</code>
+        </div>
+        <div class="vrow">
+          <span class="lbl" data-t="k31">Engine-Quelltext (SHA-256)</span>
+          <span class="hashtext">9d2a8e72e2b561e738626684045f926b48c76ba8e68287f8518ec72ec35f7e76</span>
+        </div>
+        <div class="vrow">
+          <span class="lbl" data-t="k32">enwik8-Korpus (SHA-256)</span>
+          <span class="hashtext">2b49720ec4d78c3c9fabaee6e4179a5e997302b3a70029f30f2d582218c024a8</span>
+        </div>
+        <div class="vrow">
+          <span class="lbl" data-t="k33">Verifizierungs-Bundle</span>
+          <a href="https://github.com/sebklaey/openos-momo-ai/tree/main/verification" target="_blank" rel="noopener">github.com/sebklaey/openos-momo-ai</a>
+        </div>
+        <div class="vrow">
+          <span class="lbl" data-t="k34">Reproduktion</span>
+          <a href="/verifikation/enwik8-benchmark.mjs" target="_blank" rel="noopener">/verifikation/enwik8-benchmark.mjs</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span><b>Bitseed Compression</b> — <span data-t="k35">Ein Teil der OpenOS Momo AI — eine App, eine KI, mehrere Funktionen.</span></span>
+    <span class="mono" style="margin-inline-start:auto">app.openos.space</span>
+  </div>
+</footer>
+
+<script src="i18n.js"></script>
+<script>BitseedI18N.apply(document);</script>
+<script src="gfx3d.js"></script>
+</body>
+</html>

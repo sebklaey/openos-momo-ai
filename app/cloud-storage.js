@@ -22,7 +22,7 @@
   function ab64(s){return Uint8Array.from(atob(s),c=>c.charCodeAt(0))}
   function fmt(b){const n=Number(b)||0;if(n>=GB)return(n/GB).toFixed(2)+" GB";if(n>=1048576)return(n/1048576).toFixed(1)+" MB";if(n>=1024)return Math.round(n/1024)+" KB";return n+" B"}
   function uid(p){return p+"-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,8)}
-  function userId(){const id=ns.keyAuth?.userId?.()||ns.auth?.currentUser?.()?.id;if(!id)throw new Error("Bitte zuerst anmelden.");return String(id).toLowerCase()}
+  function userId(){const id=ns.auth?.currentUser?.()?.id||ns.keyAuth?.userId?.();if(!id)throw new Error("Bitte zuerst anmelden.");return String(id).toLowerCase()}
   function eintraege(){
     try{const r=JSON.parse(localStorage.getItem(STORE)||"{}");return Array.isArray(r.files)?r.files:[]}
     catch{return[]}
@@ -30,9 +30,18 @@
   function speichern(liste){
     try{localStorage.setItem(STORE,JSON.stringify({version:1,userId:userId(),files:liste}))}catch{}
   }
-  /* Cloud-Key: HKDF aus Session-Secret (CNSA-2.0-Kette, AES-256-GCM). */
+  /* Cloud-Key: HKDF aus Sync-Secret (CNSA-2.0-Kette, AES-256-GCM).
+   * Quelle: keyAuth-Session-Secret (Legacy) oder ein lokales, pro Gerät
+   * erzeugtes Geheimnis — funktioniert mit jeder Anmeldemethode. */
+  function lokalesSyncSecret(){
+    try{const v=localStorage.getItem("openos-sync-secret");if(v)return v}catch{}
+    const b=a=>btoa(String.fromCharCode(...new Uint8Array(a)));
+    const s=b(crypto.getRandomValues(new Uint8Array(48)));
+    try{localStorage.setItem("openos-sync-secret",s)}catch{}
+    return s;
+  }
   async function cloudKey(){
-    const secretB64=ns.keyAuth?._syncSecret?.();
+    const secretB64=ns.keyAuth?._syncSecret?.()||lokalesSyncSecret();
     if(!secretB64)throw new Error("Keine lokale Sitzung — bitte anmelden.");
     const km=await crypto.subtle.importKey("raw",ab64(secretB64),"HKDF",false,["deriveKey"]);
     return crypto.subtle.deriveKey({name:"HKDF",hash:"SHA-384",salt:encoder.encode("openos-cloud:"+userId()),info:encoder.encode("aes")},km,{name:"AES-GCM",length:256},false,["encrypt","decrypt"]);
