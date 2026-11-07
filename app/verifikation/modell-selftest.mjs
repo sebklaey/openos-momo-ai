@@ -67,25 +67,25 @@ const GOLDEN = [
     name: "identitaet-de",
     prompt: "DU: Was bist du?\nMOMO:",
     tokenIds: [887, 786, 6714, 7934, 232, 134, 154, 313, 282, 3088, 293, 7983, 7974, 7980, 440, 668],
-    textPrefix: " Ich bin Momo \u2014 die Saiten-KI von O",
+    textPrefix: "Ich bin Momo \u2014 die Saiten-KI von O",
   },
   {
     name: "faehigkeiten-de",
     prompt: "DU: Was kannst du?\nMOMO:",
     tokenIds: [887, 728, 2047, 914, 2073, 1056, 7984, 965, 1073, 7954, 794, 3831, 4809, 1840, 801, 7952],
-    textPrefix: " Ich kann drei Dinge besonders gut: verl",
+    textPrefix: "Ich kann drei Dinge besonders gut: verlu",
   },
   {
     name: "kompression-de",
     prompt: "DU: Wie komprimiert man Daten?\nMOMO:",
     tokenIds: [288, 575, 2047, 5473, 834, 7984, 5900, 7961, 7668, 1262, 363, 299, 326, 7983, 2802, 7860],
-    textPrefix: " Meine drei St\u00e4rken: Kompression mit bit",
+    textPrefix: "Meine drei St\u00e4rken: Kompression mit bit-",
   },
   {
     name: "identitaet-en",
     prompt: "USER: What are you?\nMOMO:",
     tokenIds: [887, 786, 6714, 7952, 313, 3635, 440, 668, 3462, 7991, 7957, 7949, 887, 1185, 1280, 498],
-    textPrefix: " Ich bin Momo, die KI von OpenOS. Ich be",
+    textPrefix: "Ich bin Momo, die KI von OpenOS. Ich bes",
   },
 ];
 const GOLDEN_PROMPT = GOLDEN[0].prompt;
@@ -93,10 +93,11 @@ const GOLDEN_PROMPT = GOLDEN[0].prompt;
 // Wird zur Laufzeit nachgerechnet — dieser Wert ist die harte Erwartung.
 const ERWARTETE_PARAMETER_N = 148355569;
 
+const GEWICHTE_BASIS = "https://rivudmparhyqvtgcboxw.supabase.co/storage/v1/object/public/saiten-gewichte/";
 const URLS = {
-  manifest: BASIS + "models/saiten-148m/momo-llm.json?v=saiten148m-s7",
-  vocab: BASIS + "models/saiten-148m/momo-vocab.json?v=saiten148m-s7",
-  bin: BASIS + "models/saiten-148m/momo-llm.bin?v=saiten148m-s7",
+  manifest: GEWICHTE_BASIS + "momo-llm.json?v=saiten148m-s7",
+  vocab: GEWICHTE_BASIS + "momo-vocab.json?v=saiten148m-s7",
+  teile: [0, 1, 2, 3, 4].map((i) => GEWICHTE_BASIS + "momo-llm.bin.part" + i + "?v=saiten148m-s7"),
 };
 
 async function lade(url) {
@@ -106,18 +107,20 @@ async function lade(url) {
 }
 
 const t0 = Date.now();
-const [manifestRoh, vocabRoh, bin] = await Promise.all([
+const [manifestRoh, vocabRoh, ...teile] = await Promise.all([
   lade(URLS.manifest).then((b) => JSON.parse(Buffer.from(b).toString("utf-8"))),
   lade(URLS.vocab).then((b) => JSON.parse(Buffer.from(b).toString("utf-8"))),
-  lade(URLS.bin),
+  ...URLS.teile.map(lade),
 ]);
+const bin = new Uint8Array(teile.reduce((a, t) => a + t.byteLength, 0));
+{ let o = 0; for (const t of teile) { bin.set(new Uint8Array(t), o); o += t.byteLength; } }
 
 // 1) Integrität der Gewichte: lokal hashen, gegen Referenz prüfen.
 const gewichteSha256 = createHash("sha256").update(Buffer.from(bin)).digest("hex");
 const integritaet = gewichteSha256 === ERWARTETE_GEWICHTE_SHA256;
 
 // 2) Modell aufbauen — identisch zum Browser-Worker.
-const gewichte = gewichteEntpacken(bin, manifestRoh);
+const gewichte = gewichteEntpacken(bin.buffer, manifestRoh);
 const llm = new SaitenLLM(manifestRoh.konfig, gewichte);
 const vok = vokabularLaden(vocabRoh);
 
