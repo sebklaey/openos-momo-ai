@@ -167,8 +167,8 @@ async function antworten(id, msg) {
     promptIds = ids.length > ctx ? ids.slice(ids.length - ctx) : ids
   }
 
-  const temperatur = msg.temperature > 0 ? Math.min(1, msg.temperature) : 0.6
-  const maxTokens = Math.min(160, Math.max(40, Math.round((msg.maxBytes || 260) / 1.6)))
+  const temperatur = msg.temperature > 0 ? Math.min(1, msg.temperature) : 0.45
+  const maxTokens = Math.min(110, Math.max(32, Math.round((msg.maxBytes || 220) / 1.6)))
 
   llm.reset()
   const t0 = performance.now()
@@ -177,12 +177,14 @@ async function antworten(id, msg) {
   let text = ''
   const dekodZustand = { dec: new TextDecoder('utf-8', { fatal: false }) }
   const zuletzt = [] // IDs der letzten ~50 generierten Tokens (Wiederholungsstrafe)
+  const ngramme = new Set() // bereits generierte 3-Wort-Ketten (Wort-Ebene)
+  const woerter = []
   for (let n = 0; ; n++) {
     if (abgebrochen.has(id)) { abgebrochen.delete(id); break }
     const pid = n < promptIds.length ? promptIds[n] : naechste
     const p = llm.schritt(pid)
     if (n < promptIds.length - 1) continue
-    const id2 = sample(p, temperatur, 15, new Set(zuletzt), 1.15)
+    const id2 = sample(p, temperatur, 12, new Set(zuletzt), 1.3)
     const stueck = decodiere(vok, [id2], false, dekodZustand)
     if (id2 === vok.ende || generiert >= maxTokens) break
     // Stopp am Zeilenende
@@ -193,6 +195,35 @@ async function antworten(id, msg) {
     // Stopp beim Echo einer neuen MOMO:-Runde (Modell zitiert Korpus-Dialoge)
     if (/^\s*MOMO\s*:/.test(stueck)) break
     if (generiert > 2 && /\bMOMO\s*:/.test(text + stueck)) break
+    // No-Repeat-Ngram (Wort-Ebene): dieselbe 3-Wort-Kette nie zweimal —
+    // verhindert die typischen Boilerplate-Schleifen („keine Abos, keine
+    // Server, keine Uploads" …). Bei Verstoß einmalig kühler nachziehen.
+    {
+      const w = stueck.trim()
+      if (w) {
+        woerter.push(w)
+        if (woerter.length >= 3) {
+          const kette = woerter.slice(-3).join(' ').toLowerCase()
+          if (ngramme.has(kette)) {
+            const id3 = sample(p, Math.max(0.2, temperatur * 0.7), 30, new Set(zuletzt), 1.45)
+            const s2 = decodiere(vok, [id3], false, dekodZustand)
+            if (id3 === vok.ende || s2.includes('\n') || /^\s*(DU|MOMO)\s*:/.test(s2)) break
+            woerter.pop()
+            const w2 = s2.trim()
+            if (w2) woerter.push(w2)
+            generiert++
+            text += s2
+            zuletzt.push(id3)
+            if (zuletzt.length > 50) zuletzt.shift()
+            if (woerter.length >= 3) ngramme.add(woerter.slice(-3).join(' ').toLowerCase())
+            post({ id, type: 'token', text: s2.replace(/\n$/, '').trim(), tool: null })
+            naechste = id3
+            continue
+          }
+          ngramme.add(kette)
+        }
+      }
+    }
     generiert++
     text += stueck
     zuletzt.push(id2)
@@ -200,8 +231,8 @@ async function antworten(id, msg) {
     // Wiederholungswaechter: bei schwachen Modellen frueh und hart stoppen.
     // 1) dasselbe Wort 4x direkt hintereinander ("Wasser Wasser Wasser Wasser")
     if (generiert >= 4) {
-      const woerter = text.trim().split(/\s+/)
-      const letzte4 = woerter.slice(-4)
+      const ws = text.trim().split(/\s+/)
+      const letzte4 = ws.slice(-4)
       if (letzte4.length === 4 && letzte4.every((w) => w === letzte4[0])) break
     }
     // 2) derselbe 12-Zeichen-Block 3x am Stueck
@@ -214,6 +245,9 @@ async function antworten(id, msg) {
       const ende = text.slice(-30)
       if (ende === text.slice(-60, -30) && ende === text.slice(-90, -60)) break
     }
+    // 4) sauberer Satzabschluss nach Mindestlänge beenden — kürzere, runde
+    //    Antworten statt Sinnverlust durch lange Fetzen (Tempo-Bonus inklusive).
+    if (generiert >= 8 && /[.!?…]\s*["'»”’)\]]*$/.test(text)) break
     post({ id, type: 'token', text: stueck.replace(/\n$/, '').trim(), tool: null })
     naechste = id2
     if (generiert % 8 === 0) await new Promise((r) => setTimeout(r, 0))
